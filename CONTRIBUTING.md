@@ -9,13 +9,13 @@ Every new feature, improvement, or bug fix should be developed on a separate bra
 Use the following naming format:
 
 ```
-type/name/description
+type/B07-x/description
 ```
 
 Where:
 
 - `type` describes the purpose of the branch
-- `name` is the contributor's name
+- `B07-x` is the reference to jira task
 - `description` briefly describes the change
 
 ## Examples
@@ -23,16 +23,16 @@ Where:
 Feature branches:
 
 ```
-feature/hanif/login-system
-feature/hanif/database-setup
-feature/hanif/user-interface
+feature/B07-1/login-system
+feature/B07-2/database-setup
+feature/B07-3/user-interface
 ```
 
 Bug fix branches:
 
 ```
-bugfix/hanif/fix-login-error
-bugfix/hanif/fix-null-pointer
+bugfix/B07-4/fix-login-error
+bugfix/B07-5/fix-null-pointer
 ```
 
 ---
