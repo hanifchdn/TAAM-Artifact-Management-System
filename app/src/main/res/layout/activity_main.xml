@@ -5,7 +5,64 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/login_background"
+    android:gravity="center"
+    android:padding="10dp"
     tools:context=".MainActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <ImageView
+            android:layout_width="65pt"
+            android:layout_height="65pt"
+            android:src="@drawable/outline_login" />
+        
+        <EditText
+            android:id="@+id/username_input"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:hint=" Username:"
+            android:textColor="@color/white"
+            android:textColorHint="@color/white"
+            android:textStyle="bold"
+            android:textSize="20sp"
+            android:background="@drawable/rounded_corner"
+            android:padding="5dp"
+            />
+
+        <EditText
+            android:id="@+id/password_input"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:hint=" Password:"
+            android:textColor="@color/white"
+            android:textColorHint="@color/white"
+            android:textStyle="bold"
+            android:textSize="20sp"
+            android:background="@drawable/rounded_corner"
+            android:padding="5dp"
+            />
+
+        <Button
+            android:id="@+id/loginBtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/login"
+            android:textAppearance="@color/cardview_light_background"
+            android:backgroundTint="@color/white"
+            android:textStyle="bold"
+            android:textSize="20sp"
+            android:padding="5dp"
+            android:layout_marginTop="20dp"
+            android:textColor="@color/black" />
+
+    </LinearLayout>
 
     <!--    <Button-->
 <!--        android:id="@+id/buttonNavigate"-->
