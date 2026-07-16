@@ -13,8 +13,8 @@ public class ArtifactDatabaseReader implements DatabaseReader<Artifact> {
     private DatabaseReference dbReference;
 
     public ArtifactDatabaseReader() {
-        FirebaseDatabase db = FirebaseDatabase.getInstance("https://taam-artifact-storage-system-default-rtdb.firebaseio.com/");
-        DatabaseReference dbReference = db.getReference("artifacts");
+         db = FirebaseDatabase.getInstance("https://taam-artifact-storage-system-default-rtdb.firebaseio.com/");
+         dbReference = db.getReference("artifacts");
     }
 
     public Artifact itemLocation;
