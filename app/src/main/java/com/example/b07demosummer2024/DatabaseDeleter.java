@@ -1,6 +1,6 @@
 package com.example.b07demosummer2024;
 
-public interface DatabaseDeleter<Element> {
+public interface DatabaseDeleter {
 
-    public void deleteFromDatabase(Element e);
+    public void deleteFromDatabase(DatabaseItem e);
 }

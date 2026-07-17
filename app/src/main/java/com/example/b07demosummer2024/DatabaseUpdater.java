@@ -1,6 +1,6 @@
 package com.example.b07demosummer2024;
 
-public interface DatabaseUpdater<Element> {
+public interface DatabaseUpdater {
 
-    public void updateDatabase(Element e);
+    public void updateDatabase(DatabaseItem e);
 }
