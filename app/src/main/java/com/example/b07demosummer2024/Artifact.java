@@ -1,8 +1,8 @@
 package com.example.b07demosummer2024;
 
-public class Artifact {
+public class Artifact implements DatabaseItem{
 
-    private int LOT;
+    private String LOT;
     private String name;
     private String description;
     private String category;
@@ -19,8 +19,7 @@ public class Artifact {
     private String imageUrl;
 
     public Artifact() {}
-    public Artifact(int LOT, String name, String description, String category, String material, String dynasty) {
-        this.LOT = LOT;
+    public Artifact(String name, String description, String category, String material, String dynasty) {
         this.name = name;
         this.description = description;
         this.category = category;
@@ -28,11 +27,11 @@ public class Artifact {
         this.dynasty = dynasty;
 
     }
-    public int getLOT() {
+    public String getLOT() {
         return LOT;
     }
 
-    public void setLOT(int LOT) {
+    public void setLOT(String LOT) {
         this.LOT = LOT;
     }
 

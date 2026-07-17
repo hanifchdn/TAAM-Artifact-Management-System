@@ -8,7 +8,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-public class ArtifactDatabaseReader implements DatabaseReader<Artifact> {
+public class ArtifactDatabaseReader implements DatabaseReader {
     private FirebaseDatabase db;
     private DatabaseReference dbReference;
 
@@ -33,6 +33,6 @@ public class ArtifactDatabaseReader implements DatabaseReader<Artifact> {
 
             }
         });
-        return itemLocation;
+        return null;
     }
 }

@@ -2,7 +2,10 @@ package com.example.b07demosummer2024;
 
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-public class ArtifactDatabaseWriter implements DatabaseAdder<Artifact>, DatabaseDeleter<Artifact>, DatabaseUpdater<Artifact>{
+
+import java.io.IOException;
+
+public class ArtifactDatabaseWriter implements DatabaseAdder, DatabaseDeleter, DatabaseUpdater{
     FirebaseDatabase db;
     DatabaseReference dbReference;
     public ArtifactDatabaseWriter() {
@@ -11,19 +14,31 @@ public class ArtifactDatabaseWriter implements DatabaseAdder<Artifact>, Database
     }
 
     @Override
-    public void addToDatabase(Artifact artifact) {
-        dbReference.child(String.valueOf(artifact.getLOT())).push().setValue(artifact);
+    public void addToDatabase(DatabaseItem item) {
+        if (!(item instanceof Artifact)) {
+            return;
+        }
+        Artifact artifact = (Artifact) item;
+        String LOT = dbReference.push().getKey();
+        dbReference.child(LOT).setValue(artifact);
     }
 
     @Override
-    public void updateDatabase(Artifact artifact) {
-
-        dbReference.child(String.valueOf(artifact.getLOT())).setValue(artifact);
+    public void updateDatabase(DatabaseItem item) {
+        if (!(item instanceof Artifact)) {
+            return;
+        }
+        Artifact artifact = (Artifact) item;
+        dbReference.child(artifact.getLOT()).setValue(artifact);
     }
 
     @Override
-    public void deleteFromDatabase(Artifact artifact) {
-        dbReference.child(String.valueOf(artifact.getLOT())).removeValue();
+    public void deleteFromDatabase(DatabaseItem item) {
+        if (!(item instanceof Artifact)) {
+            return;
+        }
+        Artifact artifact = (Artifact) item;
+        dbReference.child(artifact.getLOT()).removeValue();
     }
 
     public void deleteFromDatabase(int LOT) {

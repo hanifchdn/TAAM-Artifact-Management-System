@@ -1,6 +1,6 @@
 package com.example.b07demosummer2024;
 
-public interface DatabaseReader<Element> {
+public interface DatabaseReader {
 
-    public Element getItem(String s);
+    public Artifact getItem(String s);
 }
