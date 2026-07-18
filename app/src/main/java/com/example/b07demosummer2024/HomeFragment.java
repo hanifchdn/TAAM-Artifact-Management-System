@@ -10,6 +10,8 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
+import java.util.concurrent.CompletableFuture;
+
 public class HomeFragment extends Fragment {
     @Nullable
     @Override
@@ -21,10 +23,18 @@ public class HomeFragment extends Fragment {
         Button buttonSpinner = view.findViewById(R.id.buttonSpinner);
         Button buttonManageItems = view.findViewById(R.id.buttonManageItems);
 
+        ArtifactDatabaseWriter adw= new ArtifactDatabaseWriter();
+
         buttonRecyclerView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 loadFragment(new RecyclerViewFragment());
+
+                CompletableFuture<Object> result = CompletableFuture.supplyAsync(() -> {
+                    adw.addToDatabase(new Artifact("lot", "d", "s", "e", "f", "g"));
+                    return null;
+                });
+
             }
         });
 
@@ -32,6 +42,7 @@ public class HomeFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 loadFragment(new ScrollerFragment());
+                adw.addToDatabase(new Artifact("lot2", "d", "s", "e", "f", "g"));
             }
         });
 
@@ -39,6 +50,8 @@ public class HomeFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 loadFragment(new SpinnerFragment());
+                adw.deleteFromDatabase(new Artifact("lot", "d", "s", "e", "f", "g"));
+
             }
         });
 

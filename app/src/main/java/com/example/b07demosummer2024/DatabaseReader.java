@@ -2,5 +2,8 @@ package com.example.b07demosummer2024;
 
 public interface DatabaseReader {
 
-    public Artifact getItem(String s);
+    public DatabaseItem getItem(String UID);
+
+    public boolean contains(String UID);
+
 }
