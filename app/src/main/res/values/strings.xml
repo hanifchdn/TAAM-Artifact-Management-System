@@ -9,6 +9,8 @@
     <string name="scroller">Scroller</string>
     <string name="spinner">Spinner</string>
     <string name="manage_items">Manage Items</string>
+    <string name="select_image_description">Select an image</string>
+    <string name="select_image_button">Select Image</string>
 
     <string-array name="categories_array">
         <item>Books</item>
