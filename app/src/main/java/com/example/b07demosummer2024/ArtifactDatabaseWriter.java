@@ -8,7 +8,9 @@ import java.io.IOException;
 public class ArtifactDatabaseWriter implements DatabaseAdder, DatabaseDeleter, DatabaseUpdater{
     FirebaseDatabase db;
     DatabaseReference dbReference;
+
     public ArtifactDatabaseWriter() {
+        // set database cursor to artifacts section
         db = FirebaseDatabase.getInstance("https://taam-artifact-storage-system-default-rtdb.firebaseio.com/");
         dbReference = db.getReference("/artifacts");
     }
@@ -19,8 +21,8 @@ public class ArtifactDatabaseWriter implements DatabaseAdder, DatabaseDeleter, D
             return;
         }
         Artifact artifact = (Artifact) item;
-        String LOT = dbReference.push().getKey();
-        dbReference.child(LOT).setValue(artifact);
+        dbReference.child(artifact.getLOT()).setValue(artifact);
+
     }
 
     @Override

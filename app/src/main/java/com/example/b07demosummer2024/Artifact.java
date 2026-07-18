@@ -19,7 +19,8 @@ public class Artifact implements DatabaseItem{
     private String imageUrl;
 
     public Artifact() {}
-    public Artifact(String name, String description, String category, String material, String dynasty) {
+    public Artifact(String LOT, String name, String description, String category, String material, String dynasty) {
+        this.LOT = LOT;
         this.name = name;
         this.description = description;
         this.category = category;
@@ -146,4 +147,5 @@ public class Artifact implements DatabaseItem{
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
     }
+
 }
