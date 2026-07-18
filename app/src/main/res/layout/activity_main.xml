@@ -15,7 +15,7 @@
         android:layout_height="match_parent"
         android:gravity="center_horizontal"
         android:orientation="vertical"
-        android:paddingTop="60dp"
+        android:paddingTop="80dp"
         >
 
         <ImageView
@@ -61,6 +61,8 @@
             android:inputType="textPassword"
             android:padding="5dp"
             android:minHeight="48dp"
+            android:drawableEnd="@android:drawable/ic_menu_view"
+            android:drawablePadding="8dp"
             />
 
         <TextView
@@ -76,7 +78,7 @@
             />
 
         <Button
-            android:id="@+id/loginBtn"
+            android:id="@+id/loginButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/login"
@@ -118,6 +120,8 @@
         android:id="@+id/fragment_container"
         android:layout_width="400dp"
         android:layout_height="700dp"
+        android:clickable="false"
+        android:focusable="false"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.454"
@@ -128,13 +132,14 @@
     </FrameLayout>
 
     <TextView
+        android:paddingTop="20dp"
         android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
         android:text="@string/app_name"
         android:textColor="@color/white"
-        android:textSize="38sp"
+        android:textSize="36sp"
         android:textStyle="bold"
         android:letterSpacing="0.05"
         android:paddingBottom="5dp"
