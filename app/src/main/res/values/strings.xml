@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">B07 Demo Summer 2024</string>
+    <string name="app_name">Artifact Collection</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="delete_item">Delete Item</string>
@@ -10,6 +10,11 @@
     <string name="spinner">Spinner</string>
     <string name="manage_items">Manage Items</string>
     <string name="login">Login</string>
+    <string name="username_hint"> Username:</string>
+    <string name="password_hint"> Password:</string>
+    <string name="login_icon_description">Login profile icon</string>
+    <string name="login_error_placeholder">Invalid username or password</string>
+    <string name="forgot_password">Forgot password?</string>
 
     <string-array name="categories_array">
         <item>Books</item>
