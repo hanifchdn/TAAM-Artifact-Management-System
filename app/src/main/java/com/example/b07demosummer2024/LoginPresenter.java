@@ -12,9 +12,18 @@ public class LoginPresenter implements LoginContract.Presenter {
         return email.matches(EMAIL_REGEX);
     }
     @Override
-    public void login(String email, String password){
+    public void login(String email, String password) {
+        if (email.isEmpty()) {
+            view.showEmptyEmailError();
+            return;
+        }
 
-        if(!isValidEmail(email)){
+        if (password.isEmpty()) {
+            view.showEmptyPasswordError();
+            return;
+        }
+
+        if (!isValidEmail(email)) {
             view.showInvalidEmailFormatError();
             return;
         }
