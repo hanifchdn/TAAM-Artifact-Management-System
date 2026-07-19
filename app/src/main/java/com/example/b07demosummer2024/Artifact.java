@@ -1,5 +1,11 @@
 package com.example.b07demosummer2024;
 
+/**
+ * Artifact class that defines the Artifact structure
+ *
+ * Represents the type contract and fields of an Artifact.
+ *
+ */
 public class Artifact implements DatabaseItem{
 
     private String LOT;
