@@ -8,7 +8,14 @@ public class LoginPresenter implements LoginContract.Presenter {
     }
     @Override
     public void login(String email, String password){
-
+        if(email.isEmpty()){
+            view.showEmptyEmailError();
+            return;
+        }
+        if(password.isEmpty()){
+            view.showEmptyPasswordError();
+            return;
+        }
     }
     @Override
     public void onDestroy(){
