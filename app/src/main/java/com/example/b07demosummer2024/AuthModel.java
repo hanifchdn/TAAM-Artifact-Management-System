@@ -14,7 +14,6 @@ public class AuthModel implements LoginContract.Model{
                     callback.onSuccess(auth.getCurrentUser().getUid());
                 }
                 else {
-                    callback.onFailure("Login Failed");
                     Log.e("AUTH", "reason", task.getException());
                     callback.onFailure("Login Failed");
                 }
