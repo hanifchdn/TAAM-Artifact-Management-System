@@ -56,6 +56,7 @@
         android:layout_height="160dp"
         android:layout_marginTop="50dp"
         android:src="@drawable/add_photo"
+        android:scaleType="centerCrop"
         android:contentDescription="@string/select_image_description"
         android:clickable="true"
         android:focusable="true"
