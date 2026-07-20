@@ -2,7 +2,11 @@ package com.example.b07demosummer2024;
 
 import android.util.Log;
 
+import com.google.firebase.FirebaseNetworkException;
+import com.google.firebase.FirebaseTooManyRequestsException;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
+import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 
 public class AuthModel implements LoginContract.Model{
     private final FirebaseAuth auth = FirebaseAuth.getInstance();
@@ -11,13 +15,28 @@ public class AuthModel implements LoginContract.Model{
         auth.signInWithEmailAndPassword(email, password).addOnCompleteListener(
             task -> {
                 if (task.isSuccessful()){
-                    callback.onSuccess(auth.getCurrentUser().getUid());
+                    callback.onSuccess(auth.getUid());
                 }
                 else {
-                    Log.e("AUTH", "reason", task.getException());
-                    callback.onFailure("Login Failed");
+                    callback.onFailure(checkError(task.getException()));
                 }
             });
+
+    }
+
+    private String checkError(Exception ex) {
+
+        if (ex instanceof FirebaseAuthInvalidCredentialsException || ex instanceof FirebaseAuthInvalidUserException){
+            return "Invalid email or password.";
+        }
+        if (ex instanceof FirebaseNetworkException){
+            return "No internet connection.";
+        }
+        if (ex instanceof FirebaseTooManyRequestsException){
+            return "Try again later.";
+        }
+        Log.e("AUTH", "reason", ex);
+        return "Something went wrong.";
 
     }
 }
