@@ -8,7 +8,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 
-public class AuthModel implements LoginContract.Model{
+public class LoginModel implements LoginContract.Model{
     private final FirebaseAuth auth = FirebaseAuth.getInstance();
     @Override
     public void login(String email, String password, AuthCallback callback) {
