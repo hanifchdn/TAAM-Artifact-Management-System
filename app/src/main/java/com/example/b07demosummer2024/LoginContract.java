@@ -11,4 +11,13 @@ public interface LoginContract {
         void login(String email, String password);
     }
 
+    interface Model{
+        void login(String email, String password, AuthCallback callback);
+
+        interface AuthCallback {
+            void onSuccess(String uid);
+            void onFailure(String message);
+        }
+    }
+
 }
