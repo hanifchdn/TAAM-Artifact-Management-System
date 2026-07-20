@@ -70,7 +70,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="25dp"
         android:backgroundTint="#009688"
-        android:text="@string/select_image_button"
+        android:text="@string/select_image_description"
         app:layout_constraintTop_toBottomOf="@+id/selectedImagePreview"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>

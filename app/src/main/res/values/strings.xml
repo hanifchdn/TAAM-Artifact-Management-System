@@ -11,6 +11,9 @@
     <string name="manage_items">Manage Items</string>
     <string name="select_image_description">Select an image</string>
     <string name="select_image_button">Select Image</string>
+    <string name="supabase_url">https://cvibiajdnhwmgphxgfji.supabase.co</string>
+    <string name="supabase_anon_key">eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN2aWJpYWpkbmh3bWdwaHhnZmppIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQyNTI5MjMsImV4cCI6MjA5OTgyODkyM30.Dlbgk36f1_fjpu6vF1x9zD5zrZY7RFmsgRAV4CahbDQ</string>
+    <string name="supabase_image_bucket">images</string>
 
     <string-array name="categories_array">
         <item>Books</item>
