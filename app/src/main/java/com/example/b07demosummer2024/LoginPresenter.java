@@ -33,13 +33,11 @@ public class LoginPresenter implements LoginContract.Presenter {
         model.login(email, password, new LoginContract.Model.AuthCallback() {
             @Override
             public void onSuccess(String uid) {
-                if (view == null) return;      // Activity may be gone
-                // navigate View to success/home page - to be implemented
+                // To be implemented
             }
             @Override
             public void onFailure(String message) {
-                if (view == null) return;
-                // naviagte View to error - to be implemented
+                // To be implemented
             }
         });
     }
