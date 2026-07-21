@@ -24,6 +24,19 @@ import com.google.firebase.database.FirebaseDatabase;
 
 public class AddItemFragment extends Fragment {
 
+    private EditText editTextLot;
+    private EditText editTextArtifactName;
+    private EditText editTextDescription;
+    private EditText editTextCulturalOrigin;
+    private EditText editTextHeight;
+    private EditText editTextWidth;
+    private EditText editTextDepth;
+    private EditText editTextConditionReport;
+    private EditText editTextCurrentLocation;
+    private EditText editTextAcquisitionMethod;
+    private EditText editTextProvenance;
+    private EditText editTextAccessionNumber;
+    private EditText editTextNotes;
     private Uri imageUri;
     private ImageView selectedImagePreview;
     private SupabaseImageUploader imageUploader;
@@ -58,15 +71,84 @@ public class AddItemFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        bindTextFields(view);
         Button buttonSelectImage = view.findViewById(R.id.buttonSelectImage);
         buttonSelectImage.setOnClickListener(v -> imageSelectionLauncher.launch("image/*"));
         selectedImagePreview = view.findViewById(R.id.selectedImagePreview);
         Button buttonAddArtifact = view.findViewById(R.id.buttonAddItem);
     }
 
+    private void bindTextFields(@NonNull View view) {
+        editTextLot = view.findViewById(R.id.editTextLot);
+        editTextArtifactName = view.findViewById(R.id.editTextArtifactName);
+        editTextDescription = view.findViewById(R.id.editTextDescription);
+        editTextCulturalOrigin = view.findViewById(R.id.editTextCulturalOrigin);
+        editTextHeight = view.findViewById(R.id.editTextHeight);
+        editTextWidth = view.findViewById(R.id.editTextWidth);
+        editTextDepth = view.findViewById(R.id.editTextDepth);
+        editTextConditionReport = view.findViewById(R.id.editTextConditionReport);
+        editTextCurrentLocation = view.findViewById(R.id.editTextCurrentLocation);
+        editTextAcquisitionMethod = view.findViewById(R.id.editTextAcquisitionMethod);
+        editTextProvenance = view.findViewById(R.id.editTextProvenance);
+        editTextAccessionNumber = view.findViewById(R.id.editTextAccessionNumber);
+        editTextNotes = view.findViewById(R.id.editTextNotes);
+    }
+
+    public EditText getEditTextLot() {
+        return editTextLot;
+    }
+
+    public EditText getEditTextArtifactName() {
+        return editTextArtifactName;
+    }
+
+    public EditText getEditTextDescription() {
+        return editTextDescription;
+    }
+
+    public EditText getEditTextCulturalOrigin() {
+        return editTextCulturalOrigin;
+    }
+
+    public EditText getEditTextAcquisitionMethod() {
+        return editTextAcquisitionMethod;
+    }
+    public EditText getEditTextHeight() {
+        return editTextHeight;
+    }
+
+    public EditText getEditTextWidth() {
+        return editTextWidth;
+    }
+
+    public EditText getEditTextDepth() {
+        return editTextDepth;
+    }
+
+    public EditText getEditTextConditionReport() {
+        return editTextConditionReport;
+    }
+
+    public EditText getEditTextCurrentLocation() {
+        return editTextCurrentLocation;
+    }
+
+    public EditText getEditTextProvenance() {
+        return editTextProvenance;
+    }
+
+    public EditText getEditTextAccessionNumber() {
+        return editTextAccessionNumber;
+    }
+
+    public EditText getEditTextNotes() {
+        return editTextNotes;
+    }
+
     public Uri getSelectedImageUri() {
         return imageUri;
     }
+
     public SupabaseImageUploader getSupabaseImageUploader() {return imageUploader;}
 
 }
