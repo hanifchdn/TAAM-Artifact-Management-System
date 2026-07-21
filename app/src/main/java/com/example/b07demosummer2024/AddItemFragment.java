@@ -76,6 +76,27 @@ public class AddItemFragment extends Fragment {
         buttonSelectImage.setOnClickListener(v -> imageSelectionLauncher.launch("image/*"));
         selectedImagePreview = view.findViewById(R.id.selectedImagePreview);
         Button buttonAddArtifact = view.findViewById(R.id.buttonAddItem);
+        buttonAddArtifact.setOnClickListener(v -> {
+            String lot = editTextLot.getText().toString();
+            String name = editTextArtifactName.getText().toString();
+            String description = editTextDescription.getText().toString();
+            String category = "";
+            String material = "";
+            String dynasty = "";
+            Artifact newArtifact = new Artifact(lot, name, description, category, material, dynasty);
+            newArtifact.setHeight(editTextHeight.getText().toString());
+            newArtifact.setDepth(editTextDepth.getText().toString());
+            newArtifact.setWidth(editTextWidth.getText().toString());
+            newArtifact.setCulturalOrigin(editTextCulturalOrigin.getText().toString());
+            newArtifact.setCondition(editTextConditionReport.getText().toString());
+            newArtifact.setCurrentLocation(editTextCurrentLocation.getText().toString());
+            newArtifact.setAcquisitionMethod(editTextAcquisitionMethod.getText().toString());
+            newArtifact.setProvenance(editTextProvenance.getText().toString());
+            newArtifact.setAccessionNumber(editTextAccessionNumber.getText().toString());
+            newArtifact.setNotes(editTextNotes.getText().toString());
+            ArtifactDatabaseWriter writer = new ArtifactDatabaseWriter();
+            writer.addToDatabase(newArtifact);
+        });
     }
 
     private void bindTextFields(@NonNull View view) {
