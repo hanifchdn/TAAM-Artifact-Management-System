@@ -1,7 +1,11 @@
 package com.example.b07demosummer2024;
 
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -20,6 +24,8 @@ import java.util.concurrent.ExecutionException;
  *
  */
 public class ArtifactDatabaseReader implements DatabaseReader {
+
+
     private FirebaseDatabase db;
     private DatabaseReference dbReference;
 
@@ -50,19 +56,16 @@ public class ArtifactDatabaseReader implements DatabaseReader {
     @Override
     public Artifact getItem(String LOT) {
         try {
-            Tasks.await(dbReference.child(LOT).get().addOnCompleteListener(task -> {
-                if (task.isSuccessful() && task.getResult().exists()) {
-                    artifactReference = task.getResult().getValue(Artifact.class);
-                }
-                else {
-                    artifactReference = null;
-                }
-            }));
+            Task<DataSnapshot> task = dbReference.child(LOT).get();
+            DataSnapshot data = Tasks.await(task);
+            if (data.getValue() != null) {
+                return data.getValue(Artifact.class);
+            }
         }
-        catch (ExecutionException | InterruptedException exception) {
+        catch (Exception e) {
             return null;
         }
-        return artifactReference;
+        return null;
     }
 
     /**
