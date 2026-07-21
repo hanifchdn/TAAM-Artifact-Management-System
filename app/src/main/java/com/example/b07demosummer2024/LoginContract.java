@@ -6,9 +6,19 @@ public interface LoginContract {
         void showEmptyPasswordError();
         void showInvalidEmailFormatError();
         void navigateToHome();
+        void showLoginError();
     }
     interface Presenter extends BaseContract.Presenter{
         void login(String email, String password);
+    }
+
+    interface Model{
+        void login(String email, String password, AuthCallback callback);
+
+        interface AuthCallback {
+            void onSuccess(String uid);
+            void onFailure(String message);
+        }
     }
 
 }

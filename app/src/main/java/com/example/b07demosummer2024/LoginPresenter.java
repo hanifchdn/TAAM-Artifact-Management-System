@@ -3,8 +3,15 @@ package com.example.b07demosummer2024;
 public class LoginPresenter implements LoginContract.Presenter {
 
     private LoginContract.View view;
-    public LoginPresenter(LoginContract.View view){
+    private LoginContract.Model model;
+    public LoginPresenter(LoginContract.View view, LoginContract.Model model){
         this.view = view;
+        this.model = model;
+    }
+    private static final String EMAIL_REGEX = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@" +
+            "(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
+    private boolean isValidEmail(String email){
+        return email.matches(EMAIL_REGEX);
     }
     private static final String EMAIL_REGEX = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@" +
             "(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
@@ -27,6 +34,17 @@ public class LoginPresenter implements LoginContract.Presenter {
             view.showInvalidEmailFormatError();
             return;
         }
+
+        model.login(email, password, new LoginContract.Model.AuthCallback() {
+            @Override
+            public void onSuccess(String uid) {
+                // To be implemented
+            }
+            @Override
+            public void onFailure(String message) {
+                // To be implemented
+            }
+        });
     }
     @Override
     public void onDestroy(){
