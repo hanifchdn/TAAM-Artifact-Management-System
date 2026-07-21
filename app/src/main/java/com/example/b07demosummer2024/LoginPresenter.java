@@ -13,6 +13,11 @@ public class LoginPresenter implements LoginContract.Presenter {
     private boolean isValidEmail(String email){
         return email.matches(EMAIL_REGEX);
     }
+    private static final String EMAIL_REGEX = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@" +
+            "(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
+    private boolean isValidEmail(String email){
+        return email.matches(EMAIL_REGEX);
+    }
     @Override
     public void login(String email, String password) {
         if (email.isEmpty()) {
