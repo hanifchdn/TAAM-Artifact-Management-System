@@ -91,8 +91,20 @@ public class AddItemFragment extends Fragment {
             newArtifact.setProvenance(editTextProvenance.getText().toString());
             newArtifact.setAccessionNumber(editTextAccessionNumber.getText().toString());
             newArtifact.setNotes(editTextNotes.getText().toString());
-            ArtifactDatabaseWriter writer = new ArtifactDatabaseWriter();
-            writer.addToDatabase(newArtifact);
+            if (imageUri != null){
+                ImageDatabaseWriter imageDatabaseWriter = new ImageDatabaseWriter();
+                imageDatabaseWriter.addToDatabase(imageUploader, imageUri, lot, (url) -> {
+                    if(url != null){
+                        newArtifact.setImageUrl(url);
+                    }
+                    ArtifactDatabaseWriter  writer = new ArtifactDatabaseWriter();
+                    writer.addToDatabase(newArtifact);
+                });
+            }
+            else{
+                ArtifactDatabaseWriter writer = new ArtifactDatabaseWriter();
+                writer.addToDatabase(newArtifact);
+            }
         });
     }
 
