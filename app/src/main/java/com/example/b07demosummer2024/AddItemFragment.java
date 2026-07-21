@@ -74,6 +74,9 @@ public class AddItemFragment extends Fragment {
         selectedImagePreview = view.findViewById(R.id.selectedImagePreview);
         Button buttonAddArtifact = view.findViewById(R.id.buttonAddItem);
         buttonAddArtifact.setOnClickListener(v -> {
+            if(!validateInputs()){
+                return;
+            }
             String lot = editTextLot.getText().toString();
             String name = editTextArtifactName.getText().toString();
             String description = editTextDescription.getText().toString();
@@ -107,7 +110,24 @@ public class AddItemFragment extends Fragment {
             }
         });
     }
-
+    private boolean validateInputs(){
+        String lot = editTextLot.getText().toString().trim();
+        String name = editTextArtifactName.getText().toString().trim();
+        String description = editTextDescription.getText().toString().trim();
+        if (lot.isEmpty()){
+            editTextLot.setError("LOT Number is required");
+            return false;
+        }
+        if (name.isEmpty()){
+            editTextArtifactName .setError("Name is required");
+            return false;
+        }
+        if (description.isEmpty()){
+            editTextDescription.setError("Description is required");
+            return false;
+        }
+        return true;
+    }
     /**
      * Binds EditText variables to the views in fragment_add_item.xml.
      */
