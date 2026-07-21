@@ -30,12 +30,6 @@ public class HomeFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 loadFragment(new RecyclerViewFragment());
-
-                CompletableFuture<Object> result = CompletableFuture.supplyAsync(() -> {
-                    adw.addToDatabase(new Artifact("lot", "d", "s", "e", "f", "g"));
-                    return null;
-                });
-
             }
         });
 
@@ -43,17 +37,6 @@ public class HomeFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 loadFragment(new ScrollerFragment());
-                Artifact more = new Artifact("lot", "d", "s", "e", "f", "g");
-                more.setAcquisitionMethod("newField");
-                adw.addToDatabase(more);
-                CompletableFuture.runAsync(() -> {
-                    ArtifactDatabaseReader adr = new ArtifactDatabaseReader();
-                    Artifact a= adr.getItem("lot");
-                    if (a != null) {
-                        Log.d("tst", a.getCategory());
-                    }
-                    Log.d("tst", "WDSWD");
-                });
             }
         });
 
@@ -61,10 +44,6 @@ public class HomeFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 loadFragment(new SpinnerFragment());
-                Artifact more = new Artifact("lot", "d", "s", "e", "f", "g");
-                more.setAcquisitionMethod("newField");
-                adw.deleteFromDatabase(more);
-
             }
         });
 

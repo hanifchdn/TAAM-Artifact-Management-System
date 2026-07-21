@@ -46,17 +46,6 @@ public class AddItemFragment extends Fragment {
                             imageUri = uri;
                             selectedImagePreview.setImageURI(uri);
                             imageUploader = new SupabaseImageUploader(getContext());
-
-                            //TODO: Move this example call to where the add button call will be at.
-                            ImageDatabaseWriter imageDatabaseWriter = new ImageDatabaseWriter();
-                            imageDatabaseWriter.addToDatabase(imageUploader, uri, "test2", (url) -> {
-                                if (url == null) {
-                                    Log.d("tst", "oop");
-                                }
-                                else {
-                                    Log.d("tst", url);
-                                }
-                            });
                         }
                     }
             );
