@@ -1,6 +1,7 @@
 package com.example.b07demosummer2024;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,7 +43,17 @@ public class HomeFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 loadFragment(new ScrollerFragment());
-                adw.addToDatabase(new Artifact("lot2", "d", "s", "e", "f", "g"));
+                Artifact more = new Artifact("lot", "d", "s", "e", "f", "g");
+                more.setAcquisitionMethod("newField");
+                adw.addToDatabase(more);
+                CompletableFuture.runAsync(() -> {
+                    ArtifactDatabaseReader adr = new ArtifactDatabaseReader();
+                    Artifact a= adr.getItem("lot");
+                    if (a != null) {
+                        Log.d("tst", a.getCategory());
+                    }
+                    Log.d("tst", "WDSWD");
+                });
             }
         });
 
@@ -50,7 +61,9 @@ public class HomeFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 loadFragment(new SpinnerFragment());
-                adw.deleteFromDatabase(new Artifact("lot", "d", "s", "e", "f", "g"));
+                Artifact more = new Artifact("lot", "d", "s", "e", "f", "g");
+                more.setAcquisitionMethod("newField");
+                adw.deleteFromDatabase(more);
 
             }
         });
