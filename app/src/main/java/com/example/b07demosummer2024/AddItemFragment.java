@@ -37,6 +37,10 @@ public class AddItemFragment extends Fragment {
     private EditText editTextProvenance;
     private EditText editTextAccessionNumber;
     private EditText editTextNotes;
+    private Spinner spinnerCategory;
+    private Spinner spinnerMaterial;
+    private Spinner spinnerDynasty;
+
     private Uri imageUri;
     private ImageView selectedImagePreview;
     private SupabaseImageUploader imageUploader;
@@ -46,17 +50,6 @@ public class AddItemFragment extends Fragment {
                             imageUri = uri;
                             selectedImagePreview.setImageURI(uri);
                             imageUploader = new SupabaseImageUploader(getContext());
-
-                            //TODO: Move this example call to where the add button call will be at.
-                            ImageDatabaseWriter imageDatabaseWriter = new ImageDatabaseWriter();
-                            imageDatabaseWriter.addToDatabase(imageUploader, uri, "test2", (url) -> {
-                                if (url == null) {
-                                    Log.d("tst", "oop");
-                                }
-                                else {
-                                    Log.d("tst", url);
-                                }
-                            });
                         }
                     }
             );
@@ -72,6 +65,10 @@ public class AddItemFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         bindTextFields(view);
+        bindSpinners(view);
+        configureCategorySpinner();
+        configureMaterialSpinner();
+        configureDynastySpinner();
         Button buttonSelectImage = view.findViewById(R.id.buttonSelectImage);
         buttonSelectImage.setOnClickListener(v -> imageSelectionLauncher.launch("image/*"));
         selectedImagePreview = view.findViewById(R.id.selectedImagePreview);
@@ -80,9 +77,9 @@ public class AddItemFragment extends Fragment {
             String lot = editTextLot.getText().toString();
             String name = editTextArtifactName.getText().toString();
             String description = editTextDescription.getText().toString();
-            String category = "";
-            String material = "";
-            String dynasty = "";
+            String category = spinnerCategory.getSelectedItem().toString();
+            String material = spinnerMaterial.getSelectedItem().toString();
+            String dynasty = spinnerDynasty.getSelectedItem().toString();
             Artifact newArtifact = new Artifact(lot, name, description, category, material, dynasty);
             newArtifact.setHeight(editTextHeight.getText().toString());
             newArtifact.setDepth(editTextDepth.getText().toString());
@@ -99,6 +96,9 @@ public class AddItemFragment extends Fragment {
         });
     }
 
+    /**
+     * Binds EditText variables to the views in fragment_add_item.xml.
+     */
     private void bindTextFields(@NonNull View view) {
         editTextLot = view.findViewById(R.id.editTextLot);
         editTextArtifactName = view.findViewById(R.id.editTextArtifactName);
@@ -113,6 +113,45 @@ public class AddItemFragment extends Fragment {
         editTextProvenance = view.findViewById(R.id.editTextProvenance);
         editTextAccessionNumber = view.findViewById(R.id.editTextAccessionNumber);
         editTextNotes = view.findViewById(R.id.editTextNotes);
+    }
+
+    /**
+     * Binds Spinner variables to the views in fragment_add_item.xml.
+     */
+    private void bindSpinners(@NonNull View view) {
+        spinnerCategory = view.findViewById(R.id.spinnerCategory);
+        spinnerMaterial = view.findViewById(R.id.spinnerMaterial);
+        spinnerDynasty = view.findViewById(R.id.spinnerDynasty);
+    }
+
+    /**
+     * Adds choices to the category Spinner.
+     */
+    private void configureCategorySpinner() {
+        ArrayAdapter<CharSequence> categoryAdapter =
+                ArrayAdapter.createFromResource(requireContext(), R.array.artifact_categories, android.R.layout.simple_spinner_item);
+        categoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerCategory.setAdapter(categoryAdapter);
+    }
+
+    /**
+     * Adds choices to the material Spinner.
+     */
+    private void configureMaterialSpinner() {
+        ArrayAdapter<CharSequence> materialAdapter =
+                ArrayAdapter.createFromResource(requireContext(), R.array.artifact_materials, android.R.layout.simple_spinner_item);
+        materialAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerMaterial.setAdapter(materialAdapter);
+    }
+
+    /**
+     * Adds choices to the dynasty Spinner.
+     */
+    private void configureDynastySpinner() {
+        ArrayAdapter<CharSequence> dynastyAdapter =
+                ArrayAdapter.createFromResource(requireContext(), R.array.artifact_dynasties, android.R.layout.simple_spinner_item);
+        dynastyAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerDynasty.setAdapter(dynastyAdapter);
     }
 
     public EditText getEditTextLot() {
@@ -134,6 +173,7 @@ public class AddItemFragment extends Fragment {
     public EditText getEditTextAcquisitionMethod() {
         return editTextAcquisitionMethod;
     }
+
     public EditText getEditTextHeight() {
         return editTextHeight;
     }
@@ -164,6 +204,18 @@ public class AddItemFragment extends Fragment {
 
     public EditText getEditTextNotes() {
         return editTextNotes;
+    }
+
+    public Spinner getSpinnerCategory() {
+        return spinnerCategory;
+    }
+
+    public Spinner getSpinnerMaterial() {
+        return spinnerMaterial;
+    }
+
+    public Spinner getSpinnerDynasty() {
+        return spinnerDynasty;
     }
 
     public Uri getSelectedImageUri() {
