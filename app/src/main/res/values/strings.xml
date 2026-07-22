@@ -18,6 +18,7 @@
     <string name="login_icon_description">Login profile icon</string>
     <string name="login_error_placeholder">Invalid username or password</string>
     <string name="forgot_password">Forgot password?</string>
+    <string name="signupLink">Sign Up</string>
     <string name="signup">Create Account</string>
     <string name="login_redirect">Already have an account? Login</string>
 
