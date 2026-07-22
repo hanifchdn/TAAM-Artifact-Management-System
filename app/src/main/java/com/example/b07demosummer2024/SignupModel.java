@@ -34,7 +34,7 @@ public class SignupModel implements SignUpContract.Model{
             // Firebase hardcodes less than 6 characters to weak password.
         }
         if (ex instanceof FirebaseAuthInvalidCredentialsException){
-            return "Invalid email or password.";
+            return "Invalid email.";
         }
         if (ex instanceof FirebaseNetworkException){
             return "No internet connection.";
