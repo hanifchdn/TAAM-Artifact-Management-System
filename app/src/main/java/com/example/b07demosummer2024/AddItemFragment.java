@@ -72,7 +72,7 @@ public class AddItemFragment extends Fragment {
         Button buttonSelectImage = view.findViewById(R.id.buttonSelectImage);
         buttonSelectImage.setOnClickListener(v -> imageSelectionLauncher.launch("image/*"));
         selectedImagePreview = view.findViewById(R.id.selectedImagePreview);
-        Button buttonAddArtifact = view.findViewById(R.id.buttonAddItem);
+        Button buttonAddArtifact = view.findViewById(R.id.buttonAdd);
         buttonAddArtifact.setOnClickListener(v -> {
             if(!validateInputs()){
                 return;
@@ -83,32 +83,43 @@ public class AddItemFragment extends Fragment {
             String category = spinnerCategory.getSelectedItem().toString();
             String material = spinnerMaterial.getSelectedItem().toString();
             String dynasty = spinnerDynasty.getSelectedItem().toString();
-            Artifact newArtifact = new Artifact(lot, name, description, category, material, dynasty);
-            newArtifact.setHeight(editTextHeight.getText().toString());
-            newArtifact.setDepth(editTextDepth.getText().toString());
-            newArtifact.setWidth(editTextWidth.getText().toString());
-            newArtifact.setCulturalOrigin(editTextCulturalOrigin.getText().toString());
-            newArtifact.setCondition(editTextConditionReport.getText().toString());
-            newArtifact.setCurrentLocation(editTextCurrentLocation.getText().toString());
-            newArtifact.setAcquisitionMethod(editTextAcquisitionMethod.getText().toString());
-            newArtifact.setProvenance(editTextProvenance.getText().toString());
-            newArtifact.setAccessionNumber(editTextAccessionNumber.getText().toString());
-            newArtifact.setNotes(editTextNotes.getText().toString());
-            if (imageUri != null){
-                ImageDatabaseWriter imageDatabaseWriter = new ImageDatabaseWriter();
-                imageDatabaseWriter.addToDatabase(imageUploader, imageUri, lot, (url) -> {
-                    if(url != null){
-                        newArtifact.setImageUrl(url);
-                    }
-                    ArtifactDatabaseWriter  writer = new ArtifactDatabaseWriter();
+            ArtifactDatabaseReader reader = new ArtifactDatabaseReader();
+            reader.contains(lot, (isFound) ->{
+                if(isFound){
+                    Toast.makeText(getContext(), "LOT number already exists.", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                Artifact newArtifact = new Artifact(lot, name, description, category, material, dynasty);
+                newArtifact.setHeight(editTextHeight.getText().toString());
+                newArtifact.setDepth(editTextDepth.getText().toString());
+                newArtifact.setWidth(editTextWidth.getText().toString());
+                newArtifact.setCulturalOrigin(editTextCulturalOrigin.getText().toString());
+                newArtifact.setCondition(editTextConditionReport.getText().toString());
+                newArtifact.setCurrentLocation(editTextCurrentLocation.getText().toString());
+                newArtifact.setAcquisitionMethod(editTextAcquisitionMethod.getText().toString());
+                newArtifact.setProvenance(editTextProvenance.getText().toString());
+                newArtifact.setAccessionNumber(editTextAccessionNumber.getText().toString());
+                newArtifact.setNotes(editTextNotes.getText().toString());
+                if (imageUri != null){
+                    ImageDatabaseWriter imageDatabaseWriter = new ImageDatabaseWriter();
+                    imageDatabaseWriter.addToDatabase(imageUploader, imageUri, lot, (url) -> {
+                        if(url != null){
+                            newArtifact.setImageUrl(url);
+                        }
+                        ArtifactDatabaseWriter  writer = new ArtifactDatabaseWriter();
+                        writer.addToDatabase(newArtifact);
+                    });
+                }
+                else{
+                    ArtifactDatabaseWriter writer = new ArtifactDatabaseWriter();
                     writer.addToDatabase(newArtifact);
-                });
-            }
-            else{
-                ArtifactDatabaseWriter writer = new ArtifactDatabaseWriter();
-                writer.addToDatabase(newArtifact);
-            }
+                }
+            });
+
         });
+    }
+    private boolean isValidLot(String lot){
+        return lot.matches("^[a-zA-Z0-9-]+$");
     }
     private boolean validateInputs(){
         String lot = editTextLot.getText().toString().trim();
@@ -116,6 +127,10 @@ public class AddItemFragment extends Fragment {
         String description = editTextDescription.getText().toString().trim();
         if (lot.isEmpty()){
             editTextLot.setError("LOT Number is required");
+            return false;
+        }
+        if( !isValidLot(lot)){
+            editTextLot.setError("LOT Number can only contain letters, numbers, and hyphens");
             return false;
         }
         if (name.isEmpty()){
