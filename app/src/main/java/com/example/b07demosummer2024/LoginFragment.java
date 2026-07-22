@@ -12,6 +12,14 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import android.widget.EditText;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.method.LinkMovementMethod;
+import android.text.style.ClickableSpan;
+import android.text.TextPaint;
+import android.widget.TextView;
+
+
 
 
 public class LoginFragment extends Fragment {
@@ -19,6 +27,7 @@ public class LoginFragment extends Fragment {
     private boolean isPasswordVisible = false;
     private EditText usernameInput;
     private EditText passwordInput;
+    private TextView signupLink;
 
     @Nullable
     @Override
@@ -33,9 +42,14 @@ public class LoginFragment extends Fragment {
         usernameInput = view.findViewById(R.id.username_input);
         passwordInput = view.findViewById(R.id.password_input);
         loginButton = view.findViewById(R.id.loginButton);
+        signupLink = view.findViewById(R.id.signupLink);
 
         loginButton.setOnClickListener(v -> {
             loadFragment(new HomeFragment());
+        });
+
+        signupLink.setOnClickListener(v -> {
+            loadFragment(new SignupFragment());
         });
 
         passwordInput.setOnTouchListener((v, event) -> {
