@@ -140,6 +140,9 @@ public class AddItemFragment extends Fragment {
         String lot = editTextLot.getText().toString().trim();
         String name = editTextArtifactName.getText().toString().trim();
         String description = editTextDescription.getText().toString().trim();
+        String category = spinnerCategory.getSelectedItem().toString();
+        String material = spinnerMaterial.getSelectedItem().toString();
+        String dynasty = spinnerDynasty.getSelectedItem().toString();
         if (lot.isEmpty()){
             editTextLot.setError("LOT Number is required");
             return false;
@@ -154,6 +157,18 @@ public class AddItemFragment extends Fragment {
         }
         if (description.isEmpty()){
             editTextDescription.setError("Description is required");
+            return false;
+        }
+        if (category.equals("Select category")){
+            Toast.makeText(requireContext(), "Please select a category.", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        if (material.equals("Select material")){
+            Toast.makeText(requireContext(), "Please select a material.", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        if (dynasty.equals("Select dynasty/period")){
+            Toast.makeText(requireContext(), "Please select a dynasty/period.", Toast.LENGTH_SHORT).show();
             return false;
         }
         return true;
