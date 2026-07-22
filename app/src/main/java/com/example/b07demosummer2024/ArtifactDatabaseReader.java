@@ -23,19 +23,21 @@ import java.util.concurrent.ExecutionException;
  * prevent the UI thread from being blocked and a RuntimeException to occur
  *
  */
-public class ArtifactDatabaseReader implements DatabaseReader {
+public class ArtifactDatabaseReader {
 
-
+    public interface GetArtifactReaderCallback {
+        void getArtifactCallback(Artifact artifact);
+    }
+    public interface ContainsReaderCallback {
+        void containsCallback(boolean contains);
+    }
     private FirebaseDatabase db;
     private DatabaseReference dbReference;
 
     private Artifact artifactReference;
 
     /**
-     * Allows for easy Reading to the db using the Artifact class. MUST be wrapped in async function or be ran in a different thread
-     *
-     * When reading from this class, it must be done in a different thread than the UI thread to
-     * prevent the UI thread from being blocked and a RuntimeException to occur.
+     * Allows for reading from the db using the Artifact class.
      *
      */
     public ArtifactDatabaseReader() {
@@ -46,40 +48,31 @@ public class ArtifactDatabaseReader implements DatabaseReader {
     /**
      *Gets am Artifact from the database
      *
-     * MUST be used within a async caller such as an event listener or a CompletableFuture.supplyAsync()
-     * or in a new thread to prevent a runtime error. Returns the Artifact using the LOT if found, if not found or error
-     * returns null
-     *
      * @param LOT The LOT of Artifact
-     *
+     * @param callback an async function that will be called once done
      */
-    @Override
-    public Artifact getItem(String LOT) {
+    public void getItem(String LOT, GetArtifactReaderCallback callback) {
         try {
-            Task<DataSnapshot> task = dbReference.child(LOT).get();
-            DataSnapshot data = Tasks.await(task);
-            if (data.getValue() != null) {
-                return data.getValue(Artifact.class);
-            }
+            dbReference.child(LOT).get().addOnCompleteListener((dataSnapshotTask) -> {
+                callback.getArtifactCallback(dataSnapshotTask.getResult().getValue(Artifact.class));
+            });
         }
         catch (Exception e) {
-            return null;
+            callback.getArtifactCallback(null);
         }
-        return null;
     }
 
     /**
      *Returns if a LOT number is found
      *
-     * MUST be used within a async caller such as an event listener or a CompletableFuture.supplyAsync()
-     * or in a new thread to prevent a runtime error. Returns a boolean value of if the LOT number is found.
      *
      * @param  LOT The LOT of the artifact
+     * @param callback an async function that will be called once done
      *
      */
-    @Override
-    public boolean contains(String LOT) {
-        getItem(LOT);
-        return (artifactReference != null);
+    public void contains(String LOT, ContainsReaderCallback callback) {
+        getItem(LOT, (Artifact a) -> {
+            callback.containsCallback(a != null);
+        });
     }
 }
