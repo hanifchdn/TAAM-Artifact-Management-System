@@ -13,12 +13,15 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.widget.EditText;
+import android.widget.TextView;
 
 
 public class SignupFragment extends Fragment {
     private Button signupButton;
     private boolean isPasswordVisible = false;
     private EditText usernameInput, emailInput, passwordInput, confirmPasswordInput;
+    private TextView loginLink;
+
 
     @Nullable
     @Override
@@ -34,6 +37,11 @@ public class SignupFragment extends Fragment {
         emailInput = view.findViewById(R.id.signup_email_input);
         signupButton = view.findViewById(R.id.signupButton);
         confirmPasswordInput = view.findViewById(R.id.signup_confirm_password);
+        loginLink = view.findViewById(R.id.loginLink);
+
+        loginLink.setOnClickListener(v -> {
+            loadFragment(new LoginFragment());
+        });
 
         passwordInput.setOnTouchListener((v, event) -> {
             final int DRAWABLE_END = 2;
