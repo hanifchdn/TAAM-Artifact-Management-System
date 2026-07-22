@@ -13,4 +13,14 @@ public interface SignUpContract {
     interface Presenter extends BaseContract.Presenter{
         void signUp(String email, String password, String confirmPassword);
     }
+
+    interface Model{
+        void signUp(String email, String password, Authcallback callback);
+
+        interface Authcallback{
+            void onSuccess(String uid);
+            void onFailure(String message);
+        }
+
+    }
 }
