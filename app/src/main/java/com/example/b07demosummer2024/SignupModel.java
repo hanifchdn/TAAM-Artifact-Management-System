@@ -8,6 +8,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -18,25 +19,39 @@ public class SignupModel implements SignUpContract.Model{
     public void signUp(String email, String password, Authcallback callback){
         auth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(task ->  {
-                    if (task.isSuccessful()) {
-                        String uid = auth.getUid();
-                        db.child(uid).setValue(new User(email, uid, false))
-                                .addOnCompleteListener(dbTask -> {
-                                if (dbTask.isSuccessful()) {
-                                    callback.onSuccess(uid);
-                                }
-                                else {
-                                    callback.onFailure(checkDBError(dbTask.getException()));
-                                }
-                            });
-                    }
-                    else {
+                    if (!task.isSuccessful()){
                         callback.onFailure(checkError(task.getException()));
+                        return;
                     }
+
+                    String uid = auth.getUid();
+                    db.child(uid).setValue(new User(email, uid, false))
+                            .addOnCompleteListener(dbTask -> {
+                            if (dbTask.isSuccessful()) {
+                                callback.onSuccess(uid);
+                            }
+                            else {
+                                FirebaseUser user = auth.getCurrentUser();
+                                if (user == null) {
+                                    callback.onFailure(checkDBError(dbTask.getException()));
+                                    return;
+                                }
+                                user.delete().addOnCompleteListener(delTask -> {
+                                    if (delTask.isSuccessful()) {
+                                        Log.e("SIGNUP", "Profile write failed", dbTask.getException());
+                                        callback.onFailure("Could not complete signup.");
+                                    } else {
+                                        Log.e("SIGNUP", "Profile write failed AND rollback failed", delTask.getException());
+                                        callback.onFailure("Something went wrong.");
+                                    }
+                                });
+                            }
+                        });
             });
     }
 
     private String checkDBError(Exception ex) {
+
         Log.e("SIGNUP", "reason", ex);
         return "Something went wrong.";
     }
