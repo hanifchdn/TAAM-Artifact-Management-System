@@ -18,6 +18,7 @@ import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.text.TextPaint;
 import android.widget.TextView;
+import android.widget.ProgressBar;
 
 
 
@@ -28,6 +29,7 @@ public class LoginFragment extends Fragment {
     private EditText usernameInput;
     private EditText passwordInput;
     private TextView signupLink;
+    private ProgressBar loginProgressBar;
 
     @Nullable
     @Override
@@ -43,9 +45,17 @@ public class LoginFragment extends Fragment {
         passwordInput = view.findViewById(R.id.password_input);
         loginButton = view.findViewById(R.id.loginButton);
         signupLink = view.findViewById(R.id.signupLink);
+        loginProgressBar = view.findViewById(R.id.loginProgressBar);
 
         loginButton.setOnClickListener(v -> {
-            loadFragment(new HomeFragment());
+            setLoading(true);
+
+            // TODO: Perform login request here
+
+            loginButton.postDelayed(() -> {
+                setLoading(false);
+                loadFragment(new HomeFragment());
+            }, 1500);
         });
 
         signupLink.setOnClickListener(v -> {
@@ -64,6 +74,25 @@ public class LoginFragment extends Fragment {
             }
             return false;
         });
+    }
+
+    /**
+     * Make buttons inactive when login request is running
+     */
+    private void setLoading(boolean isLoading) {
+        if (isLoading) {
+            loginProgressBar.setVisibility(View.VISIBLE);
+            loginButton.setEnabled(false);
+            usernameInput.setEnabled(false);
+            passwordInput.setEnabled(false);
+            signupLink.setEnabled(false);
+        } else {
+            loginProgressBar.setVisibility(View.GONE);
+            loginButton.setEnabled(true);
+            usernameInput.setEnabled(true);
+            passwordInput.setEnabled(true);
+            signupLink.setEnabled(true);
+        }
     }
 
     private void togglePasswordVisibility() {
