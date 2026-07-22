@@ -10,10 +10,10 @@ public class User {
 
     }
 
-    public User(String username, String email, String uid) {
+    public User(String email, String uid, boolean isAdmin) {
         this.email = email;
         this.uid = uid;
-        this.isAdmin = false;
+        this.isAdmin = isAdmin;
     }
     public String getUid(){
         return uid;

@@ -1,7 +1,6 @@
 package com.example.b07demosummer2024;
 
 import android.util.Log;
-import android.widget.Toast;
 
 import com.google.firebase.FirebaseNetworkException;
 import com.google.firebase.FirebaseTooManyRequestsException;
@@ -9,20 +8,37 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
-import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 public class SignupModel implements SignUpContract.Model{
     private final FirebaseAuth auth = FirebaseAuth.getInstance();
+    private final DatabaseReference db = FirebaseDatabase.getInstance().getReference("users");
     @Override
     public void signUp(String email, String password, Authcallback callback){
         auth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(task ->  {
                     if (task.isSuccessful()) {
-                        callback.onSuccess(auth.getUid());
-                    } else {
+                        String uid = auth.getUid();
+                        db.child(uid).setValue(new User(email, uid, false))
+                                .addOnCompleteListener(dbTask -> {
+                                if (dbTask.isSuccessful()) {
+                                    callback.onSuccess(uid);
+                                }
+                                else {
+                                    callback.onFailure(checkDBError(dbTask.getException()));
+                                }
+                            });
+                    }
+                    else {
                         callback.onFailure(checkError(task.getException()));
                     }
             });
+    }
+
+    private String checkDBError(Exception ex) {
+        Log.e("SIGNUP", "reason", ex);
+        return "Something went wrong.";
     }
 
     private String checkError(Exception ex) {
