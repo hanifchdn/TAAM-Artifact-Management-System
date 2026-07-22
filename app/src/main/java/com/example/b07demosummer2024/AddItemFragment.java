@@ -106,15 +106,30 @@ public class AddItemFragment extends Fragment {
                         if(url != null){
                             newArtifact.setImageUrl(url);
                         }
-                        ArtifactDatabaseWriter  writer = new ArtifactDatabaseWriter();
-                        writer.addToDatabase(newArtifact);
+                        else{
+                            Toast.makeText(requireContext(), "Image upload failed.", Toast.LENGTH_SHORT).show();
+                        }
+                        writeArtifact(newArtifact);
                     });
                 }
                 else{
-                    ArtifactDatabaseWriter writer = new ArtifactDatabaseWriter();
-                    writer.addToDatabase(newArtifact);
+                    writeArtifact(newArtifact);
                 }
             });
+
+        });
+    }
+    private void writeArtifact(Artifact artifact){
+        ArtifactDatabaseWriter  writer = new ArtifactDatabaseWriter();
+        writer.addToDatabase(artifact, new WriteCallback() {
+            @Override
+            public void onSuccess(){
+                Toast.makeText(requireContext(), "Artifact added successfully.", Toast.LENGTH_SHORT).show();
+            }
+            @Override
+            public void onFailure(String e){
+                Toast.makeText(requireContext(), "Failed to add artifact: " + e, Toast.LENGTH_SHORT).show();
+            }
 
         });
     }
