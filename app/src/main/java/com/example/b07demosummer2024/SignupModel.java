@@ -26,6 +26,23 @@ public class SignupModel implements SignUpContract.Model{
     }
 
     private String checkError(Exception ex) {
-        return "";
+        if (ex instanceof FirebaseAuthUserCollisionException){
+            return "User already exist.";
+        }
+        if (ex instanceof FirebaseAuthWeakPasswordException){
+            return "Password is too weak.";
+            // Firebase hardcodes less than 6 characters to weak password.
+        }
+        if (ex instanceof FirebaseAuthInvalidCredentialsException){
+            return "Invalid email or password.";
+        }
+        if (ex instanceof FirebaseNetworkException){
+            return "No internet connection.";
+        }
+        if (ex instanceof FirebaseTooManyRequestsException){
+            return "Try again later.";
+        }
+        Log.e("AUTH", "reason", ex);
+        return "Something went wrong.";
     }
 }
