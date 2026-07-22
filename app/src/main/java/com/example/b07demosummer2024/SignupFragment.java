@@ -2,33 +2,38 @@ package com.example.b07demosummer2024;
 
 import android.os.Bundle;
 import android.text.InputType;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
-
-import androidx.appcompat.app.AppCompatActivity;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
+import android.widget.EditText;
 
-public class SignupPage extends AppCompatActivity {
+
+public class SignupFragment extends Fragment {
     private Button signupButton;
     private boolean isPasswordVisible = false;
     private EditText usernameInput, emailInput, passwordInput, confirmPasswordInput;
 
-
+    @Nullable
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.signup_page);
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.fragment_signup, container, false);
+    }
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
 
-        usernameInput = findViewById(R.id.signup_username_input);
-        passwordInput = findViewById(R.id.signup_password_input);
-        emailInput = findViewById(R.id.signup_email_input);
-        signupButton = findViewById(R.id.signupButton);
-        confirmPasswordInput = findViewById(R.id.signup_confirm_password);
+        usernameInput = view.findViewById(R.id.signup_username_input);
+        passwordInput = view.findViewById(R.id.signup_password_input);
+        emailInput = view.findViewById(R.id.signup_email_input);
+        signupButton = view.findViewById(R.id.signupButton);
+        confirmPasswordInput = view.findViewById(R.id.signup_confirm_password);
 
         passwordInput.setOnTouchListener((v, event) -> {
             final int DRAWABLE_END = 2;
@@ -56,4 +61,10 @@ public class SignupPage extends AppCompatActivity {
         passwordInput.setSelection(cursorPosition);
     }
 
+    private void loadFragment(Fragment fragment) {
+        FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
+        transaction.replace(R.id.fragment_container, fragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
+    }
 }
