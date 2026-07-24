@@ -31,13 +31,28 @@ public class ArtifactDatabaseWriter implements DatabaseAdder, DatabaseDeleter, D
      * @param item the Artifact to add to database.
      *
      */
+
     @Override
-    public void addToDatabase(DatabaseItem item) {
+    public void addToDatabase(DatabaseItem item, WriteCallback callback) {
         if (!(item instanceof Artifact)) {
+            if(callback != null){
+                callback.onFailure("Item is not an artifact");
+                return;
+            }
             return;
         }
         Artifact artifact = (Artifact) item;
-        dbReference.child(artifact.getLOT()).setValue(artifact);
+        dbReference.child(artifact.getLOT()).setValue(artifact)
+                .addOnSuccessListener( a -> {
+                    if(callback != null){
+                        callback.onSuccess();
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    if(callback != null){
+                        callback.onFailure(e.getMessage());
+                    }
+                });
 
     }
 
