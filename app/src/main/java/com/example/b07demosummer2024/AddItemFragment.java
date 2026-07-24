@@ -72,9 +72,107 @@ public class AddItemFragment extends Fragment {
         Button buttonSelectImage = view.findViewById(R.id.buttonSelectImage);
         buttonSelectImage.setOnClickListener(v -> imageSelectionLauncher.launch("image/*"));
         selectedImagePreview = view.findViewById(R.id.selectedImagePreview);
-        Button buttonAddArtifact = view.findViewById(R.id.buttonAddItem);
-    }
+        Button buttonAddArtifact = view.findViewById(R.id.buttonAdd);
+        buttonAddArtifact.setOnClickListener(v -> {
+            if(!validateInputs()){
+                return;
+            }
+            String lot = editTextLot.getText().toString();
+            String name = editTextArtifactName.getText().toString();
+            String description = editTextDescription.getText().toString();
+            String category = spinnerCategory.getSelectedItem().toString();
+            String material = spinnerMaterial.getSelectedItem().toString();
+            String dynasty = spinnerDynasty.getSelectedItem().toString();
+            ArtifactDatabaseReader reader = new ArtifactDatabaseReader();
+            reader.contains(lot, (isFound) ->{
+                if(isFound){
+                    Toast.makeText(getContext(), "LOT number already exists.", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                Artifact newArtifact = new Artifact(lot, name, description, category, material, dynasty);
+                newArtifact.setHeight(editTextHeight.getText().toString());
+                newArtifact.setDepth(editTextDepth.getText().toString());
+                newArtifact.setWidth(editTextWidth.getText().toString());
+                newArtifact.setCulturalOrigin(editTextCulturalOrigin.getText().toString());
+                newArtifact.setCondition(editTextConditionReport.getText().toString());
+                newArtifact.setCurrentLocation(editTextCurrentLocation.getText().toString());
+                newArtifact.setAcquisitionMethod(editTextAcquisitionMethod.getText().toString());
+                newArtifact.setProvenance(editTextProvenance.getText().toString());
+                newArtifact.setAccessionNumber(editTextAccessionNumber.getText().toString());
+                newArtifact.setNotes(editTextNotes.getText().toString());
+                if (imageUri != null){
+                    ImageDatabaseWriter imageDatabaseWriter = new ImageDatabaseWriter();
+                    imageDatabaseWriter.addToDatabase(imageUploader, imageUri, lot, (url) -> {
+                        if(url != null){
+                            newArtifact.setImageUrl(url);
+                        }
+                        else{
+                            Toast.makeText(requireContext(), "Image upload failed.", Toast.LENGTH_SHORT).show();
+                        }
+                        writeArtifact(newArtifact);
+                    });
+                }
+                else{
+                    writeArtifact(newArtifact);
+                }
+            });
 
+        });
+    }
+    private void writeArtifact(Artifact artifact){
+        ArtifactDatabaseWriter  writer = new ArtifactDatabaseWriter();
+        writer.addToDatabase(artifact, new WriteCallback() {
+            @Override
+            public void onSuccess(){
+                Toast.makeText(requireContext(), "Artifact added successfully.", Toast.LENGTH_SHORT).show();
+            }
+            @Override
+            public void onFailure(String e){
+                Toast.makeText(requireContext(), "Failed to add artifact: " + e, Toast.LENGTH_SHORT).show();
+            }
+
+        });
+    }
+    private boolean isValidLot(String lot){
+        return lot.matches("^[a-zA-Z0-9-]+$");
+    }
+    private boolean validateInputs(){
+        String lot = editTextLot.getText().toString().trim();
+        String name = editTextArtifactName.getText().toString().trim();
+        String description = editTextDescription.getText().toString().trim();
+        String category = spinnerCategory.getSelectedItem().toString();
+        String material = spinnerMaterial.getSelectedItem().toString();
+        String dynasty = spinnerDynasty.getSelectedItem().toString();
+        if (lot.isEmpty()){
+            editTextLot.setError("LOT Number is required");
+            return false;
+        }
+        if( !isValidLot(lot)){
+            editTextLot.setError("LOT Number can only contain letters, numbers, and hyphens");
+            return false;
+        }
+        if (name.isEmpty()){
+            editTextArtifactName .setError("Name is required");
+            return false;
+        }
+        if (description.isEmpty()){
+            editTextDescription.setError("Description is required");
+            return false;
+        }
+        if (category.equals("Select category")){
+            Toast.makeText(requireContext(), "Please select a category.", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        if (material.equals("Select material")){
+            Toast.makeText(requireContext(), "Please select a material.", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        if (dynasty.equals("Select dynasty/period")){
+            Toast.makeText(requireContext(), "Please select a dynasty/period.", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        return true;
+    }
     /**
      * Binds EditText variables to the views in fragment_add_item.xml.
      */

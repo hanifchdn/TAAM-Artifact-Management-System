@@ -15,7 +15,10 @@ public class Artifact implements DatabaseItem{
     private String material;
     private String dynasty;
     private String culturalOrigin;
-    private String diameter;
+    private String height;
+    private String width;
+    private String depth;
+
     private String condition;
     private String currentLocation;
     private String acquisitionMethod;
@@ -90,13 +93,25 @@ public class Artifact implements DatabaseItem{
         this.culturalOrigin = culturalOrigin;
     }
 
-    public String getDiameter() {
-        return diameter;
+    public String getHeight(){
+        return height;
+    }
+    public void setHeight(String height){
+        this.height = height;
+    }
+    public String getWidth(){
+        return width;
+    }
+    public void setWidth(String width){
+        this.width = width;
+    }
+    public String getDepth(){
+        return depth;
+    }
+    public void setDepth(String depth){
+        this.depth = depth;
     }
 
-    public void setDiameter(String diameter) {
-        this.diameter = diameter;
-    }
 
     public String getCondition() {
         return condition;
