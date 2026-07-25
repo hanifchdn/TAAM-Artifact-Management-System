@@ -9,6 +9,11 @@
     <string name="scroller">Scroller</string>
     <string name="spinner">Spinner</string>
     <string name="manage_items">Manage Items</string>
+    <string name="search_hint">Search</string>
+    <string name="logout">Logout</string>
+    <string name="saved_artifacts">Saved Artifacts</string>
+    <string name="add_artifact">Add Artifact</string>
+    <string name="home_title">Home</string>
 
     <string-array name="categories_array">
         <item>Books</item>
