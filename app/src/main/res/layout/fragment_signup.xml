@@ -105,11 +105,11 @@
             />
 
         <TextView
-            android:id="@+id/loginErrorText"
+            android:id="@+id/signupErrorText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:text="@string/login_error_placeholder"
+            android:text="@string/signup_error_placeholder"
             android:textColor="#F44336"
             android:textSize="14sp"
             android:visibility="gone"

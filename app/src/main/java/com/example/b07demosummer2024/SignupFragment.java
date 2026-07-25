@@ -21,6 +21,7 @@ public class SignupFragment extends Fragment {
     private boolean isPasswordVisible = false;
     private EditText usernameInput, emailInput, passwordInput, confirmPasswordInput;
     private TextView loginLink;
+    private TextView signupErrorText;
 
 
     @Nullable
@@ -38,6 +39,11 @@ public class SignupFragment extends Fragment {
         signupButton = view.findViewById(R.id.signupButton);
         confirmPasswordInput = view.findViewById(R.id.signup_confirm_password);
         loginLink = view.findViewById(R.id.loginLink);
+        signupErrorText = view.findViewById(R.id.signupErrorText);
+
+        signupButton.setOnClickListener(v -> {
+            // Connect to SignupPresenter when possible
+        });
 
         loginLink.setOnClickListener(v -> {
             loadFragment(new LoginFragment());
@@ -56,6 +62,15 @@ public class SignupFragment extends Fragment {
             return false;
         });
 
+    }
+
+    public void showSignupError(String message) {
+        signupErrorText.setText(message);
+        signupErrorText.setVisibility(View.VISIBLE);
+    }
+
+    public void clearSignupError() {
+        signupErrorText.setVisibility(View.GONE);
     }
 
     private void togglePasswordVisibility() {
