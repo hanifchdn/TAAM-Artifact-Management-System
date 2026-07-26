@@ -7,7 +7,7 @@ public interface SignUpContract {
         void showEmptyConfirmPasswordError();
         void showInvalidEmailFormatError();
         void showPasswordMismatchError();
-        void showSignUpFailedError();
+        void showSignUpFailedError(String message);
         void navigateToHome();
     }
     interface Presenter extends BaseContract.Presenter{
