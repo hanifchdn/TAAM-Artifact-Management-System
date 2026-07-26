@@ -13,16 +13,24 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 
-public class SignupFragment extends Fragment {
+public class SignupFragment extends Fragment implements SignUpContract.View {
     private Button signupButton;
-    private boolean isPasswordVisible = false;
-    private EditText usernameInput, emailInput, passwordInput, confirmPasswordInput;
+    private EditText usernameInput;
+    private EditText emailInput;
+    private EditText passwordInput;
+    private EditText confirmPasswordInput;
     private TextView loginLink;
     private TextView signupErrorText;
+    private ProgressBar signupProgressBar;
 
+    private boolean isPasswordVisible = false;
+
+
+    private SignUpContract.Presenter presenter;
 
     @Nullable
     @Override
@@ -33,6 +41,9 @@ public class SignupFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        /**
+         * Binds variables from xml layout to java
+         */
         usernameInput = view.findViewById(R.id.signup_username_input);
         passwordInput = view.findViewById(R.id.signup_password_input);
         emailInput = view.findViewById(R.id.signup_email_input);
@@ -40,13 +51,20 @@ public class SignupFragment extends Fragment {
         confirmPasswordInput = view.findViewById(R.id.signup_confirm_password);
         loginLink = view.findViewById(R.id.loginLink);
         signupErrorText = view.findViewById(R.id.signupErrorText);
+        signupProgressBar = view.findViewById(R.id.signupProgressBar);
+
+        presenter = new SignUpPresenter(this, new SignupModel());
 
         signupButton.setOnClickListener(v -> {
-            // Connect to SignupPresenter when possible
+            clearSignupError();
+            String email = emailInput.getText().toString().trim();
+            String password = passwordInput.getText().toString();
+            String confirmPassword = confirmPasswordInput.getText().toString();
+            presenter.signUp(email, password, confirmPassword);
         });
 
         loginLink.setOnClickListener(v -> {
-            loadFragment(new LoginFragment());
+            loadFragment(new LoginFragment(), true);
         });
 
         passwordInput.setOnTouchListener((v, event) -> {
@@ -64,15 +82,6 @@ public class SignupFragment extends Fragment {
 
     }
 
-    public void showSignupError(String message) {
-        signupErrorText.setText(message);
-        signupErrorText.setVisibility(View.VISIBLE);
-    }
-
-    public void clearSignupError() {
-        signupErrorText.setVisibility(View.GONE);
-    }
-
     private void togglePasswordVisibility() {
         isPasswordVisible = !isPasswordVisible;
         int cursorPosition = passwordInput.getSelectionEnd();
@@ -84,10 +93,89 @@ public class SignupFragment extends Fragment {
         passwordInput.setSelection(cursorPosition);
     }
 
-    private void loadFragment(Fragment fragment) {
+    private void loadFragment(Fragment fragment, boolean addToBackStack) {
         FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
         transaction.replace(R.id.fragment_container, fragment);
-        transaction.addToBackStack(null);
+        if (addToBackStack) transaction.addToBackStack(null);
         transaction.commit();
+    }
+
+    public void clearSignupError() {
+        signupErrorText.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void showLoadingIndicator() {
+        signupProgressBar.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideLoadingIndicator() {
+        signupProgressBar.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void disableButton() {
+        signupButton.setEnabled(false);
+        usernameInput.setEnabled(false);
+        emailInput.setEnabled(false);
+        passwordInput.setEnabled(false);
+        confirmPasswordInput.setEnabled(false);
+        loginLink.setEnabled(false);
+    }
+
+    @Override
+    public void enableButton() {
+        signupButton.setEnabled(true);
+        usernameInput.setEnabled(true);
+        emailInput.setEnabled(true);
+        passwordInput.setEnabled(true);
+        confirmPasswordInput.setEnabled(true);
+        loginLink.setEnabled(true);
+    }
+
+    @Override
+    public void showEmptyEmailError() {
+        showSignUpFailedError("Email cannot be empty.");
+    }
+
+    @Override
+    public void showEmptyPasswordError() {
+        showSignUpFailedError("Password cannot be empty.");
+    }
+
+    @Override
+    public void showEmptyConfirmPasswordError() {
+        showSignUpFailedError("Please confirm your password.");
+    }
+
+    @Override
+    public void showInvalidEmailFormatError() {
+        showSignUpFailedError("Please enter a valid email.");
+    }
+
+    @Override
+    public void showPasswordMismatchError() {
+        showSignUpFailedError("Passwords do not match.");
+    }
+
+    @Override
+    public void showSignUpFailedError(String message) {
+        signupErrorText.setText(message);
+        signupErrorText.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void navigateToHome() {
+        loadFragment(new HomeFragment(), false);
+    }
+
+    @Override
+    public void onDestroyView() {
+        if (presenter != null) {
+            presenter.onDestroy();
+            presenter = null;
+        }
+        super.onDestroyView();
     }
 }

@@ -25,12 +25,14 @@ import android.widget.ProgressBar;
 
 public class LoginFragment extends Fragment implements LoginContract.View {
     private Button loginButton;
-    private boolean isPasswordVisible = false;
     private EditText usernameInput;
     private EditText passwordInput;
     private TextView signupLink;
-    private ProgressBar loginProgressBar;
     private TextView loginErrorText;
+    private ProgressBar loginProgressBar;
+
+    private boolean isPasswordVisible = false;
+
 
     private LoginContract.Presenter presenter;
 
@@ -160,6 +162,7 @@ public class LoginFragment extends Fragment implements LoginContract.View {
     public void navigateToHome() {
         loadFragment(new HomeFragment(), false);
     }
+
     @Override
     public void onDestroyView() {
         if (presenter != null) {
