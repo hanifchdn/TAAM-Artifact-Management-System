@@ -30,6 +30,7 @@ public class LoginFragment extends Fragment {
     private EditText passwordInput;
     private TextView signupLink;
     private ProgressBar loginProgressBar;
+    private TextView loginErrorText;
 
     @Nullable
     @Override
@@ -46,6 +47,7 @@ public class LoginFragment extends Fragment {
         loginButton = view.findViewById(R.id.loginButton);
         signupLink = view.findViewById(R.id.signupLink);
         loginProgressBar = view.findViewById(R.id.loginProgressBar);
+        loginErrorText = view.findViewById(R.id.loginErrorText);
 
         loginButton.setOnClickListener(v -> {
             setLoading(true);
@@ -74,6 +76,15 @@ public class LoginFragment extends Fragment {
             }
             return false;
         });
+    }
+
+    public void showLoginError(String message) {
+        loginErrorText.setText(message);
+        loginErrorText.setVisibility(View.VISIBLE);
+    }
+
+    public void clearLoginError() {
+        loginErrorText.setVisibility(View.GONE);
     }
 
     /**
