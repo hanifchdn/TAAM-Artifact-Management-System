@@ -31,14 +31,27 @@ public class LoginPresenter implements LoginContract.Presenter {
             return;
         }
 
+        view.showLoadingIndicator();
+        view.disableButton();
+
         model.login(email, password, new LoginContract.Model.AuthCallback() {
             @Override
             public void onSuccess(String uid) {
-                // To be implemented
+                if (view == null) {
+                    return;
+                }
+                view.hideLoadingIndicator();
+                view.enableButton();
+                view.navigateToHome();
             }
             @Override
             public void onFailure(String message) {
-                // To be implemented
+                if (view == null) {
+                    return;
+                }
+                view.hideLoadingIndicator();
+                view.enableButton();
+                view.showLoginError(message);
             }
         });
     }
