@@ -6,7 +6,7 @@ public interface LoginContract {
         void showEmptyPasswordError();
         void showInvalidEmailFormatError();
         void navigateToHome();
-        void showLoginError();
+        void showLoginError(String message);
     }
     interface Presenter extends BaseContract.Presenter{
         void login(String email, String password);
