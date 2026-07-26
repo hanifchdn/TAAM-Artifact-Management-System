@@ -24,18 +24,41 @@ import java.util.concurrent.ExecutionException;
  */
 public class ArtifactDatabaseReader {
 
+    /**
+     * Interface for GetItem callback
+     */
     public interface GetArtifactItemCallback {
+        /**
+         * On Firebase read success, returns the artifact as a param
+         * @param artifact returned artifact
+         */
         void onSuccess(Artifact artifact);
+        /**
+         * On Firebase read failure, return error message
+         * @param errorMessage Firebase error message
+         */
         void onFailure(String errorMessage);
     }
-    public interface ContainsArtifactItemCallback {
-        void onSuccess(boolean contains);
-        void onFailure(String errorMessage);
-    }
-    private FirebaseDatabase db;
-    private DatabaseReference dbReference;
 
-    private Artifact artifactReference;
+    /**
+     * Interface for contains method callback
+     */
+    public interface ContainsArtifactItemCallback {
+        /**
+         * On Firebase read success, returns the artifact as a param
+         * @param contains boolean if a artifact with that LOT exists
+         */
+        void onSuccess(boolean contains);
+        /**
+         * On Firebase read failure, return error message
+         * @param errorMessage Firebase error message
+         */
+        void onFailure(String errorMessage);
+    }
+    private FirebaseDatabase db; //firebase db object
+    private DatabaseReference dbReference; //db reference that can read/write artifacts
+
+
     public ArtifactDatabaseReader() {
         db = FirebaseDatabase.getInstance("https://taam-artifact-storage-system-default-rtdb.firebaseio.com/");
         dbReference = db.getReference("artifacts");
@@ -64,12 +87,9 @@ public class ArtifactDatabaseReader {
     }
 
     /**
-     *Returns if a LOT number is found
-     *
-     *
+     *Returns if a LOT number is found in the database
      * @param  LOT The LOT of the artifact
      * @param callback an async function that will be called once done
-     *
      */
     public void contains(String LOT, ContainsArtifactItemCallback callback) {
         getItem(LOT, new GetArtifactItemCallback() {
