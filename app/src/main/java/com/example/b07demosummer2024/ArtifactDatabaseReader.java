@@ -14,6 +14,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.concurrent.ExecutionException;
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -40,6 +42,16 @@ public class ArtifactDatabaseReader {
         void onFailure(String errorMessage);
     }
 
+    /**
+     * Interface for receiving list of artifacts
+     */
+    public interface GetArtifactListReaderCallback{
+        /**
+         * Called when the artifact list has been successfully retrieved.
+         * @param artifacts the list of retrieved artifacts
+         */
+        void getArtifactListCallback(List<Artifact> artifacts);
+    }
     /**
      * Interface for contains method callback
      */
@@ -84,6 +96,27 @@ public class ArtifactDatabaseReader {
         catch (Exception e) {
             callback.onFailure("A critical error has occurred. Please try again later.");
         }
+    }
+
+    /**
+     * Retrieves all artifacts from database.
+     * If the database operation succeeds, the callback receives a list containing all
+     * retrieved artifacts. If the operation fails, the callback receives null.
+     * @param callback is called when the database operation completes.
+     */
+    public void getArtifactList(GetArtifactListReaderCallback callback){
+        dbReference.get().addOnSuccessListener(dataSnapshot -> {
+            List<Artifact> artifacts = new ArrayList<>();
+            for (DataSnapshot child: dataSnapshot.getChildren()){
+                Artifact artifact = child.getValue(Artifact.class);
+                if(artifact != null){
+                    artifacts.add(artifact);
+                }
+            }
+            callback.getArtifactListCallback(artifacts);
+        }).addOnFailureListener(e -> {
+            callback.getArtifactListCallback(null);
+        });
     }
 
     /**
