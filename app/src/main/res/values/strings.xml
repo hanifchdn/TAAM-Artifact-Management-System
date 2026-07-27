@@ -1,5 +1,88 @@
 <resources>
     <string name="app_name">Artifact Collection</string>
+
+    <!-- Form title -->
+    <string name="add_artifact_title">Add Artifact</string>
+
+    <!-- Text-field hints -->
+    <string name="lot_hint">LOT number</string>
+    <string name="artifact_name_hint">Artifact name</string>
+    <string name="description_hint">Description</string>
+    <string name="dynasty_hint">Dynasty or period</string>
+    <string name="cultural_origin_hint">Cultural origin</string>
+    <string name="dimensions_label">Dimensions</string>
+    <string name="height_hint">Height</string>
+    <string name="width_hint">Width</string>
+    <string name="depth_hint">Depth</string>
+    <string name="condition_report_hint">Condition report</string>
+    <string name="current_location_hint">Current location</string>
+    <string name="acquisition_method_hint">Acquisition method</string>
+    <string name="provenance_hint">Provenance</string>
+    <string name="accession_number_hint">Accession number</string>
+    <string name="notes_hint">Additional notes</string>
+    <string name="select_image_description">Select an image</string>
+    <string name="select_image_button">Select Image</string>
+
+    <!-- Category dropdown -->
+    <string-array name="artifact_categories">
+        <item>Select category</item>
+        <item>Painting and Calligraphy</item>
+        <item>Ceramics</item>
+        <item>Bronze Ware</item>
+        <item>Lacquerware</item>
+        <item>Jade Ware</item>
+        <item>Enamel Ware</item>
+        <item>Glassware</item>
+        <item>Furniture</item>
+        <item>Embroidery and Textiles</item>
+        <item>Documents and Archives</item>
+        <item>Gold and Silverware</item>
+        <item>Clocks and Watches</item>
+        <item>Religious Artifacts</item>
+        <item>Daily-use Items</item>
+        <item>Weaponry</item>
+        <item>Miscellaneous Artifacts</item>
+    </string-array>
+
+    <!-- Material dropdown -->
+    <string-array name="artifact_materials">
+        <item>Select material</item>
+        <item>Bronze</item>
+        <item>Stone</item>
+        <item>Wood</item>
+        <item>Jade</item>
+        <item>Ceramic</item>
+        <item>Lacquerware</item>
+        <item>Ivory</item>
+        <item>Gold</item>
+        <item>Silver</item>
+        <item>Iron</item>
+        <item>Mixed Media</item>
+    </string-array>
+
+    <!-- Dynasty/period dropdown -->
+    <string-array name="artifact_dynasties">
+        <item>Select dynasty/period</item>
+        <item>Shang Dynasty (c. 1600–1046 BCE)</item>
+        <item>Western Zhou Dynasty (c. 1046–771 BCE)</item>
+        <item>Eastern Zhou Dynasty (770–256 BCE)</item>
+        <item>Qin Dynasty (221–206 BCE)</item>
+        <item>Han Dynasty (206 BCE–220 CE)</item>
+        <item>Three Kingdoms Period (220–280 CE)</item>
+        <item>Jin Dynasty (266–420 CE)</item>
+        <item>Southern and Northern Dynasties (420–589 CE)</item>
+        <item>Sui Dynasty (581–618 CE)</item>
+        <item>Tang Dynasty (618–907 CE)</item>
+        <item>Five Dynasties and Ten Kingdoms (907–960 CE)</item>
+        <item>Song Dynasty (960–1279 CE)</item>
+        <item>Liao Dynasty (907–1125 CE)</item>
+        <item>Jin Dynasty (1115–1234 CE)</item>
+        <item>Yuan Dynasty (1271–1368 CE)</item>
+        <item>Ming Dynasty (1368–1644 CE)</item>
+        <item>Qing Dynasty (1644–1912 CE)</item>
+        <item>Republic of China Period (1912–1949 CE)</item>
+    </string-array>
+
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="delete_item">Delete Item</string>
@@ -9,11 +92,13 @@
     <string name="scroller">Scroller</string>
     <string name="spinner">Spinner</string>
     <string name="manage_items">Manage Items</string>
+
+    <!-- Login and signup -->
     <string name="login">Login</string>
-    <string name="username_hint"> Username/Email</string>
-    <string name="signup_username_hint"> Username</string>
-    <string name="signup_email_hint"> Email</string>
-    <string name="password_hint"> Password</string>
+    <string name="username_hint">Username/Email</string>
+    <string name="signup_username_hint">Username</string>
+    <string name="signup_email_hint">Email</string>
+    <string name="password_hint">Password</string>
     <string name="confirm_password_hint">Confirm Password</string>
     <string name="login_icon_description">Login profile icon</string>
     <string name="login_error_placeholder">Invalid username or password</string>
@@ -23,10 +108,13 @@
     <string name="signup">Create Account</string>
     <string name="login_redirect">Already have an account? Login</string>
 
+    <!-- Supabase -->
+    <string name="supabase_url">https://cvibiajdnhwmgphxgfji.supabase.co</string>
+    <string name="supabase_anon_key">eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN2aWJpYWpkbmh3bWdwaHhnZmppIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQyNTI5MjMsImV4cCI6MjA5OTgyODkyM30.Dlbgk36f1_fjpu6vF1x9zD5zrZY7RFmsgRAV4CahbDQ</string>
+    <string name="supabase_image_bucket">images</string>
+
     <string-array name="categories_array">
         <item>Books</item>
         <item>Movies</item>
     </string-array>
-
-
 </resources>
