@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">B07 Demo Summer 2024</string>
+    <string name="app_name">Artifact Collection</string>
 
     <!-- Form title -->
     <string name="add_artifact_title">Add Artifact</string>
@@ -92,6 +92,23 @@
     <string name="scroller">Scroller</string>
     <string name="spinner">Spinner</string>
     <string name="manage_items">Manage Items</string>
+
+    <!-- Login and signup -->
+    <string name="login">Login</string>
+    <string name="username_hint">Username/Email</string>
+    <string name="signup_username_hint">Username</string>
+    <string name="signup_email_hint">Email</string>
+    <string name="password_hint">Password</string>
+    <string name="confirm_password_hint">Confirm Password</string>
+    <string name="login_icon_description">Login profile icon</string>
+    <string name="login_error_placeholder">Invalid username or password</string>
+    <string name="signup_error_placeholder">Invalid username or password</string>
+    <string name="forgot_password">Forgot password?</string>
+    <string name="signupLink">Sign Up</string>
+    <string name="signup">Create Account</string>
+    <string name="login_redirect">Already have an account? Login</string>
+
+    <!-- Supabase -->
     <string name="supabase_url">https://cvibiajdnhwmgphxgfji.supabase.co</string>
     <string name="supabase_anon_key">eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN2aWJpYWpkbmh3bWdwaHhnZmppIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQyNTI5MjMsImV4cCI6MjA5OTgyODkyM30.Dlbgk36f1_fjpu6vF1x9zD5zrZY7RFmsgRAV4CahbDQ</string>
     <string name="supabase_image_bucket">images</string>
@@ -100,6 +117,4 @@
         <item>Books</item>
         <item>Movies</item>
     </string-array>
-
-
 </resources>
