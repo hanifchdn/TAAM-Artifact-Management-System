@@ -74,7 +74,7 @@ public class AddItemFragment extends Fragment {
         selectedImagePreview = view.findViewById(R.id.selectedImagePreview);
         Button buttonAddArtifact = view.findViewById(R.id.buttonAdd);
         buttonAddArtifact.setOnClickListener(v -> {
-            if(!validateInputs()){
+            if (!validateInputs()) {
                 return;
             }
             String lot = editTextLot.getText().toString();
@@ -84,39 +84,44 @@ public class AddItemFragment extends Fragment {
             String material = spinnerMaterial.getSelectedItem().toString();
             String dynasty = spinnerDynasty.getSelectedItem().toString();
             ArtifactDatabaseReader reader = new ArtifactDatabaseReader();
-            reader.contains(lot, (isFound) ->{
-                if(isFound){
-                    Toast.makeText(getContext(), "LOT number already exists.", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                Artifact newArtifact = new Artifact(lot, name, description, category, material, dynasty);
-                newArtifact.setHeight(editTextHeight.getText().toString());
-                newArtifact.setDepth(editTextDepth.getText().toString());
-                newArtifact.setWidth(editTextWidth.getText().toString());
-                newArtifact.setCulturalOrigin(editTextCulturalOrigin.getText().toString());
-                newArtifact.setCondition(editTextConditionReport.getText().toString());
-                newArtifact.setCurrentLocation(editTextCurrentLocation.getText().toString());
-                newArtifact.setAcquisitionMethod(editTextAcquisitionMethod.getText().toString());
-                newArtifact.setProvenance(editTextProvenance.getText().toString());
-                newArtifact.setAccessionNumber(editTextAccessionNumber.getText().toString());
-                newArtifact.setNotes(editTextNotes.getText().toString());
-                if (imageUri != null){
-                    ImageDatabaseWriter imageDatabaseWriter = new ImageDatabaseWriter();
-                    imageDatabaseWriter.addToDatabase(imageUploader, imageUri, lot, (url) -> {
-                        if(url != null){
-                            newArtifact.setImageUrl(url);
-                        }
-                        else{
-                            Toast.makeText(requireContext(), "Image upload failed.", Toast.LENGTH_SHORT).show();
-                        }
+            reader.contains(lot, new ArtifactDatabaseReader.ContainsArtifactItemCallback() {
+                @Override
+                public void onSuccess(boolean contains) {
+                    if (contains) {
+                        Toast.makeText(getContext(), "LOT number already exists.", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    Artifact newArtifact = new Artifact(lot, name, description, category, material, dynasty);
+                    newArtifact.setHeight(editTextHeight.getText().toString());
+                    newArtifact.setDepth(editTextDepth.getText().toString());
+                    newArtifact.setWidth(editTextWidth.getText().toString());
+                    newArtifact.setCulturalOrigin(editTextCulturalOrigin.getText().toString());
+                    newArtifact.setCondition(editTextConditionReport.getText().toString());
+                    newArtifact.setCurrentLocation(editTextCurrentLocation.getText().toString());
+                    newArtifact.setAcquisitionMethod(editTextAcquisitionMethod.getText().toString());
+                    newArtifact.setProvenance(editTextProvenance.getText().toString());
+                    newArtifact.setAccessionNumber(editTextAccessionNumber.getText().toString());
+                    newArtifact.setNotes(editTextNotes.getText().toString());
+                    if (imageUri != null) {
+                        ImageDatabaseWriter imageDatabaseWriter = new ImageDatabaseWriter();
+                        imageDatabaseWriter.addToDatabase(imageUploader, imageUri, lot, (url) -> {
+                            if (url != null) {
+                                newArtifact.setImageUrl(url);
+                            } else {
+                                Toast.makeText(requireContext(), "Image upload failed.", Toast.LENGTH_SHORT).show();
+                            }
+                            writeArtifact(newArtifact);
+                        });
+                    } else {
                         writeArtifact(newArtifact);
-                    });
+                    }
                 }
-                else{
-                    writeArtifact(newArtifact);
+
+                @Override
+                public void onFailure(String errorMessage) {
+                    Toast.makeText(requireContext(), "Could not verify LOT uniqueness", Toast.LENGTH_SHORT).show();
                 }
             });
-
         });
     }
     private void writeArtifact(Artifact artifact){

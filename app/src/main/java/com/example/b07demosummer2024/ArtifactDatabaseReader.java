@@ -17,62 +17,92 @@ import java.util.concurrent.ExecutionException;
 
 
 /**
- * Allows for easy Reading to the db using the Artifact class. MUST be wrapped in async function or be ran in a different thread
+ * Allows for easy Reading to the db using the Artifact class.
  *
- * When reading from this class, it must be done in a different thread than the UI thread to
- * prevent the UI thread from being blocked and a RuntimeException to occur
- *
+ * Due to Async nature of reading, all read functions will use async callback functions
+ * For an example usage of this callback, view the contains method associated with this.
  */
 public class ArtifactDatabaseReader {
 
-    public interface GetArtifactReaderCallback {
-        void getArtifactCallback(Artifact artifact);
+    /**
+     * Interface for GetItem callback
+     */
+    public interface GetArtifactItemCallback {
+        /**
+         * On Firebase read success, returns the artifact as a param
+         * @param artifact returned artifact
+         */
+        void onSuccess(Artifact artifact);
+        /**
+         * On Firebase read failure, return error message
+         * @param errorMessage Firebase error message
+         */
+        void onFailure(String errorMessage);
     }
-    public interface ContainsReaderCallback {
-        void containsCallback(boolean contains);
-    }
-    private FirebaseDatabase db;
-    private DatabaseReference dbReference;
-
-    private Artifact artifactReference;
 
     /**
-     * Allows for reading from the db using the Artifact class.
-     *
+     * Interface for contains method callback
      */
+    public interface ContainsArtifactItemCallback {
+        /**
+         * On Firebase read success, returns the artifact as a param
+         * @param contains boolean if a artifact with that LOT exists
+         */
+        void onSuccess(boolean contains);
+        /**
+         * On Firebase read failure, return error message
+         * @param errorMessage Firebase error message
+         */
+        void onFailure(String errorMessage);
+    }
+    private FirebaseDatabase db; //firebase db object
+    private DatabaseReference dbReference; //db reference that can read/write artifacts
+
+
     public ArtifactDatabaseReader() {
-         db = FirebaseDatabase.getInstance("https://taam-artifact-storage-system-default-rtdb.firebaseio.com/");
-         dbReference = db.getReference("artifacts");
+        db = FirebaseDatabase.getInstance("https://taam-artifact-storage-system-default-rtdb.firebaseio.com/");
+        dbReference = db.getReference("artifacts");
     }
 
     /**
      *Gets am Artifact from the database
      *
      * @param LOT The LOT of Artifact
-     * @param callback an async function that will be called once done
+     * @param callback An anonymous object of GetArtifactItemCallback which will call
      */
-    public void getItem(String LOT, GetArtifactReaderCallback callback) {
+    public void getItem(String LOT, GetArtifactItemCallback  callback) {
         try {
             dbReference.child(LOT).get().addOnCompleteListener((dataSnapshotTask) -> {
-                callback.getArtifactCallback(dataSnapshotTask.getResult().getValue(Artifact.class));
+                if (dataSnapshotTask.isSuccessful()) {
+                    callback.onSuccess(dataSnapshotTask.getResult().getValue(Artifact.class));
+                }
+                else {
+                    callback.onFailure(dataSnapshotTask.getException().getMessage());
+                }
             });
         }
         catch (Exception e) {
-            callback.getArtifactCallback(null);
+            callback.onFailure("A critical error has occurred. Please try again later.");
         }
     }
 
     /**
-     *Returns if a LOT number is found
-     *
-     *
+     *Returns if a LOT number is found in the database
      * @param  LOT The LOT of the artifact
      * @param callback an async function that will be called once done
-     *
      */
-    public void contains(String LOT, ContainsReaderCallback callback) {
-        getItem(LOT, (Artifact a) -> {
-            callback.containsCallback(a != null);
+    public void contains(String LOT, ContainsArtifactItemCallback callback) {
+        getItem(LOT, new GetArtifactItemCallback() {
+
+            @Override
+            public void onSuccess(Artifact artifact) {
+                callback.onSuccess(artifact != null);
+            }
+
+            @Override
+            public void onFailure(String errorMessage) {
+                callback.onFailure(errorMessage);
+            }
         });
     }
 }
