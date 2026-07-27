@@ -29,7 +29,7 @@ public class ArtifactDatabaseWriter implements DatabaseAdder, DatabaseDeleter, D
      * Uses the artifact LOT number as the unique ID to save the artifact.
      *
      * @param item the Artifact to add to database.
-     *
+     * @param callback a Write callback on error
      */
 
     @Override
@@ -63,15 +63,11 @@ public class ArtifactDatabaseWriter implements DatabaseAdder, DatabaseDeleter, D
      * Note that updateDatabase will act like ArtfactDatabaseWriter if it does not exist yet.
      *
      * @param item the Artifact to overwrite
-     *
+     * @param writeCallback A callback on failure/success
      */
     @Override
-    public void updateDatabase(DatabaseItem item) {
-        if (!(item instanceof Artifact)) {
-            return;
-        }
-        Artifact artifact = (Artifact) item;
-        dbReference.child(artifact.getLOT()).setValue(artifact);
+    public void updateDatabase(DatabaseItem item, WriteCallback writeCallback) {
+        addToDatabase(item, writeCallback);
     }
 
     /**
