@@ -97,6 +97,7 @@
     <string name="saved_artifacts">Saved Artifacts</string>
     <string name="add_artifact">Add Artifact</string>
     <string name="home_title">Home</string>
+    <string name="artifact_image_description">Artifact image</string>
 
     <!-- Login and signup -->
     <string name="login">Login</string>
