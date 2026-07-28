@@ -17,35 +17,79 @@
 <!--        app:layout_constraintEnd_toEndOf="parent"-->
 <!--        app:layout_constraintBottom_toTopOf="@+id/buttonScroller"/>-->
 
-    <ImageButton
-        android:id="@+id/logoutButton"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:layout_marginTop="12dp"
-        android:layout_marginEnd="12dp"
-        android:src="@drawable/logout"
-        android:scaleType="centerInside"
-        android:background="@drawable/rounded_corner"
-        android:backgroundTint="#009688"
-        android:contentDescription="@string/logout"
-        android:padding="10dp"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
-
-    <TextView
-        android:id="@+id/homeTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:text="@string/home_title"
-        android:textColor="@color/white"
-        android:textAlignment="center"
-        android:textSize="26sp"
-        android:textStyle="bold"
-        android:letterSpacing="0.05"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/toolBar"
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:paddingHorizontal="20dp"
+        android:background="#468C98"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <TextView
+            android:id="@+id/homeTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/home_title"
+            android:textColor="#F4F5F6"
+            android:textAlignment="viewStart"
+            android:textSize="30sp"
+            android:textStyle="bold"
+            android:letterSpacing="0.05"
+            android:layout_marginRight="5dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/searchButton"/>
+
+        <ImageButton
+            android:id="@+id/searchButton"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginEnd="8dp"
+            android:src="@drawable/search_icon"
+            android:scaleType="centerInside"
+            android:background="@drawable/rounded_corner"
+            android:contentDescription="@string/search_hint"
+            android:padding="13dp"
+            app:tint="#F4F5F6"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/addArtifactButton" />
+
+        <ImageButton
+            android:id="@+id/addArtifactButton"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginEnd="8dp"
+            android:src="@drawable/add_artifact"
+            android:background="@drawable/rounded_corner"
+            android:contentDescription="@string/add_artifact"
+            android:padding="13dp"
+            app:tint="#F4F5F6"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/logoutButton" />
+
+        <ImageButton
+            android:id="@+id/logoutButton"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:src="@drawable/logout"
+            android:layout_marginEnd="8dp"
+            android:scaleType="centerInside"
+            android:background="@drawable/rounded_corner"
+            android:contentDescription="@string/logout"
+            android:padding="13dp"
+            app:tint="#F4F5F6"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <ImageButton
         android:id="@+id/savedArtifactsButton"
@@ -54,27 +98,12 @@
         android:layout_marginStart="12dp"
         android:layout_marginBottom="12dp"
         android:background="@drawable/rounded_corner"
-        android:backgroundTint="#009688"
         android:contentDescription="@string/saved_artifacts"
         android:padding="14dp"
         android:src="@drawable/bookmark"
+        app:tint="#F4F5F6"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
-
-    <ImageButton
-        android:id="@+id/addArtifactButton"
-        android:layout_width="56dp"
-        android:layout_height="56dp"
-        android:background="@drawable/rounded_corner"
-        android:backgroundTint="#009688"
-        android:contentDescription="@string/add_artifact"
-        android:padding="14dp"
-        android:src="@drawable/add_artifact"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginEnd="12dp"
-        android:layout_marginBottom="12dp" />
-    <!--        android:visibility="gone"-->
 
     <EditText
         android:id="@+id/searchInput"
@@ -92,7 +121,8 @@
         android:textSize="16sp"
         android:background="@drawable/rounded_corner"
         android:minHeight="48dp"
-        app:layout_constraintTop_toBottomOf="@+id/logoutButton"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@+id/toolBar"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
