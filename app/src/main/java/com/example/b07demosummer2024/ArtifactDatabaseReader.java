@@ -120,6 +120,33 @@ public class ArtifactDatabaseReader {
     }
 
     /**
+     * Retrieves all artifacts that has a field which contains a substring from the database.
+     * If the database operation succeeds, the callback receives a list containing all
+     * artifacts that has the substring within the field.
+     * If the operation fails, the callback receives null.
+     * @param substring the substring to search for in all fields
+     * @param callback is called when the database operation completes.
+     */
+    public void getArtifactListBySubstring(String substring, GetArtifactListReaderCallback callback){
+        dbReference.get().addOnSuccessListener(dataSnapshot -> {
+            List<Artifact> artifacts = new ArrayList<>();
+            for (DataSnapshot child: dataSnapshot.getChildren()){
+                Artifact artifact = child.getValue(Artifact.class);
+                for (DataSnapshot field : child.getChildren()) {
+                    String fieldValue = field.getValue(String.class);
+                    if(artifact != null && fieldValue != null && fieldValue.contains(substring)){
+                        artifacts.add(artifact);
+                        break;
+                    }
+                }
+            }
+            callback.getArtifactListCallback(artifacts);
+        }).addOnFailureListener(e -> {
+            callback.getArtifactListCallback(null);
+        });
+    }
+
+    /**
      *Returns if a LOT number is found in the database
      * @param  LOT The LOT of the artifact
      * @param callback an async function that will be called once done

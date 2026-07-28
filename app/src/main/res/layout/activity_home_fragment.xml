@@ -39,7 +39,7 @@
         android:layout_marginTop="24dp"
         android:text="@string/home_title"
         android:textColor="@color/white"
-        android:="center"
+        android:textAlignment="center"
         android:textSize="26sp"
         android:textStyle="bold"
         android:letterSpacing="0.05"
