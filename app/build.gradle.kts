@@ -43,6 +43,10 @@ dependencies {
     implementation(libs.firebase.auth)
     testImplementation(libs.junit)
     testImplementation("org.mockito:mockito-core:5.18.0")
+    androidTestImplementation(libs.androidx.test.core)
+    androidTestImplementation(libs.androidx.test.runner)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
+    debugImplementation(libs.fragment.testing.manifest)
+    androidTestImplementation(libs.fragment.testing)
 }
