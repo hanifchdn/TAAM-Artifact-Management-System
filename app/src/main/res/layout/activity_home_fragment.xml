@@ -41,7 +41,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/searchButton"/>
+            app:layout_constraintEnd_toStartOf="@+id/addArtifactButton"/>
 
         <ImageButton
             android:id="@+id/searchButton"
@@ -56,7 +56,7 @@
             app:tint="#F4F5F6"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/addArtifactButton" />
+            app:layout_constraintEnd_toStartOf="@+id/logoutButton" />
 
         <ImageButton
             android:id="@+id/addArtifactButton"
@@ -70,7 +70,7 @@
             app:tint="#F4F5F6"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/logoutButton" />
+            app:layout_constraintEnd_toStartOf="@+id/searchButton" />
 
         <ImageButton
             android:id="@+id/logoutButton"
@@ -125,6 +125,22 @@
         app:layout_constraintTop_toBottomOf="@+id/toolBar"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/artifactRecyclerView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="16dp"
+        android:paddingHorizontal="5dp"
+        android:clipToPadding="false"
+        app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+        app:spanCount="2"
+        tools:listitem="@layout/item_layout"
+        tools:itemCount="6"
+        app:layout_constraintTop_toBottomOf="@+id/searchInput"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/savedArtifactsButton" />
 
     <!--    <Button-->
 <!--        android:id="@+id/buttonScroller"-->
