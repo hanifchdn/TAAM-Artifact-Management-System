@@ -1,13 +1,14 @@
 {
   "project_info": {
-    "project_number": "103450168850",
-    "project_id": "b07-demo-summer-2024",
-    "storage_bucket": "b07-demo-summer-2024.appspot.com"
+    "project_number": "847587762700",
+    "firebase_url": "https://taam-artifact-storage-system-default-rtdb.firebaseio.com",
+    "project_id": "taam-artifact-storage-system",
+    "storage_bucket": "taam-artifact-storage-system.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:103450168850:android:18be49669e0000df0552cb",
+        "mobilesdk_app_id": "1:847587762700:android:6d8f0cc4bc95d78bef0429",
         "android_client_info": {
           "package_name": "com.example.b07demosummer2024"
         }
@@ -15,7 +16,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyCNPIMxlsDkuYk5s1-Uycc9s8Hqz2YKIDs"
+          "current_key": "AIzaSyDFBRZicw1joMFxY2x10VMGvLquhYNdQLQ"
         }
       ],
       "services": {
