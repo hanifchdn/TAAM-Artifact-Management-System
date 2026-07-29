@@ -17,7 +17,10 @@ public class SignUpPresenter implements SignUpContract.Presenter {
     }
     @Override
     public void signUp(String email, String password, String confirmPassword){
-        if (email.isEmpty()) {
+        if (view == null) {
+            return;
+        }
+        if (email == null || email.isEmpty()) {
             view.showEmptyEmailError();
             return;
         }
@@ -25,11 +28,11 @@ public class SignUpPresenter implements SignUpContract.Presenter {
             view.showInvalidEmailFormatError();
             return;
         }
-        if (password.isEmpty()) {
+        if (password == null || password.isEmpty()) {
             view.showEmptyPasswordError();
             return;
         }
-        if (confirmPassword.isEmpty() ){
+        if (confirmPassword == null || confirmPassword.isEmpty() ){
             view.showEmptyConfirmPasswordError();
             return;
         }
