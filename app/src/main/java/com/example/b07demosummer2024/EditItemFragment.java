@@ -108,8 +108,102 @@ public class EditItemFragment extends Fragment {
             setTextFields();
         }
 
+        //onclick listener
         Button buttonEditArtifact = view.findViewById(R.id.buttonEdit);
+        buttonEditArtifact.setOnClickListener(v -> {
+            //ensure input stays valid
+            if (!validateInputs()) {
+                return;
+            }
 
+            // update artifact model
+            artifactModel.setName(editTextArtifactName.getText().toString());
+            artifactModel.setDescription(editTextDescription.getText().toString());
+            artifactModel.setCategory(spinnerCategory.getSelectedItem().toString());
+            artifactModel.setMaterial(spinnerMaterial.getSelectedItem().toString());
+            artifactModel.setDynasty(spinnerDynasty.getSelectedItem().toString());
+            artifactModel.setHeight(editTextHeight.getText().toString());
+            artifactModel.setDepth(editTextDepth.getText().toString());
+            artifactModel.setWidth(editTextWidth.getText().toString());
+            artifactModel.setCulturalOrigin(editTextCulturalOrigin.getText().toString());
+            artifactModel.setCondition(editTextConditionReport.getText().toString());
+            artifactModel.setCurrentLocation(editTextCurrentLocation.getText().toString());
+            artifactModel.setAcquisitionMethod(editTextAcquisitionMethod.getText().toString());
+            artifactModel.setProvenance(editTextProvenance.getText().toString());
+            artifactModel.setAccessionNumber(editTextAccessionNumber.getText().toString());
+            artifactModel.setNotes(editTextNotes.getText().toString());
+
+            //url checker and artifact db updater
+            if (imageUri != null) {
+                ImageDatabaseWriter imageDatabaseWriter = new ImageDatabaseWriter();
+                imageDatabaseWriter.addToDatabase(imageUploader, imageUri, artifactModel.getLOT(), (url) -> {
+                    if (url != null) {
+                        artifactModel.setImageUrl(url);
+                    } else {
+                        Toast.makeText(requireContext(), "Image upload failed.", Toast.LENGTH_SHORT).show();
+                    }
+                    updateArtifact(artifactModel);
+                });
+            } else {
+                updateArtifact(artifactModel);
+            }
+        });
+
+    }
+
+    private void updateArtifact(Artifact artifact){
+        ArtifactDatabaseWriter  writer = new ArtifactDatabaseWriter();
+        writer.updateDatabase(artifact, new WriteCallback() {
+            @Override
+            public void onSuccess(){
+                Toast.makeText(requireContext(), "Artifact added successfully.", Toast.LENGTH_SHORT).show();
+            }
+            @Override
+            public void onFailure(String e){
+                Toast.makeText(requireContext(), "Failed to add artifact: " + e, Toast.LENGTH_SHORT).show();
+            }
+
+        });
+    }
+    private boolean isValidLot(String lot){
+        return lot.matches("^[a-zA-Z0-9-]+$");
+    }
+    private boolean validateInputs(){
+        String lot = editTextLot.getText().toString().trim();
+        String name = editTextArtifactName.getText().toString().trim();
+        String description = editTextDescription.getText().toString().trim();
+        String category = spinnerCategory.getSelectedItem().toString();
+        String material = spinnerMaterial.getSelectedItem().toString();
+        String dynasty = spinnerDynasty.getSelectedItem().toString();
+        if (lot.isEmpty()){
+            editTextLot.setError("LOT Number is required");
+            return false;
+        }
+        if( !isValidLot(lot)){
+            editTextLot.setError("LOT Number can only contain letters, numbers, and hyphens");
+            return false;
+        }
+        if (name.isEmpty()){
+            editTextArtifactName .setError("Name is required");
+            return false;
+        }
+        if (description.isEmpty()){
+            editTextDescription.setError("Description is required");
+            return false;
+        }
+        if (category.equals("Select category")){
+            Toast.makeText(requireContext(), "Please select a category.", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        if (material.equals("Select material")){
+            Toast.makeText(requireContext(), "Please select a material.", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        if (dynasty.equals("Select dynasty/period")){
+            Toast.makeText(requireContext(), "Please select a dynasty/period.", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        return true;
     }
 
     /**
