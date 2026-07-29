@@ -95,7 +95,7 @@ public class HomeFragment extends Fragment {
         searchUpdateButton.setOnClickListener(v -> {
             String input = searchInput.getText().toString().trim();
             ArtifactDatabaseReader reader = new ArtifactDatabaseReader();
-            reader.getArtifactListBySubstring(input, new ArtifactDatabaseReader.GetArtifactListReaderCallback() {
+            ArtifactDatabaseReader.GetArtifactListReaderCallback callback = new ArtifactDatabaseReader.GetArtifactListReaderCallback() {
                 @Override
                 public void getArtifactListCallback(List<Artifact> artifacts){
                     if(!reader.handleArtifactListError(artifacts, getContext())){
@@ -103,7 +103,13 @@ public class HomeFragment extends Fragment {
                     }
                     //TODO: Show the matching artifact to the screen
                 }
-            });
+            };
+            if(input.isEmpty()){
+                reader.getArtifactList(callback);
+            }
+            else{
+                reader.getArtifactListBySubstring(input, callback);
+            }
         });
 
     }
