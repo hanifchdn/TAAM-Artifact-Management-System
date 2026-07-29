@@ -1,9 +1,7 @@
 package com.example.b07demosummer2024;
 
-import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,9 +16,6 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
 public class EditItemFragment extends Fragment {
 
@@ -44,6 +39,22 @@ public class EditItemFragment extends Fragment {
     private Uri imageUri;
     private ImageView selectedImagePreview;
     private SupabaseImageUploader imageUploader;
+
+    private Artifact artifactModel;
+    private String artifactLOT;
+
+    public EditItemFragment(Artifact exisitingArtifact) {
+        super();
+        artifactModel = exisitingArtifact;
+        artifactLOT = artifactModel.getLOT();
+    }
+
+    public EditItemFragment(String lot) {
+        super();
+        artifactModel = null;
+        artifactLOT = lot;
+
+    }
     private ActivityResultLauncher<String> imageSelectionLauncher =
             registerForActivityResult(new ActivityResultContracts.GetContent(), uri -> {
                         if (uri != null) {
@@ -62,16 +73,43 @@ public class EditItemFragment extends Fragment {
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        // UI setup
         super.onViewCreated(view, savedInstanceState);
         bindTextFields(view);
         bindSpinners(view);
         configureCategorySpinner();
         configureMaterialSpinner();
         configureDynastySpinner();
+
+        //image setup
         Button buttonSelectImage = view.findViewById(R.id.buttonSelectImage);
         buttonSelectImage.setOnClickListener(v -> imageSelectionLauncher.launch("image/*"));
         selectedImagePreview = view.findViewById(R.id.selectedImagePreview);
+
+        //database reference
+        ArtifactDatabaseReader artifactDatabaseReader = new ArtifactDatabaseReader();
+
+        // if used LOT number to create EditItemFragment
+        if (artifactModel == null) {
+            artifactDatabaseReader.getItem(artifactLOT, new ArtifactDatabaseReader.GetArtifactItemCallback() {
+                @Override
+                public void onSuccess(Artifact artifact) {
+                    artifactModel = artifact;
+                    setTextFields();
+                }
+
+                @Override
+                public void onFailure(String errorMessage) {
+                    Toast.makeText(getContext(), "Error in getting artifact data",Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+        else {
+            setTextFields();
+        }
+
         Button buttonEditArtifact = view.findViewById(R.id.buttonEdit);
+
     }
 
     /**
@@ -91,6 +129,8 @@ public class EditItemFragment extends Fragment {
         editTextProvenance = view.findViewById(R.id.editTextProvenance);
         editTextAccessionNumber = view.findViewById(R.id.editTextAccessionNumber);
         editTextNotes = view.findViewById(R.id.editTextNotes);
+
+
     }
 
     /**
@@ -130,6 +170,44 @@ public class EditItemFragment extends Fragment {
                 ArrayAdapter.createFromResource(requireContext(), R.array.artifact_dynasties, android.R.layout.simple_spinner_item);
         dynastyAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerDynasty.setAdapter(dynastyAdapter);
+    }
+
+    /**
+     * Sets the textfields and spinners to be the values of artifactModel
+     */
+    private void setTextFields() {
+        ArrayAdapter<CharSequence> materialAdapter =
+                ArrayAdapter.createFromResource(requireContext(), R.array.artifact_materials,
+                        android.R.layout.simple_spinner_item);
+        if (artifactModel.getMaterial() != null && !artifactModel.getMaterial().isEmpty()) {
+            spinnerMaterial.setSelection(materialAdapter.getPosition(artifactModel.getMaterial()));
+        }
+        ArrayAdapter<CharSequence> categoryAdapter =
+                ArrayAdapter.createFromResource(requireContext(), R.array.artifact_categories,
+                        android.R.layout.simple_spinner_item);
+        if (artifactModel.getCategory() != null && !artifactModel.getCategory().isEmpty()) {
+            spinnerMaterial.setSelection(categoryAdapter.getPosition(artifactModel.getCategory()));
+        }
+        ArrayAdapter<CharSequence> dynastyAdapter =
+                ArrayAdapter.createFromResource(requireContext(), R.array.artifact_dynasties,
+                        android.R.layout.simple_spinner_item);
+        if (artifactModel.getDynasty() != null && !artifactModel.getDynasty().isEmpty()) {
+            spinnerMaterial.setSelection(dynastyAdapter.getPosition(artifactModel.getDynasty()));
+        }
+
+        editTextLot.setText(artifactLOT);
+        editTextArtifactName.setText(artifactModel.getName());
+        editTextDescription.setText(artifactModel.getDescription());
+        editTextHeight.setText(artifactModel.getHeight());
+        editTextDepth.setText(artifactModel.getDepth());
+        editTextWidth.setText(artifactModel.getWidth());
+        editTextCulturalOrigin.setText(artifactModel.getCulturalOrigin());
+        editTextConditionReport.setText(artifactModel.getCondition());
+        editTextCurrentLocation.setText(artifactModel.getCurrentLocation());
+        editTextAcquisitionMethod.setText(artifactModel.getAcquisitionMethod());
+        editTextProvenance.setText(artifactModel.getProvenance());
+        editTextAccessionNumber.setText(artifactModel.getAcquisitionMethod());
+        editTextNotes.setText(artifactModel.getNotes());
     }
 
     public EditText getEditTextLot() {
