@@ -34,7 +34,7 @@
             android:text="@string/home_title"
             android:textColor="#F4F5F6"
             android:textAlignment="viewStart"
-            android:textSize="30sp"
+            android:textSize="34sp"
             android:textStyle="bold"
             android:letterSpacing="0.05"
             android:layout_marginRight="5dp"
@@ -70,6 +70,20 @@
             app:tint="#F4F5F6"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/savedArtifactsButton" />
+
+        <ImageButton
+            android:id="@+id/savedArtifactsButton"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/rounded_corner"
+            android:contentDescription="@string/saved_artifacts"
+            android:padding="13dp"
+            android:src="@drawable/bookmark"
+            app:tint="#F4F5F6"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/searchButton" />
 
         <ImageButton
@@ -87,23 +101,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"/>
 
-
-
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <ImageButton
-        android:id="@+id/savedArtifactsButton"
-        android:layout_width="56dp"
-        android:layout_height="56dp"
-        android:layout_marginStart="12dp"
-        android:layout_marginBottom="12dp"
-        android:background="@drawable/rounded_corner"
-        android:contentDescription="@string/saved_artifacts"
-        android:padding="14dp"
-        android:src="@drawable/bookmark"
-        app:tint="#F4F5F6"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
 
     <EditText
         android:id="@+id/searchInput"
@@ -136,11 +134,11 @@
         app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
         app:spanCount="2"
         tools:listitem="@layout/item_layout"
-        tools:itemCount="6"
+        tools:itemCount="12"
         app:layout_constraintTop_toBottomOf="@+id/searchInput"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/savedArtifactsButton" />
+        app:layout_constraintBottom_toBottomOf="parent" />
 
     <!--    <Button-->
 <!--        android:id="@+id/buttonScroller"-->
