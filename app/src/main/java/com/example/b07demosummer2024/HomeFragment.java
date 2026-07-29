@@ -15,6 +15,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
+import java.util.List;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -92,7 +93,17 @@ public class HomeFragment extends Fragment {
          * TODO: Complete Documentation
          */
         searchUpdateButton.setOnClickListener(v -> {
-            //TODO: B07-75
+            String input = searchInput.getText().toString().trim();
+            ArtifactDatabaseReader reader = new ArtifactDatabaseReader();
+            reader.getArtifactListBySubstring(input, new ArtifactDatabaseReader.GetArtifactListReaderCallback() {
+                @Override
+                public void getArtifactListCallback(List<Artifact> artifacts){
+                    if(!reader.handleArtifactListError(artifacts, getContext())){
+                        return;
+                    }
+                    //TODO: Show the matching artifact to the screen
+                }
+            });
         });
 
     }
