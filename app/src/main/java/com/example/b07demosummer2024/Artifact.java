@@ -30,7 +30,7 @@ public class Artifact implements DatabaseItem{
     private String accessionNumber;
     private String notes;
     private String imageUrl;
-    private ArrayList<String> likedUsers;
+    private int totalLikes;
 
     public Artifact() {}
     public Artifact(String LOT, String name, String description, String category, String material, String dynasty) {
@@ -40,57 +40,22 @@ public class Artifact implements DatabaseItem{
         this.category = category;
         this.material = material;
         this.dynasty = dynasty;
-        this.likedUsers = new ArrayList<String>();
 
     }
 
     /**
-     * Returns if a user has already liked
-     * @param UID of user to check if they have liked or not
-     * @return true/false boolean if they liked or not
+     * Increases Artifact's total likes by one
      */
-    @Exclude
-    public boolean isUserLiked(String UID) {
-        return likedUsers.contains(UID);
+    public void increaseTotalLikesByOne() {
+        totalLikes++;
     }
 
-    /**
-     * Removes a UID to the list of users who has liked this artifact.
-     * If the UID is NOT already present, returns -1. Else, remove and return -1
-     * Note this will NOT update the db
-     * @param UID of the user to remove
-     * @return -1 if user is NOT already in the list, else on success returns 0
-     */
-    public int removeLikedUser(String UID) {
-        if (likedUsers.contains(UID)) {
-            return -1;
-        }
-        likedUsers.add(UID);
-        return 0;
-    }
-
-    /**
-     * Adds a UID to the list of users who has liked this artifact.
-     * If the UID is already present, then it will not add it, and returns -1.
-     * Note this will NOT update the db
-     * @param UID of the user to add
-     * @return -1 if user is already in the list, else on success returns 0
-     */
-    public int addLikedUser(String UID) {
-        if (likedUsers.contains(UID)) {
-            return -1;
-        }
-        likedUsers.add(UID);
-        return 0;
-    }
-
-    /**
-     * Returns the total amount of likes on this artifact
-     * @return number of likes on this artifact
-     */
-    @Exclude
     public int getTotalLikes() {
-        return likedUsers.size();
+        return totalLikes;
+    }
+
+    public void setTotalLikes(int totalLikes) {
+        this.totalLikes = totalLikes;
     }
     public String getLOT() {
         return LOT;
@@ -224,12 +189,5 @@ public class Artifact implements DatabaseItem{
         this.imageUrl = imageUrl;
     }
 
-    public ArrayList<String> getLikedUsers() {
-        return likedUsers;
-    }
-
-    public void setLikedUsers(ArrayList<String> likedUsers) {
-        this.likedUsers = likedUsers;
-    }
 
 }

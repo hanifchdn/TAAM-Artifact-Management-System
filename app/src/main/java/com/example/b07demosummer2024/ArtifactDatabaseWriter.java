@@ -69,7 +69,6 @@ public class ArtifactDatabaseWriter implements DatabaseAdder, DatabaseDeleter, D
     public void updateDatabase(DatabaseItem item, WriteCallback writeCallback) {
         addToDatabase(item, writeCallback);
     }
-
     /**
      *Deletes an artifact form the Database.
      *
@@ -101,5 +100,25 @@ public class ArtifactDatabaseWriter implements DatabaseAdder, DatabaseDeleter, D
      */
     public void deleteFromDatabase(String LOT) {
         dbReference.child(LOT).removeValue();
+    }
+
+    /**
+     * Updates the total likes of an artifact in the db with the LOT string
+     * @param LOT string of db
+     * @param totalLikes of artifact
+     * @param callback the callback function of WriteCallback
+     */
+    public void updateArtifactTotalLikes(String LOT, int totalLikes, WriteCallback callback) {
+        dbReference.child(LOT).child("totalLikes").setValue(totalLikes)
+                .addOnSuccessListener( a -> {
+                    if(callback != null){
+                        callback.onSuccess();
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    if(callback != null){
+                        callback.onFailure(e.getMessage());
+                    }
+                });
     }
 }
