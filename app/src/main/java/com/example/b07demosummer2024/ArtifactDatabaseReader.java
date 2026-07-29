@@ -71,12 +71,20 @@ public class ArtifactDatabaseReader {
      * @param callback An anonymous object of GetArtifactItemCallback which will call
      */
     public void getItem(String LOT, GetArtifactItemCallback  callback) {
+        if(LOT == null || LOT.trim().isEmpty()){
+            callback.onFailure("LOT number cannot be empty.");
+            return;
+        }
         try {
             dbReference.child(LOT).get().addOnCompleteListener((dataSnapshotTask) -> {
                 if (dataSnapshotTask.isSuccessful()) {
                     callback.onSuccess(dataSnapshotTask.getResult().getValue(Artifact.class));
                 }
                 else {
+                    Exception exception = dataSnapshotTask.getException();
+                    if(exception == null || exception.getMessage() == null || exception.getMessage().trim().isEmpty()){
+                        callback.onFailure("A critical error has occurred. Please try again later.");
+                    }
                     callback.onFailure(dataSnapshotTask.getException().getMessage());
                 }
             });
