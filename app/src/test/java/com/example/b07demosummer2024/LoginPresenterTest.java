@@ -115,11 +115,7 @@ public class LoginPresenterTest {
                                                                 */
         presenter.login(EMAIL, PASSWORD);
 
-        verify(model).login(
-                eq(EMAIL),
-                eq(PASSWORD),
-                callbackCaptor.capture()
-        );
+        verify(model).login(eq(EMAIL), eq(PASSWORD), callbackCaptor.capture());
 
         callbackCaptor.getValue().onSuccess(UID);
 
@@ -138,11 +134,7 @@ public class LoginPresenterTest {
                                                                 */
         presenter.login(EMAIL, PASSWORD);
 
-        verify(model).login(
-                eq(EMAIL),
-                eq(PASSWORD),
-                callbackCaptor.capture()
-        );
+        verify(model).login(eq(EMAIL), eq(PASSWORD), callbackCaptor.capture());
 
         callbackCaptor.getValue().onFailure("Invalid email or password.");
 
@@ -159,11 +151,7 @@ public class LoginPresenterTest {
                                                                  */
         presenter.login(EMAIL, PASSWORD);
 
-        verify(model).login(
-                eq(EMAIL),
-                eq(PASSWORD),
-                callbackCaptor.capture()
-        );
+        verify(model).login(eq(EMAIL), eq(PASSWORD), callbackCaptor.capture());
 
         presenter.onDestroy();
 
@@ -175,17 +163,13 @@ public class LoginPresenterTest {
     }
 
     @Test
-    public void login_ModelFailureAHandlesDestroyCorrectly() { /* Tests if model handles destroy
+    public void login_ModelFailureHandlesDestroyCorrectly() { /* Tests if model handles destroy
                                                                  correctly after a failed auth
                                                                  callback
                                                                  */
         presenter.login(EMAIL, PASSWORD);
 
-        verify(model).login(
-                eq(EMAIL),
-                eq(PASSWORD),
-                callbackCaptor.capture()
-        );
+        verify(model).login(eq(EMAIL), eq(PASSWORD), callbackCaptor.capture());
 
         presenter.onDestroy();
 
