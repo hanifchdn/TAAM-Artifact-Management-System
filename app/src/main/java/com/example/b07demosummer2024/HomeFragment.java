@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -19,7 +20,9 @@ import java.util.concurrent.CompletableFuture;
 
 public class HomeFragment extends Fragment {
     private ImageButton searchButton;
+    private ImageButton searchUpdateButton;
     private EditText searchInput;
+    private LinearLayout searchContainer;
 
     @Nullable
     @Override
@@ -68,20 +71,30 @@ public class HomeFragment extends Fragment {
          * Binds variables from xml layout to java
          */
         searchButton = view.findViewById(R.id.searchButton);
+        searchContainer = view.findViewById(R.id.searchContainer);
         searchInput = view.findViewById(R.id.searchInput);
+        searchUpdateButton = view.findViewById(R.id.searchUpdateButton);
 
         /**
-         * Displays searchInput when searchButton is clicked
+         * Displays searchContainer when searchButton is clicked
          */
         searchButton.setOnClickListener(v -> {
-            if (searchInput.getVisibility() == View.GONE) {
-                searchInput.setVisibility(View.VISIBLE);
+            if (searchContainer.getVisibility() == View.GONE) {
+                searchContainer.setVisibility(View.VISIBLE);
                 searchInput.requestFocus();
             }
             else {
-                searchInput.setVisibility(View.GONE);
+                searchContainer.setVisibility(View.GONE);
             }
         });
+
+        /**
+         * TODO: Complete Documentation
+         */
+        searchUpdateButton.setOnClickListener(v -> {
+            //TODO: B07-75
+        });
+
     }
 
     private void loadFragment(Fragment fragment) {
