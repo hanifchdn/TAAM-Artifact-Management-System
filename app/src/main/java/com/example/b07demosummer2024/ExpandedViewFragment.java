@@ -7,6 +7,12 @@ import androidx.fragment.app.Fragment;
 
 public class ExpandedViewFragment extends Fragment {
     private ArtifactDatabaseReader reader = new ArtifactDatabaseReader();
+    private String missingData(String value){
+        if(value == null || value.trim().isEmpty()){
+            return "N/A";
+        }
+        return value.trim();
+    }
     private void loadArtifact(String lot){
         reader.getItem(lot, new ArtifactDatabaseReader.GetArtifactItemCallback(){
             @Override
