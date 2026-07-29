@@ -141,7 +141,7 @@ public class ArtifactDatabaseReader {
     /**
      * Retrieves all artifacts that has a field which contains a substring from the database.
      * If the database operation succeeds, the callback receives a list containing all
-     * artifacts that has the substring within the field.
+     * artifacts that has the substring within the field. Ignores nested object fields
      * If the operation fails, the callback receives null.
      * @param substring the substring to search for in all fields
      * @param callback is called when the database operation completes.
@@ -149,9 +149,20 @@ public class ArtifactDatabaseReader {
     public void getArtifactListBySubstring(String substring, GetArtifactListReaderCallback callback){
         dbReference.get().addOnSuccessListener(dataSnapshot -> {
             List<Artifact> artifacts = new ArrayList<>();
+
+            // for each artifact
             for (DataSnapshot child: dataSnapshot.getChildren()){
                 Artifact artifact = child.getValue(Artifact.class);
+
+                // for each field
                 for (DataSnapshot field : child.getChildren()) {
+
+                    // if field itself is an object ignore it
+                    if (field.hasChildren()) {
+                        continue;
+                    }
+
+                    // Else it is a field representable as a string
                     String fieldValue = field.getValue(String.class);
                     if(artifact != null && fieldValue != null && fieldValue.contains(substring)){
                         artifacts.add(artifact);
