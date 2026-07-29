@@ -16,6 +16,8 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.concurrent.ExecutionException;
 import java.util.ArrayList;
 import java.util.List;
+import android.widget.Toast;
+import android.content.Context;
 
 
 /**
@@ -70,7 +72,24 @@ public class ArtifactDatabaseReader {
     private FirebaseDatabase db; //firebase db object
     private DatabaseReference dbReference; //db reference that can read/write artifacts
 
-
+    /**
+     * Check if the artifact list was loaded correctly.
+     * Shows a toast message if the list is null or empty.
+     * @param artifacts The list of artifacts loaded from the database.
+     * @param context The screen context needed to show Toast message.
+     * @return true if artifact exist and can be shown, false otherwise.
+     */
+    public boolean handleArtifactListError(List<Artifact> artifacts, Context context){
+        if(artifacts == null){
+            Toast.makeText(context , "Failed to load artifacts", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        else if(artifacts.isEmpty()){
+            Toast.makeText(context, "No artifacts found", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        return true;
+    }
     public ArtifactDatabaseReader() {
         db = FirebaseDatabase.getInstance("https://taam-artifact-storage-system-default-rtdb.firebaseio.com/");
         dbReference = db.getReference("artifacts");
