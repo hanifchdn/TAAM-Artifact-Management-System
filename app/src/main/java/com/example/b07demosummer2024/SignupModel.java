@@ -13,8 +13,22 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 public class SignupModel implements SignUpContract.Model{
-    private final FirebaseAuth auth = FirebaseAuth.getInstance();
-    private final DatabaseReference db = FirebaseDatabase.getInstance().getReference("users");
+    private final FirebaseAuth auth;
+    private final DatabaseReference db;
+
+    public SignupModel() {
+        this(
+                FirebaseAuth.getInstance(),
+                FirebaseDatabase.getInstance().getReference("users")
+        );
+    }
+
+    // Added to allow for unit testing
+    SignupModel(FirebaseAuth auth, DatabaseReference db) {
+        this.auth = auth;
+        this.db = db;
+    }
+
     @Override
     public void signUp(String email, String password, Authcallback callback){
         auth.createUserWithEmailAndPassword(email, password)
@@ -58,7 +72,7 @@ public class SignupModel implements SignUpContract.Model{
 
     private String checkError(Exception ex) {
         if (ex instanceof FirebaseAuthUserCollisionException){
-            return "User already exist.";
+            return "User already exists.";
         }
         if (ex instanceof FirebaseAuthWeakPasswordException){
             return "Password is too weak.";
