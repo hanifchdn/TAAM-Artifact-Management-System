@@ -8,6 +8,9 @@ import com.google.firebase.database.DatabaseException;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+/**
+ * Model behind the current authenticated user, used to fetch user profile and signing out.
+ */
 public class SessionModel implements SessionContract.Model{
     private final FirebaseAuth auth;
     private final DatabaseReference usersRef;
@@ -23,6 +26,12 @@ public class SessionModel implements SessionContract.Model{
     public String currentUserUid(){
         return auth.getUid();
     }
+
+    /**
+     *
+     * @param uid the id stored in Firebase
+     * @param callback a callback for fetching user profile
+     */
     @Override
     public void fetchUserProfile(String uid, ProfileCallback callback) {
         usersRef.child(uid).get().addOnCompleteListener(task -> {
@@ -38,6 +47,11 @@ public class SessionModel implements SessionContract.Model{
             callback.onProfileLoaded(user);
         });
     }
+
+    /**
+     * Helper function to return error message
+     * @param ex the exception object from the task
+     */
     private String checkError(Exception ex) {
         if (ex instanceof FirebaseNetworkException) {
             return "No internet connection.";
