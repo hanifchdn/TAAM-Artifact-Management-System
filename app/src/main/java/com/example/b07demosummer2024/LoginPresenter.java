@@ -1,12 +1,18 @@
 package com.example.b07demosummer2024;
 
+import android.util.Log;
+
 public class LoginPresenter implements LoginContract.Presenter {
 
     private LoginContract.View view;
     private LoginContract.Model model;
-    public LoginPresenter(LoginContract.View view, LoginContract.Model model){
+    private SessionModel sessionModel;
+    private SessionManager session;
+    public LoginPresenter(LoginContract.View view, LoginContract.Model model, SessionModel sessionModel, SessionManager session){
         this.view = view;
         this.model = model;
+        this.sessionModel = sessionModel;
+        this.session = session;
     }
     private static final String EMAIL_REGEX = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@" +
             "(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
@@ -40,9 +46,17 @@ public class LoginPresenter implements LoginContract.Presenter {
                 if (view == null) {
                     return;
                 }
-                view.hideLoadingIndicator();
-                view.enableButton();
-                view.navigateToHome();
+                sessionModel.fetchUserProfile(uid, new SessionContract.Model.ProfileCallback() {
+                    public void onProfileLoaded(User user) {
+                        if (view == null) return;
+                        session.setCurrentUser(user);
+                        view.hideLoadingIndicator(); view.enableButton(); view.navigateToHome();
+                    }
+                    public void onProfileError(String message) {
+                        if (view == null) return;
+                        view.hideLoadingIndicator(); view.enableButton(); view.showLoginError(message);
+                    }
+                });
             }
             @Override
             public void onFailure(String message) {

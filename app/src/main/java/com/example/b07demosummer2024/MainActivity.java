@@ -10,6 +10,7 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.util.Log;
 import android.widget.Button;
 import android.view.View;
 import android.content.Intent;
@@ -27,8 +28,23 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         if (savedInstanceState == null) {
-            loadFragment(new LoginFragment());
+            SessionModel sessionModel = new SessionModel();
+            String uid = sessionModel.currentUserUid();
+            if (uid == null) {
+                loadFragment(new LoginFragment());
+            } else {
+                sessionModel.fetchUserProfile(uid, new SessionContract.Model.ProfileCallback() {
+                    public void onProfileLoaded(User user) {
+                        SessionManager.getInstance().setCurrentUser(user);
+                        loadFragment(new HomeFragment());
+                    }
+                    public void onProfileError(String message) {
+                        loadFragment(new LoginFragment());
+                    }
+                });
+            }
         }
+
     }
 
     private void loadFragment(Fragment fragment) {
