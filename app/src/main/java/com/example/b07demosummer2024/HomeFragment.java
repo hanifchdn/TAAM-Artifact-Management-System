@@ -10,6 +10,10 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.GridLayoutManager;
+import java.util.ArrayList;
+import java.util.List;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -18,6 +22,17 @@ public class HomeFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.activity_home_fragment, container, false);
+
+        RecyclerView recyclerView = view.findViewById(R.id.artifactRecyclerView);
+        recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
+
+        List<Item> itemList = new ArrayList<>();
+        itemList.add(new Item("1", "Dune", "Frank Herbert", "Sci-Fi", "A desert planet, a prophecy, a lot of sand."));
+        itemList.add(new Item("2", "1984", "George Orwell", "Dystopian", "Big Brother is watching."));
+        itemList.add(new Item("3", "The Hobbit", "J.R.R. Tolkien", "Fantasy", "There and back again."));
+
+        ItemAdapter adapter = new ItemAdapter(itemList);
+        recyclerView.setAdapter(adapter);
 
 //        Button buttonRecyclerView = view.findViewById(R.id.buttonRecyclerView);
 //        Button buttonScroller = view.findViewById(R.id.buttonScroller);
