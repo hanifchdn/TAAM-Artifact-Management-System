@@ -43,18 +43,23 @@ public class EditItemFragment extends Fragment {
     private Artifact artifactModel;
     private String artifactLOT;
 
+
+    /**
+     * DO NOT USE NO ARGUMENT CONSTRUCTOR
+     * no-arg Constructor is used to prevent crashing when rotating phone
+     */
+    public EditItemFragment() {}
+
+    /**
+     * Create the edit fragment using an existing artifact to fill in the details
+     * @param exisitingArtifact
+     */
     public EditItemFragment(Artifact exisitingArtifact) {
         super();
         artifactModel = exisitingArtifact;
         artifactLOT = artifactModel.getLOT();
     }
 
-    public EditItemFragment(String lot) {
-        super();
-        artifactModel = null;
-        artifactLOT = lot;
-
-    }
     private ActivityResultLauncher<String> imageSelectionLauncher =
             registerForActivityResult(new ActivityResultContracts.GetContent(), uri -> {
                         if (uri != null) {
@@ -86,27 +91,8 @@ public class EditItemFragment extends Fragment {
         buttonSelectImage.setOnClickListener(v -> imageSelectionLauncher.launch("image/*"));
         selectedImagePreview = view.findViewById(R.id.selectedImagePreview);
 
-        //database reference
-        ArtifactDatabaseReader artifactDatabaseReader = new ArtifactDatabaseReader();
-
-        // if used LOT number to create EditItemFragment
-        if (artifactModel == null) {
-            artifactDatabaseReader.getItem(artifactLOT, new ArtifactDatabaseReader.GetArtifactItemCallback() {
-                @Override
-                public void onSuccess(Artifact artifact) {
-                    artifactModel = artifact;
-                    setTextFields();
-                }
-
-                @Override
-                public void onFailure(String errorMessage) {
-                    Toast.makeText(getContext(), "Error in getting artifact data",Toast.LENGTH_SHORT).show();
-                }
-            });
-        }
-        else {
-            setTextFields();
-        }
+        //set textfields based on artifact
+        setTextFields();
 
         //onclick listener
         Button buttonEditArtifact = view.findViewById(R.id.buttonEdit);
@@ -152,7 +138,7 @@ public class EditItemFragment extends Fragment {
     }
 
     private void updateArtifact(Artifact artifact){
-        ArtifactDatabaseWriter  writer = new ArtifactDatabaseWriter();
+        ArtifactDatabaseWriter writer = new ArtifactDatabaseWriter();
         writer.updateDatabase(artifact, new WriteCallback() {
             @Override
             public void onSuccess(){
@@ -280,13 +266,13 @@ public class EditItemFragment extends Fragment {
                 ArrayAdapter.createFromResource(requireContext(), R.array.artifact_categories,
                         android.R.layout.simple_spinner_item);
         if (artifactModel.getCategory() != null && !artifactModel.getCategory().isEmpty()) {
-            spinnerMaterial.setSelection(categoryAdapter.getPosition(artifactModel.getCategory()));
+            spinnerCategory.setSelection(categoryAdapter.getPosition(artifactModel.getCategory()));
         }
         ArrayAdapter<CharSequence> dynastyAdapter =
                 ArrayAdapter.createFromResource(requireContext(), R.array.artifact_dynasties,
                         android.R.layout.simple_spinner_item);
         if (artifactModel.getDynasty() != null && !artifactModel.getDynasty().isEmpty()) {
-            spinnerMaterial.setSelection(dynastyAdapter.getPosition(artifactModel.getDynasty()));
+            spinnerDynasty.setSelection(dynastyAdapter.getPosition(artifactModel.getDynasty()));
         }
 
         editTextLot.setText(artifactLOT);
