@@ -6,7 +6,7 @@ public class LoginPresenter implements LoginContract.Presenter {
 
     private LoginContract.View view;
     private LoginContract.Model model;
-    private SessionModel sessionModel;
+    private SessionContract.Model sessionModel;
     private SessionManager session;
     public LoginPresenter(LoginContract.View view, LoginContract.Model model, SessionModel sessionModel, SessionManager session){
         this.view = view;

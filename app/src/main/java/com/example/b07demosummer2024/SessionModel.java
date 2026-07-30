@@ -15,7 +15,7 @@ public class SessionModel implements SessionContract.Model{
         this(FirebaseAuth.getInstance(),
                 FirebaseDatabase.getInstance().getReference("users"));
     }
-    public SessionModel(FirebaseAuth auth, DatabaseReference usersRef){
+    SessionModel(FirebaseAuth auth, DatabaseReference usersRef){
         this.auth = auth;
         this.usersRef = usersRef;
     }
