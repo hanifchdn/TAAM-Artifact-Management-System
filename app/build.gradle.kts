@@ -42,6 +42,7 @@ dependencies {
     implementation(libs.firebase.database)
     implementation(libs.firebase.auth)
     implementation("com.squareup.okhttp3:okhttp:4.12.0")
+    implementation("com.github.bumptech.glide:glide:4.16.0")
     testImplementation(libs.junit)
     testImplementation("org.mockito:mockito-core:5.18.0")
     androidTestImplementation(libs.ext.junit)

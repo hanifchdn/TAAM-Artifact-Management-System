@@ -17,6 +17,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.bumptech.glide.Glide;
+
 public class EditItemFragment extends Fragment {
 
     private EditText editTextLot;
@@ -142,11 +144,11 @@ public class EditItemFragment extends Fragment {
         writer.updateDatabase(artifact, new WriteCallback() {
             @Override
             public void onSuccess(){
-                Toast.makeText(requireContext(), "Artifact added successfully.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(requireContext(), "Artifact updated successfully.", Toast.LENGTH_SHORT).show();
             }
             @Override
             public void onFailure(String e){
-                Toast.makeText(requireContext(), "Failed to add artifact: " + e, Toast.LENGTH_SHORT).show();
+                Toast.makeText(requireContext(), "Failed to update artifact: " + e, Toast.LENGTH_SHORT).show();
             }
 
         });
@@ -288,6 +290,9 @@ public class EditItemFragment extends Fragment {
         editTextProvenance.setText(artifactModel.getProvenance());
         editTextAccessionNumber.setText(artifactModel.getAcquisitionMethod());
         editTextNotes.setText(artifactModel.getNotes());
+        if (artifactModel.getImageUrl() != null && !artifactModel.getImageUrl().isEmpty()) {
+            Glide.with(this).load(artifactModel.getImageUrl()).into(selectedImagePreview);
+        }
     }
 
     public EditText getEditTextLot() {
@@ -359,6 +364,5 @@ public class EditItemFragment extends Fragment {
     }
 
     public SupabaseImageUploader getSupabaseImageUploader() {return imageUploader;}
-
 }
 
