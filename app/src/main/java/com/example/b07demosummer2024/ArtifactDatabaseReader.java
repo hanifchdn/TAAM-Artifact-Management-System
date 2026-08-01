@@ -164,7 +164,7 @@ public class ArtifactDatabaseReader {
 
                     // Else it is a field representable as a string
                     String fieldValue = field.getValue(String.class);
-                    if(artifact != null && fieldValue != null && fieldValue.contains(substring)){
+                    if(artifact != null && fieldValue != null && fieldValue.toLowerCase().contains(substring.toLowerCase())){
                         artifacts.add(artifact);
                         break;
                     }
