@@ -50,12 +50,16 @@ public class HomeFragment extends Fragment {
          */
         ArtifactDatabaseReader reader = new ArtifactDatabaseReader();
         reader.getArtifactList(artifacts -> {
+            if (!isAdded()) {
+                return;
+            }
             if (!reader.handleArtifactListError(artifacts, requireContext())) {
                 return;
             }
             artifactList.clear();
             artifactList.addAll(artifacts);
             artifactAdapter.notifyDataSetChanged();
+            updateEmptyState();
         });
 
         /**
@@ -64,6 +68,12 @@ public class HomeFragment extends Fragment {
         noArtifacts = view.findViewById(R.id.noArtifacts);
         ImageButton logoutButton = view.findViewById(R.id.logoutButton);
         logoutButton.setOnClickListener(v -> logout());
+
+        /**
+         * Navigates to the add-artifact page when the add artifact button is tapped.
+         */
+        ImageButton addArtifactButton = view.findViewById(R.id.addArtifactButton);
+        addArtifactButton.setOnClickListener(v -> loadFragment(new AddItemFragment()));
     }
 
     /**

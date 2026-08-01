@@ -98,6 +98,7 @@
     <string name="add_artifact">Add Artifact</string>
     <string name="home_title">Home</string>
     <string name="artifact_image_description">Artifact image</string>
+    <string name="to_home">Home Page</string>
 
     <!-- Login and signup -->
     <string name="login">Login</string>
