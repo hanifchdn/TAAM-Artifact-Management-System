@@ -10,6 +10,7 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.se.omapi.Session;
 import android.util.Log;
 import android.widget.Button;
 import android.view.View;
@@ -37,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
                         loadFragment(new HomeFragment());
                     }
                     public void onProfileError(String message) {
+                        sessionModel.logOut();
                         loadFragment(new LoginFragment());
                     }
                 });
