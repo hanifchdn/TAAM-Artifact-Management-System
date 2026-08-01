@@ -140,6 +140,20 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent" />
 
+    <TextView
+        android:id="@+id/noArtifacts"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/no_artifacts_exist"
+        android:textColor="@color/white"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="@+id/artifactRecyclerView"
+        app:layout_constraintBottom_toBottomOf="@+id/artifactRecyclerView"
+        app:layout_constraintStart_toStartOf="@+id/artifactRecyclerView"
+        app:layout_constraintEnd_toEndOf="@+id/artifactRecyclerView" />
+
     <!--    <Button-->
     <!--        android:id="@+id/buttonScroller"-->
     <!--        android:layout_width="0dp"-->

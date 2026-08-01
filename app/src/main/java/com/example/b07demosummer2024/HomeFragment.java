@@ -6,9 +6,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -21,6 +24,7 @@ public class HomeFragment extends Fragment {
     private RecyclerView artifactRecyclerView;
     private ArtifactAdapter artifactAdapter;
     private final List<Artifact> artifactList = new ArrayList<>();
+    private TextView noArtifacts;
 
     @Nullable
     @Override
@@ -40,11 +44,6 @@ public class HomeFragment extends Fragment {
         artifactAdapter = new ArtifactAdapter(artifactList);
         artifactRecyclerView.setAdapter(artifactAdapter);
 
-//        if (testDisplay) {
-//            displayedItems.add(new Item("1", "Dune", "Frank Herbert", "Sci-Fi", "A desert planet, a prophecy, a lot of sand."));
-//            displayedItems.add(new Item("2", "1984", "George Orwell", "Dystopian", "Big Brother is watching."));
-//            displayedItems.add(new Item("3", "The Hobbit", "J.R.R. Tolkien", "Fantasy", "There and back again."));
-//        }
 
         /**
          * Retrieve artifacts from firebase and displays them
@@ -58,7 +57,34 @@ public class HomeFragment extends Fragment {
             artifactList.addAll(artifacts);
             artifactAdapter.notifyDataSetChanged();
         });
+
+        /**
+         * Binds the no-artifacts message and logout button from the layout.
+         */
+        noArtifacts = view.findViewById(R.id.noArtifacts);
+        ImageButton logoutButton = view.findViewById(R.id.logoutButton);
+        logoutButton.setOnClickListener(v -> logout());
     }
+
+    /**
+     * Shows the "No Artifacts Exist" message and hides the RecyclerView when there
+     * are no artifacts to display. When artifacts exist, this message is hidden.
+     */
+    private void updateEmptyState() {
+        boolean isEmpty = artifactList.isEmpty();
+        noArtifacts.setVisibility(isEmpty ? View.VISIBLE : View.GONE);
+        artifactRecyclerView.setVisibility(isEmpty ? View.GONE : View.VISIBLE);
+    }
+
+    /**
+     * Navigate from home page to login page when clicking the logout button.
+     */
+    private void logout() {
+        getParentFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
+        transaction.replace(R.id.fragment_container, new LoginFragment());
+        transaction.commit();
+    } // Note (clear later): The firebase is backend
 
     private void loadFragment(Fragment fragment) {
         FragmentTransaction transaction = getParentFragmentManager().beginTransaction();

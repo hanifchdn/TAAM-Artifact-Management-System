@@ -40,8 +40,13 @@ public class ArtifactAdapter extends RecyclerView.Adapter<ArtifactAdapter.Artifa
         holder.textViewCategory.setText(artifact.getCategory());
         holder.textViewMaterial.setText(artifact.getMaterial());
         holder.textViewDynasty.setText(artifact.getDynasty());
-        Glide.with(holder.itemView.getContext()).load(artifact.getImageUrl()).placeholder(R.drawable.add_photo)
-                .error(R.drawable.add_photo).centerCrop().into(holder.imageViewArtifact);
+        Glide.with(holder.itemView.getContext())
+                .load(artifact.getImageUrl())
+                .placeholder(R.drawable.artifact_placeholder)
+                .error(R.drawable.artifact_placeholder)
+                .fallback(R.drawable.artifact_placeholder)
+                .fitCenter()
+                .into(holder.imageViewArtifact);
     }
 
     /**
