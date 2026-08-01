@@ -11,6 +11,8 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -109,8 +111,10 @@ public class HomeFragment extends Fragment {
                             }
                             artifactAdapter.notifyDataSetChanged();
                             updateEmptyState();
-                            reader.handleArtifactListError(artifacts, requireContext());
-
+                            boolean isValid = reader.handleArtifactListError(artifacts);
+                            if(!isValid){
+                                Toast.makeText(requireContext(), "No artifacts found", Toast.LENGTH_SHORT).show();
+                            }
                         }
                     };
 
@@ -130,10 +134,8 @@ public class HomeFragment extends Fragment {
                 return;
             }
 
-            if (!reader.handleArtifactListError(
-                    artifacts,
-                    requireContext()
-            )) {
+            if (!reader.handleArtifactListError(artifacts)) {
+                Toast.makeText(requireContext(), "No artifacts found", Toast.LENGTH_SHORT).show();
                 return;
             }
 
