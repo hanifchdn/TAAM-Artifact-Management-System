@@ -70,7 +70,7 @@ public class HomeFragment extends Fragment {
         searchContainer = view.findViewById(R.id.searchContainer);
         searchInput = view.findViewById(R.id.searchInput);
         searchUpdateButton = view.findViewById(R.id.searchUpdateButton);
-
+        noArtifacts = view.findViewById(R.id.noArtifacts);
         /**
          * Displays searchContainer when searchButton is clicked
          */
@@ -103,18 +103,14 @@ public class HomeFragment extends Fragment {
                             if (!isAdded()) {
                                 return;
                             }
-
-                            if (!reader.handleArtifactListError(
-                                    artifacts,
-                                    requireContext()
-                            )) {
-                                return;
-                            }
-
                             artifactList.clear();
-                            artifactList.addAll(artifacts);
+                            if(artifacts != null){
+                                artifactList.addAll(artifacts);
+                            }
                             artifactAdapter.notifyDataSetChanged();
                             updateEmptyState();
+                            reader.handleArtifactListError(artifacts, requireContext());
+
                         }
                     };
 
@@ -147,10 +143,7 @@ public class HomeFragment extends Fragment {
             updateEmptyState();
         });
 
-        /**
-         * Binds the no-artifacts message and logout button from the layout.
-         */
-        noArtifacts = view.findViewById(R.id.noArtifacts);
+
 
         ImageButton logoutButton = view.findViewById(R.id.logoutButton);
         logoutButton.setOnClickListener(v -> logout());
