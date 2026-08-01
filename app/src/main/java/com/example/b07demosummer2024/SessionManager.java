@@ -18,15 +18,35 @@ public class SessionManager {
         if (instance == null) instance = new SessionManager();
         return instance;
     }
+
+    /**
+     * Sets the user for the current session.
+     *
+     * @param u the user to store as the current session user
+     */
     public void setCurrentUser(User u){
         currentUser = u;
     }
+
+    /**
+     *
+     * @return the user associated with the current session, or null if none is set
+     */
     public User getCurrentUser(){
         return currentUser;
     }
+
+    /**
+     *
+     * @return true if a user is set and that user is an admin, false otherwise
+     */
     public boolean isAdmin(){
         return currentUser != null && currentUser.isAdmin();
     }
+
+    /**
+     * Clears the current session by removing the current user.
+     */
     public void clear(){
         currentUser = null;
     }

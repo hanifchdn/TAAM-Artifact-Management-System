@@ -27,11 +27,6 @@ public class SessionModel implements SessionContract.Model{
         return auth.getUid();
     }
 
-    /**
-     *
-     * @param uid the id stored in Firebase
-     * @param callback a callback for fetching user profile
-     */
     @Override
     public void fetchUserProfile(String uid, ProfileCallback callback) {
         usersRef.child(uid).get().addOnCompleteListener(task -> {
@@ -51,6 +46,7 @@ public class SessionModel implements SessionContract.Model{
     /**
      * Helper function to return error message
      * @param ex the exception object from the task
+     * @return a human-readable error message describing the exception
      */
     private String checkError(Exception ex) {
         if (ex instanceof FirebaseNetworkException) {
@@ -65,5 +61,6 @@ public class SessionModel implements SessionContract.Model{
     @Override
     public void logOut(){
         auth.signOut();
+        SessionManager.getInstance().clear();
     }
 }

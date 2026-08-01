@@ -8,7 +8,7 @@ public class LoginPresenter implements LoginContract.Presenter {
     private LoginContract.Model model;
     private SessionContract.Model sessionModel;
     private SessionManager session;
-    public LoginPresenter(LoginContract.View view, LoginContract.Model model, SessionModel sessionModel, SessionManager session){
+    public LoginPresenter(LoginContract.View view, LoginContract.Model model, SessionContract.Model sessionModel, SessionManager session){
         this.view = view;
         this.model = model;
         this.sessionModel = sessionModel;
@@ -46,6 +46,9 @@ public class LoginPresenter implements LoginContract.Presenter {
                 if (view == null) {
                     return;
                 }
+                if (session.getCurrentUser() != null){
+                    session.clear();
+                }
                 sessionModel.fetchUserProfile(uid, new SessionContract.Model.ProfileCallback() {
                     public void onProfileLoaded(User user) {
                         if (view == null) return;
@@ -53,6 +56,8 @@ public class LoginPresenter implements LoginContract.Presenter {
                         view.hideLoadingIndicator(); view.enableButton(); view.navigateToHome();
                     }
                     public void onProfileError(String message) {
+                        sessionModel.logOut();
+
                         if (view == null) return;
                         view.hideLoadingIndicator(); view.enableButton(); view.showLoginError(message);
                     }
