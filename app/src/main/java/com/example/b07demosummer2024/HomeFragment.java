@@ -84,7 +84,13 @@ public class HomeFragment extends Fragment {
         });
 
         /**
-         * TODO: Complete Documentation
+         * Searches for artifacts using the text entered in the search input field.
+         *
+         * If the input is empty, all artifacts are retrieved from the database.
+         * Otherwise, artifacts whose fields contain the entered substring are retrieved.
+         *
+         * The callback first checks whether this fragment is still attached to its
+         * activity before accessing the fragment context or updating the user interface.
          */
         searchUpdateButton.setOnClickListener(v -> {
             String input = searchInput.getText().toString().trim();
@@ -93,17 +99,22 @@ public class HomeFragment extends Fragment {
             ArtifactDatabaseReader.GetArtifactListReaderCallback callback =
                     new ArtifactDatabaseReader.GetArtifactListReaderCallback() {
                         @Override
-                        public void getArtifactListCallback(
-                                List<Artifact> artifacts
-                        ) {
+                        public void getArtifactListCallback(List<Artifact> artifacts) {
+                            if (!isAdded()) {
+                                return;
+                            }
+
                             if (!reader.handleArtifactListError(
                                     artifacts,
-                                    getContext()
+                                    requireContext()
                             )) {
                                 return;
                             }
 
-                            //TODO: Show the matching artifact to the screen
+                            artifactList.clear();
+                            artifactList.addAll(artifacts);
+                            artifactAdapter.notifyDataSetChanged();
+                            updateEmptyState();
                         }
                     };
 
