@@ -10,13 +10,16 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
-
+import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import java.util.ArrayList;
 import java.util.List;
-
 import java.util.concurrent.CompletableFuture;
 
 public class HomeFragment extends Fragment {
@@ -24,49 +27,41 @@ public class HomeFragment extends Fragment {
     private ImageButton searchUpdateButton;
     private EditText searchInput;
     private LinearLayout searchContainer;
+    private RecyclerView artifactRecyclerView;
+    private ArtifactAdapter artifactAdapter;
+    private final List<Artifact> artifactList = new ArrayList<>();
+    private TextView noArtifacts;
 
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.activity_home_fragment, container, false);
-
-//        Button buttonRecyclerView = view.findViewById(R.id.buttonRecyclerView);
-//        Button buttonScroller = view.findViewById(R.id.buttonScroller);
-//        Button buttonSpinner = view.findViewById(R.id.buttonSpinner);
-//        Button buttonManageItems = view.findViewById(R.id.buttonManageItems);
-//
-//        buttonRecyclerView.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                loadFragment(new RecyclerViewFragment());
-//            }
-//        });
-//
-//        buttonScroller.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                loadFragment(new ScrollerFragment());
-//            }
-//        });
-//
-//        buttonSpinner.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                loadFragment(new SpinnerFragment());
-//            }
-//        });
-//
-//        buttonManageItems.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) { loadFragment(new ManageItemsFragment());}
-//        });
-
-        return view;
+    public View onCreateView(
+            @NonNull LayoutInflater inflater,
+            @Nullable ViewGroup container,
+            @Nullable Bundle savedInstanceState
+    ) {
+        return inflater.inflate(
+                R.layout.activity_home_fragment,
+                container,
+                false
+        );
     }
 
     @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+    public void onViewCreated(
+            @NonNull View view,
+            @Nullable Bundle savedInstanceState
+    ) {
         super.onViewCreated(view, savedInstanceState);
+
+        /**
+         * Configures RecyclerView and its adapter to display two artifacts on each row.
+         */
+        artifactRecyclerView = view.findViewById(R.id.artifactRecyclerView);
+        artifactRecyclerView.setLayoutManager(
+                new GridLayoutManager(requireContext(), 2)
+        );
+        artifactAdapter = new ArtifactAdapter(artifactList);
+        artifactRecyclerView.setAdapter(artifactAdapter);
 
         /**
          * Binds variables from xml layout to java
@@ -83,8 +78,7 @@ public class HomeFragment extends Fragment {
             if (searchContainer.getVisibility() == View.GONE) {
                 searchContainer.setVisibility(View.VISIBLE);
                 searchInput.requestFocus();
-            }
-            else {
+            } else {
                 searchContainer.setVisibility(View.GONE);
             }
         });
@@ -95,28 +89,117 @@ public class HomeFragment extends Fragment {
         searchUpdateButton.setOnClickListener(v -> {
             String input = searchInput.getText().toString().trim();
             ArtifactDatabaseReader reader = new ArtifactDatabaseReader();
-            ArtifactDatabaseReader.GetArtifactListReaderCallback callback = new ArtifactDatabaseReader.GetArtifactListReaderCallback() {
-                @Override
-                public void getArtifactListCallback(List<Artifact> artifacts){
-                    if(!reader.handleArtifactListError(artifacts, getContext())){
-                        return;
-                    }
-                    //TODO: Show the matching artifact to the screen
-                }
-            };
-            if(input.isEmpty()){
+
+            ArtifactDatabaseReader.GetArtifactListReaderCallback callback =
+                    new ArtifactDatabaseReader.GetArtifactListReaderCallback() {
+                        @Override
+                        public void getArtifactListCallback(
+                                List<Artifact> artifacts
+                        ) {
+                            if (!reader.handleArtifactListError(
+                                    artifacts,
+                                    getContext()
+                            )) {
+                                return;
+                            }
+
+                            //TODO: Show the matching artifact to the screen
+                        }
+                    };
+
+            if (input.isEmpty()) {
                 reader.getArtifactList(callback);
-            }
-            else{
+            } else {
                 reader.getArtifactListBySubstring(input, callback);
             }
         });
 
+        /**
+         * Retrieve artifacts from firebase and displays them
+         */
+        ArtifactDatabaseReader reader = new ArtifactDatabaseReader();
+        reader.getArtifactList(artifacts -> {
+            if (!isAdded()) {
+                return;
+            }
+
+            if (!reader.handleArtifactListError(
+                    artifacts,
+                    requireContext()
+            )) {
+                return;
+            }
+
+            artifactList.clear();
+            artifactList.addAll(artifacts);
+            artifactAdapter.notifyDataSetChanged();
+            updateEmptyState();
+        });
+
+        /**
+         * Binds the no-artifacts message and logout button from the layout.
+         */
+        noArtifacts = view.findViewById(R.id.noArtifacts);
+
+        ImageButton logoutButton = view.findViewById(R.id.logoutButton);
+        logoutButton.setOnClickListener(v -> logout());
+
+        /**
+         * Navigates to the add-artifact page when the add artifact button is tapped.
+         */
+        ImageButton addArtifactButton =
+                view.findViewById(R.id.addArtifactButton);
+
+        addArtifactButton.setOnClickListener(
+                v -> loadFragment(new AddItemFragment())
+        );
     }
 
+    /**
+     * Shows the "No Artifacts Exist" message and hides the RecyclerView when there
+     * are no artifacts to display. When artifacts exist, this message is hidden.
+     */
+    private void updateEmptyState() {
+        boolean isEmpty = artifactList.isEmpty();
+
+        noArtifacts.setVisibility(
+                isEmpty ? View.VISIBLE : View.GONE
+        );
+
+        artifactRecyclerView.setVisibility(
+                isEmpty ? View.GONE : View.VISIBLE
+        );
+    }
+
+    /**
+     * Navigate from home page to login page when clicking the logout button.
+     */
+    private void logout() {
+        getParentFragmentManager().popBackStack(
+                null,
+                FragmentManager.POP_BACK_STACK_INCLUSIVE
+        );
+
+        FragmentTransaction transaction =
+                getParentFragmentManager().beginTransaction();
+
+        transaction.replace(
+                R.id.fragment_container,
+                new LoginFragment()
+        );
+
+        transaction.commit();
+    } // Note (clear later): The firebase is backend
+
     private void loadFragment(Fragment fragment) {
-        FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
-        transaction.replace(R.id.fragment_container, fragment);
+        FragmentTransaction transaction =
+                getParentFragmentManager().beginTransaction();
+
+        transaction.replace(
+                R.id.fragment_container,
+                fragment
+        );
+
         transaction.addToBackStack(null);
         transaction.commit();
     }
