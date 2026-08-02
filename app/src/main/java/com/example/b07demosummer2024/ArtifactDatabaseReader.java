@@ -14,6 +14,10 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.concurrent.ExecutionException;
+import java.util.ArrayList;
+import java.util.List;
+import android.widget.Toast;
+import android.content.Context;
 
 
 /**
@@ -41,6 +45,16 @@ public class ArtifactDatabaseReader {
     }
 
     /**
+     * Interface for receiving list of artifacts
+     */
+    public interface GetArtifactListReaderCallback{
+        /**
+         * Called when the artifact list has been successfully retrieved.
+         * @param artifacts the list of retrieved artifacts
+         */
+        void getArtifactListCallback(List<Artifact> artifacts);
+    }
+    /**
      * Interface for contains method callback
      */
     public interface ContainsArtifactItemCallback {
@@ -58,7 +72,21 @@ public class ArtifactDatabaseReader {
     private FirebaseDatabase db; //firebase db object
     private DatabaseReference dbReference; //db reference that can read/write artifacts
 
-
+    /**
+     * Check if the artifact list was loaded correctly.
+     * Shows a toast message if the list is null or empty.
+     * @param artifacts The list of artifacts loaded from the database.
+     * @return true if artifact exist and can be shown, false otherwise.
+     */
+    public boolean handleArtifactListError(List<Artifact> artifacts){
+        if(artifacts == null){
+            return false;
+        }
+        else if(artifacts.isEmpty()){
+            return false;
+        }
+        return true;
+    }
     public ArtifactDatabaseReader() {
         db = FirebaseDatabase.getInstance("https://taam-artifact-storage-system-default-rtdb.firebaseio.com/");
         dbReference = db.getReference("artifacts");
@@ -84,6 +112,65 @@ public class ArtifactDatabaseReader {
         catch (Exception e) {
             callback.onFailure("A critical error has occurred. Please try again later.");
         }
+    }
+
+    /**
+     * Retrieves all artifacts from database.
+     * If the database operation succeeds, the callback receives a list containing all
+     * retrieved artifacts. If the operation fails, the callback receives null.
+     * @param callback is called when the database operation completes.
+     */
+    public void getArtifactList(GetArtifactListReaderCallback callback){
+        dbReference.get().addOnSuccessListener(dataSnapshot -> {
+            List<Artifact> artifacts = new ArrayList<>();
+            for (DataSnapshot child: dataSnapshot.getChildren()){
+                Artifact artifact = child.getValue(Artifact.class);
+                if(artifact != null){
+                    artifacts.add(artifact);
+                }
+            }
+            callback.getArtifactListCallback(artifacts);
+        }).addOnFailureListener(e -> {
+            callback.getArtifactListCallback(null);
+        });
+    }
+
+    /**
+     * Retrieves all artifacts that has a field which contains a substring from the database.
+     * If the database operation succeeds, the callback receives a list containing all
+     * artifacts that has the substring within the field. Ignores nested object fields
+     * If the operation fails, the callback receives null.
+     * @param substring the substring to search for in all fields
+     * @param callback is called when the database operation completes.
+     */
+    public void getArtifactListBySubstring(String substring, GetArtifactListReaderCallback callback){
+        dbReference.get().addOnSuccessListener(dataSnapshot -> {
+            List<Artifact> artifacts = new ArrayList<>();
+
+            // for each artifact
+            for (DataSnapshot child: dataSnapshot.getChildren()){
+                Artifact artifact = child.getValue(Artifact.class);
+
+                // for each field
+                for (DataSnapshot field : child.getChildren()) {
+
+                    // if field itself is an object ignore it
+                    if (field.hasChildren()) {
+                        continue;
+                    }
+
+                    // Else it is a field representable as a string
+                    String fieldValue = field.getValue(String.class);
+                    if(artifact != null && fieldValue != null && fieldValue.toLowerCase().contains(substring.toLowerCase())){
+                        artifacts.add(artifact);
+                        break;
+                    }
+                }
+            }
+            callback.getArtifactListCallback(artifacts);
+        }).addOnFailureListener(e -> {
+            callback.getArtifactListCallback(null);
+        });
     }
 
     /**

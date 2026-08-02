@@ -92,6 +92,14 @@
     <string name="scroller">Scroller</string>
     <string name="spinner">Spinner</string>
     <string name="manage_items">Manage Items</string>
+    <string name="search_hint">Search</string>
+    <string name="logout">Logout</string>
+    <string name="saved_artifacts">Saved Artifacts</string>
+    <string name="add_artifact">Add Artifact</string>
+    <string name="home_title">Home</string>
+    <string name="artifact_image_description">Artifact image</string>
+    <string name="to_home">Home Page</string>
+    <string name="loading_artifacts">Loading Artifacts ...</string>
 
     <!-- Login and signup -->
     <string name="login">Login</string>
@@ -112,6 +120,7 @@
     <string name="supabase_url">https://cvibiajdnhwmgphxgfji.supabase.co</string>
     <string name="supabase_anon_key">eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN2aWJpYWpkbmh3bWdwaHhnZmppIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQyNTI5MjMsImV4cCI6MjA5OTgyODkyM30.Dlbgk36f1_fjpu6vF1x9zD5zrZY7RFmsgRAV4CahbDQ</string>
     <string name="supabase_image_bucket">images</string>
+    <string name="no_artifacts_exist">No Artifacts Exist</string>
 
     <string-array name="categories_array">
         <item>Books</item>
