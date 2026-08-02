@@ -67,11 +67,7 @@ public class AddItemFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         ImageButton ToHome = view.findViewById(R.id.ToHome);
-        ToHome.setOnClickListener(v -> {
-            FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
-            transaction.replace(R.id.fragment_container, new HomeFragment());
-            transaction.commit();
-        });
+        ToHome.setOnClickListener(v -> getParentFragmentManager().popBackStack());
         bindTextFields(view);
         bindSpinners(view);
         configureCategorySpinner();

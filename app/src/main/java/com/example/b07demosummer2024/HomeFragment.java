@@ -24,6 +24,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import androidx.fragment.app.FragmentManager;
 
 public class HomeFragment extends Fragment {
     private ImageButton searchButton;
@@ -64,8 +65,6 @@ public class HomeFragment extends Fragment {
         artifactRecyclerView.setLayoutManager(
                 new GridLayoutManager(requireContext(), 2)
         );
-        artifactAdapter = new ArtifactAdapter(artifactList);
-        artifactRecyclerView.setAdapter(artifactAdapter);
 
         /**
          * Binds variables from xml layout to java
@@ -170,6 +169,15 @@ public class HomeFragment extends Fragment {
         addArtifactButton.setOnClickListener(
                 v -> loadFragment(new AddItemFragment())
         );
+
+        /**
+         *  Opens Expanded Artifact View Fragment
+         */
+        artifactAdapter = new ArtifactAdapter(artifactList, artifact -> {
+            ExpandedArtifactFragment detailFragment = ExpandedArtifactFragment.newInstance(artifact);
+            loadFragment(detailFragment);
+        });
+        artifactRecyclerView.setAdapter(artifactAdapter);
     }
 
     /**
@@ -228,14 +236,11 @@ public class HomeFragment extends Fragment {
     } // Note (clear later): The firebase is backend
 
     private void loadFragment(Fragment fragment) {
-        FragmentTransaction transaction =
-                getParentFragmentManager().beginTransaction();
+        FragmentManager temp = getParentFragmentManager();
+        FragmentTransaction transaction = temp.beginTransaction();
 
-        transaction.replace(
-                R.id.fragment_container,
-                fragment
-        );
-
+        transaction.hide(this);
+        transaction.add(R.id.fragment_container, fragment);
         transaction.addToBackStack(null);
         transaction.commit();
     }
