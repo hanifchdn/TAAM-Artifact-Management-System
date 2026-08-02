@@ -7,6 +7,8 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
@@ -154,8 +156,17 @@ public class ExpandedArtifactFragment extends Fragment {
      */
     private void deleteArtifact(String artifactLot) {
         ArtifactDatabaseWriter writer = new ArtifactDatabaseWriter();
-        writer.deleteFromDatabase(artifactLot);
-        loadFragment(new HomeFragment());
+        writer.deleteFromDatabase(artifactLot, new WriteCallback() {
+            @Override
+            public void onSuccess() {
+                loadFragment(new HomeFragment());
+            }
+
+            @Override
+            public void onFailure(String err) {
+                Toast.makeText(requireContext(), "Failed to delete Artifact", Toast.LENGTH_SHORT);
+            }
+        });
     }
 
     /**
