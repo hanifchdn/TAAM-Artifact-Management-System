@@ -21,6 +21,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import androidx.fragment.app.FragmentManager;
 
 public class HomeFragment extends Fragment {
     private ImageButton searchButton;
@@ -210,14 +211,11 @@ public class HomeFragment extends Fragment {
     } // Note (clear later): The firebase is backend
 
     private void loadFragment(Fragment fragment) {
-        FragmentTransaction transaction =
-                getParentFragmentManager().beginTransaction();
+        FragmentManager temp = getParentFragmentManager();
+        FragmentTransaction transaction = temp.beginTransaction();
 
-        transaction.replace(
-                R.id.fragment_container,
-                fragment
-        );
-
+        transaction.hide(this);
+        transaction.add(R.id.fragment_container, fragment);
         transaction.addToBackStack(null);
         transaction.commit();
     }
