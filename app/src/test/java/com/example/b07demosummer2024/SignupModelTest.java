@@ -26,6 +26,7 @@ import com.google.firebase.database.DatabaseReference;
 @RunWith(MockitoJUnitRunner.class)
 public class SignupModelTest {
     // Test fields
+    private static final String USERNAME = "test_username";
     private static final String EMAIL = "email@domain.com";
     private static final String PASSWORD = "Password1!";
     private static final String UID = "test_uid";
@@ -79,7 +80,7 @@ public class SignupModelTest {
     public void signUp_FirebaseReceivesGivenCredentials() { /* Tests if Firebase Authentication
                                                                receives email and password given
                                                                */
-        model.signUp(EMAIL, PASSWORD, callback);
+        model.signUp(USERNAME, EMAIL, PASSWORD, callback);
 
         verify(auth).createUserWithEmailAndPassword(EMAIL, PASSWORD);
     }
@@ -92,7 +93,7 @@ public class SignupModelTest {
                                                                            */
         prepareSuccessfulAuthentication();
 
-        model.signUp(EMAIL, PASSWORD, callback);
+        model.signUp(USERNAME, EMAIL, PASSWORD, callback);
         completeAuthenticationTask();
 
         verify(usersDatabase).child(UID);
@@ -107,7 +108,7 @@ public class SignupModelTest {
         prepareSuccessfulAuthentication();
         when(databaseTask.isSuccessful()).thenReturn(true);
 
-        model.signUp(EMAIL, PASSWORD, callback);
+        model.signUp(USERNAME, EMAIL, PASSWORD, callback);
         completeAuthenticationTask();
         completeDatabaseTask();
 
@@ -130,7 +131,7 @@ public class SignupModelTest {
         when(firebaseUser.delete()).thenReturn(deleteTask);
         when(deleteTask.isSuccessful()).thenReturn(true);
 
-        model.signUp(EMAIL, PASSWORD, callback);
+        model.signUp(USERNAME, EMAIL, PASSWORD, callback);
         completeAuthenticationTask();
         completeDatabaseTask();
 
@@ -162,7 +163,7 @@ public class SignupModelTest {
         when(deleteTask.isSuccessful()).thenReturn(false);
         when(deleteTask.getException()).thenReturn(new Exception("Account deletion failed"));
 
-        model.signUp(EMAIL, PASSWORD, callback);
+        model.signUp(USERNAME, EMAIL, PASSWORD, callback);
         completeAuthenticationTask();
         completeDatabaseTask();
         completeDeleteTask();
@@ -185,7 +186,7 @@ public class SignupModelTest {
 
         prepareFailedAuthentication(exception);
 
-        model.signUp(EMAIL, PASSWORD, callback);
+        model.signUp(USERNAME, EMAIL, PASSWORD, callback);
         completeAuthenticationTask();
 
         assertAuthenticationFailure("User already exists.");
@@ -204,7 +205,7 @@ public class SignupModelTest {
 
         prepareFailedAuthentication(exception);
 
-        model.signUp(EMAIL, PASSWORD, callback);
+        model.signUp(USERNAME, EMAIL, PASSWORD, callback);
         completeAuthenticationTask();
 
         assertAuthenticationFailure("Password is too weak.");
@@ -222,7 +223,7 @@ public class SignupModelTest {
 
         prepareFailedAuthentication(exception);
 
-        model.signUp(EMAIL, PASSWORD, callback);
+        model.signUp(USERNAME, EMAIL, PASSWORD, callback);
         completeAuthenticationTask();
 
         assertAuthenticationFailure("Invalid email.");
@@ -237,7 +238,7 @@ public class SignupModelTest {
 
         prepareFailedAuthentication(exception);
 
-        model.signUp(EMAIL, PASSWORD, callback);
+        model.signUp(USERNAME, EMAIL, PASSWORD, callback);
         completeAuthenticationTask();
 
         assertAuthenticationFailure("No internet connection.");
@@ -255,7 +256,7 @@ public class SignupModelTest {
 
         prepareFailedAuthentication(exception);
 
-        model.signUp(EMAIL, PASSWORD, callback);
+        model.signUp(USERNAME, EMAIL, PASSWORD, callback);
         completeAuthenticationTask();
 
         assertAuthenticationFailure("Try again later.");
@@ -271,7 +272,7 @@ public class SignupModelTest {
 
         prepareFailedAuthentication(exception);
 
-        model.signUp(EMAIL, PASSWORD, callback);
+        model.signUp(USERNAME, EMAIL, PASSWORD, callback);
         completeAuthenticationTask();
 
         assertAuthenticationFailure("Something went wrong.");
@@ -285,7 +286,7 @@ public class SignupModelTest {
                                                                                */
         prepareFailedAuthentication(null);
 
-        model.signUp(EMAIL, PASSWORD, callback);
+        model.signUp(USERNAME, EMAIL, PASSWORD, callback);
         completeAuthenticationTask();
 
         assertAuthenticationFailure("Something went wrong.");
