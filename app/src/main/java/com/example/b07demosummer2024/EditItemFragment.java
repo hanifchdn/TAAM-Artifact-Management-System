@@ -108,6 +108,7 @@ public class EditItemFragment extends Fragment {
                 Toast.makeText(requireContext(), "Woah! The Artifact is being updated, please wait before trying again", Toast.LENGTH_SHORT).show();
                 return;
             }
+            isDatabaseQueryRunning = true;
 
             // update artifact model
             artifactModel.setName(editTextArtifactName.getText().toString());
@@ -150,7 +151,6 @@ public class EditItemFragment extends Fragment {
      * @param artifact to update in firebase db
      */
     private void updateArtifact(Artifact artifact){
-        isDatabaseQueryRunning = true;
         ArtifactDatabaseWriter writer = new ArtifactDatabaseWriter();
         writer.updateDatabase(artifact, new WriteCallback() {
             @Override
