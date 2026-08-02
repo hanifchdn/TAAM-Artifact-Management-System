@@ -7,20 +7,32 @@
 
     <!-- Text-field hints -->
     <string name="lot_hint">LOT number</string>
+    <string name="lot_label">LOT Number</string>
     <string name="artifact_name_hint">Artifact name</string>
+    <string name="artifact_name_label">Artifact Name</string>
     <string name="description_hint">Description</string>
-    <string name="dynasty_hint">Dynasty or period</string>
+    <string name="description_label">Description</string>
     <string name="cultural_origin_hint">Cultural origin</string>
+    <string name="cultural_origin_label">Cultural Origin</string>
+    <string name="category_label">Category</string>
+    <string name="material_label">Material</string>
+    <string name="dynasty_label">Dynasty</string>
     <string name="dimensions_label">Dimensions</string>
     <string name="height_hint">Height</string>
     <string name="width_hint">Width</string>
     <string name="depth_hint">Depth</string>
     <string name="condition_report_hint">Condition report</string>
+    <string name="condition_report_label">Condition Report</string>
     <string name="current_location_hint">Current location</string>
+    <string name="current_location_label">Current Location</string>
     <string name="acquisition_method_hint">Acquisition method</string>
+    <string name="acquisition_method_label">Acquisition Method</string>
     <string name="provenance_hint">Provenance</string>
+    <string name="provenance_label">Provenance</string>
     <string name="accession_number_hint">Accession number</string>
+    <string name="accession_number_label">Accession Number</string>
     <string name="notes_hint">Additional notes</string>
+    <string name="notes_label">Notes</string>
     <string name="select_image_description">Select an image</string>
     <string name="select_image_button">Select Image</string>
     <string name="add_item">Add Item</string>
