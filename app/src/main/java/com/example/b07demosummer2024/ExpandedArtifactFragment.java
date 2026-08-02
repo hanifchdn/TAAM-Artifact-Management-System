@@ -11,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import com.bumptech.glide.Glide;
 
@@ -118,7 +119,7 @@ public class ExpandedArtifactFragment extends Fragment {
                 .into(expandedImage);
 
         buttonReturn.setOnClickListener(v -> getParentFragmentManager().popBackStack());
-        buttonDelete.setOnClickListener(v -> showDeleteConfirmation(Availability(args.getString(ARG_CURRENT_LOCATION))));
+        buttonDelete.setOnClickListener(v -> showDeleteConfirmation(Availability(args.getString(ARG_LOT))));
     }
 
     /**
@@ -154,5 +155,17 @@ public class ExpandedArtifactFragment extends Fragment {
     private void deleteArtifact(String artifactLot) {
         ArtifactDatabaseWriter writer = new ArtifactDatabaseWriter();
         writer.deleteFromDatabase(artifactLot);
+        loadFragment(new HomeFragment());
+    }
+
+    /**
+     * Loads a new fragment without adding to back stack
+     *
+     * @param fragment fragment to be loaded
+     */
+    private void loadFragment(Fragment fragment) {
+        FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
+        transaction.replace(R.id.fragment_container, fragment);
+        transaction.commit();
     }
 }
