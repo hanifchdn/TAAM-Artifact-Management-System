@@ -54,11 +54,11 @@ public class EditItemFragment extends Fragment {
 
     /**
      * Create the edit fragment using an existing artifact to fill in the details
-     * @param exisitingArtifact
+     * @param existingArtifact to display in fields.
      */
-    public EditItemFragment(Artifact exisitingArtifact) {
+    public EditItemFragment(Artifact existingArtifact) {
         super();
-        artifactModel = exisitingArtifact;
+        artifactModel = existingArtifact;
         artifactLOT = artifactModel.getLOT();
     }
 
@@ -288,7 +288,7 @@ public class EditItemFragment extends Fragment {
         editTextCurrentLocation.setText(artifactModel.getCurrentLocation());
         editTextAcquisitionMethod.setText(artifactModel.getAcquisitionMethod());
         editTextProvenance.setText(artifactModel.getProvenance());
-        editTextAccessionNumber.setText(artifactModel.getAcquisitionMethod());
+        editTextAccessionNumber.setText(artifactModel.getAccessionNumber());
         editTextNotes.setText(artifactModel.getNotes());
         if (artifactModel.getImageUrl() != null && !artifactModel.getImageUrl().isEmpty()) {
             Glide.with(this).load(artifactModel.getImageUrl()).into(selectedImagePreview);
