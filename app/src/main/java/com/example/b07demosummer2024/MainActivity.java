@@ -10,6 +10,8 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.se.omapi.Session;
+import android.util.Log;
 import android.widget.Button;
 import android.view.View;
 import android.content.Intent;
@@ -19,22 +21,30 @@ import com.google.firebase.database.FirebaseDatabase;
 
 public class MainActivity extends AppCompatActivity {
 
-    FirebaseDatabase db;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        db = FirebaseDatabase.getInstance("https://b07-demo-summer-2024-default-rtdb.firebaseio.com/");
-        DatabaseReference myRef = db.getReference("testDemo");
-
-//        myRef.setValue("B07 Demo!");
-        myRef.child("movies").setValue("B07 Demo!");
-
         if (savedInstanceState == null) {
-            loadFragment(new HomeFragment()); // Temporary
+            SessionModel sessionModel = new SessionModel();
+            String uid = sessionModel.currentUserUid();
+            if (uid == null) {
+                loadFragment(new LoginFragment());
+            } else {
+                sessionModel.fetchUserProfile(uid, new SessionContract.Model.ProfileCallback() {
+                    public void onProfileLoaded(User user) {
+                        SessionManager.getInstance().setCurrentUser(user);
+                        loadFragment(new HomeFragment());
+                    }
+                    public void onProfileError(String message) {
+                        sessionModel.logOut();
+                        loadFragment(new LoginFragment());
+                    }
+                });
+            }
         }
+
     }
 
     private void loadFragment(Fragment fragment) {

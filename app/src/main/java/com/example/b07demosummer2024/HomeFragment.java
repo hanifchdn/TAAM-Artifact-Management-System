@@ -11,6 +11,8 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -18,6 +20,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -32,6 +35,7 @@ public class HomeFragment extends Fragment {
     private ArtifactAdapter artifactAdapter;
     private final List<Artifact> artifactList = new ArrayList<>();
     private TextView noArtifacts;
+    private LinearLayout artifactLoadingLayout;
 
     @Nullable
     @Override
@@ -69,6 +73,8 @@ public class HomeFragment extends Fragment {
         searchContainer = view.findViewById(R.id.searchContainer);
         searchInput = view.findViewById(R.id.searchInput);
         searchUpdateButton = view.findViewById(R.id.searchUpdateButton);
+        noArtifacts = view.findViewById(R.id.noArtifacts);
+        artifactLoadingLayout = view.findViewById(R.id.artifactLoadingLayout);
 
         /**
          * Displays searchContainer when searchButton is clicked
@@ -93,6 +99,8 @@ public class HomeFragment extends Fragment {
          */
         searchUpdateButton.setOnClickListener(v -> {
             String input = searchInput.getText().toString().trim();
+            showLoadingIndicator();
+
             ArtifactDatabaseReader reader = new ArtifactDatabaseReader();
 
             ArtifactDatabaseReader.GetArtifactListReaderCallback callback =
@@ -103,17 +111,17 @@ public class HomeFragment extends Fragment {
                                 return;
                             }
 
-                            if (!reader.handleArtifactListError(
-                                    artifacts,
-                                    requireContext()
-                            )) {
-                                return;
-                            }
-
+                            hideLoadingIndicator();
                             artifactList.clear();
-                            artifactList.addAll(artifacts);
+                            if(artifacts != null){
+                                artifactList.addAll(artifacts);
+                            }
                             artifactAdapter.notifyDataSetChanged();
                             updateEmptyState();
+                            boolean isValid = reader.handleArtifactListError(artifacts);
+                            if(!isValid){
+                                Toast.makeText(requireContext(), "No artifacts found", Toast.LENGTH_SHORT).show();
+                            }
                         }
                     };
 
@@ -127,16 +135,17 @@ public class HomeFragment extends Fragment {
         /**
          * Retrieve artifacts from firebase and displays them
          */
+        showLoadingIndicator();
+
         ArtifactDatabaseReader reader = new ArtifactDatabaseReader();
         reader.getArtifactList(artifacts -> {
             if (!isAdded()) {
                 return;
             }
 
-            if (!reader.handleArtifactListError(
-                    artifacts,
-                    requireContext()
-            )) {
+            hideLoadingIndicator();
+            if (!reader.handleArtifactListError(artifacts)) {
+                Toast.makeText(requireContext(), "No artifacts found", Toast.LENGTH_SHORT).show();
                 return;
             }
 
@@ -146,10 +155,7 @@ public class HomeFragment extends Fragment {
             updateEmptyState();
         });
 
-        /**
-         * Binds the no-artifacts message and logout button from the layout.
-         */
-        noArtifacts = view.findViewById(R.id.noArtifacts);
+
 
         ImageButton logoutButton = view.findViewById(R.id.logoutButton);
         logoutButton.setOnClickListener(v -> logout());
@@ -175,6 +181,23 @@ public class HomeFragment extends Fragment {
     }
 
     /**
+     * Shows the loading indicator and hides both the RecyclerView
+     * and the empty-state message.
+     */
+    private void showLoadingIndicator() {
+        artifactLoadingLayout.setVisibility(View.VISIBLE);
+        artifactRecyclerView.setVisibility(View.GONE);
+        noArtifacts.setVisibility(View.GONE);
+    }
+
+    /**
+     * Hides loading indicator.
+     */
+    private void hideLoadingIndicator() {
+        artifactLoadingLayout.setVisibility(View.GONE);
+    }
+
+    /**
      * Shows the "No Artifacts Exist" message and hides the RecyclerView when there
      * are no artifacts to display. When artifacts exist, this message is hidden.
      */
@@ -194,6 +217,8 @@ public class HomeFragment extends Fragment {
      * Navigate from home page to login page when clicking the logout button.
      */
     private void logout() {
+        new SessionModel().logOut();
+
         getParentFragmentManager().popBackStack(
                 null,
                 FragmentManager.POP_BACK_STACK_INCLUSIVE

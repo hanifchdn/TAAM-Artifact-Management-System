@@ -76,16 +76,13 @@ public class ArtifactDatabaseReader {
      * Check if the artifact list was loaded correctly.
      * Shows a toast message if the list is null or empty.
      * @param artifacts The list of artifacts loaded from the database.
-     * @param context The screen context needed to show Toast message.
      * @return true if artifact exist and can be shown, false otherwise.
      */
-    public boolean handleArtifactListError(List<Artifact> artifacts, Context context){
+    public boolean handleArtifactListError(List<Artifact> artifacts){
         if(artifacts == null){
-            Toast.makeText(context , "Failed to load artifacts", Toast.LENGTH_SHORT).show();
             return false;
         }
         else if(artifacts.isEmpty()){
-            Toast.makeText(context, "No artifacts found", Toast.LENGTH_SHORT).show();
             return false;
         }
         return true;

@@ -56,7 +56,7 @@ public class LoginFragment extends Fragment implements LoginContract.View {
         loginProgressBar = view.findViewById(R.id.loginProgressBar);
         loginErrorText = view.findViewById(R.id.loginErrorText);
 
-        presenter = new LoginPresenter(this, new LoginModel());
+        presenter = new LoginPresenter(this, new LoginModel(), new SessionModel(), SessionManager.getInstance());
 
         loginButton.setOnClickListener(v -> {
             clearLoginError();
