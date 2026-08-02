@@ -14,11 +14,11 @@ import static org.mockito.Mockito.*;
 @RunWith(MockitoJUnitRunner.class)
 public class SignupPresenterTest {
     // Test fields
+    private static final String USERNAME = "test_username";
     private static final String EMAIL = "email@domain.com";
     private static final String PASSWORD = "Password1!";
     private static final String CONFIRM_PASSWORD = "Password1!";
     private static final String UID = "test_uid";
-    private static final String ERROR_MESSAGE = "User already exist.";
 
     // Setting up the test environment
     @Mock
@@ -38,10 +38,30 @@ public class SignupPresenterTest {
     }
 
     @Test
+    public void signUp_EmptyUsernameShowsEmptyUsernameError() { /* Tests if empty username error is
+                                                                   shown after given empty username
+                                                                   */
+        presenter.signUp("", EMAIL, PASSWORD, CONFIRM_PASSWORD);
+
+        verify(view).showEmptyUsernameError();
+        verifyNoInteractions(model);
+    }
+
+    @Test
+    public void signUp_NullUsernameShowsEmptyUsernameError() { /* Tests if null username is handled
+                                                                  like empty username
+                                                                  */
+        presenter.signUp(null, EMAIL, PASSWORD, CONFIRM_PASSWORD);
+
+        verify(view).showEmptyUsernameError();
+        verifyNoInteractions(model);
+    }
+
+    @Test
     public void signUp_EmptyEmailShowsEmptyEmailError() { /* Tests if empty email error is shown
                                                              after given empty email
                                                              */
-        presenter.signUp("", PASSWORD, CONFIRM_PASSWORD);
+        presenter.signUp(USERNAME, "", PASSWORD, CONFIRM_PASSWORD);
 
         verify(view).showEmptyEmailError();
         verifyNoInteractions(model);
@@ -51,7 +71,7 @@ public class SignupPresenterTest {
     public void signUp_EmptyPasswordShowsEmptyPasswordError() { /* Tests if empty password error is
                                                                    shown after given empty password
                                                                    */
-        presenter.signUp(EMAIL, "", CONFIRM_PASSWORD);
+        presenter.signUp(USERNAME, EMAIL, "", CONFIRM_PASSWORD);
 
         verify(view).showEmptyPasswordError();
         verifyNoInteractions(model);
@@ -61,7 +81,7 @@ public class SignupPresenterTest {
     public void signUp_NullEmailShowsEmptyEmailError() { /* Tests if null email is handled like
                                                             empty email
                                                             */
-        presenter.signUp(null, PASSWORD, CONFIRM_PASSWORD);
+        presenter.signUp(USERNAME, null, PASSWORD, CONFIRM_PASSWORD);
 
         verify(view).showEmptyEmailError();
         verifyNoInteractions(model);
@@ -71,7 +91,7 @@ public class SignupPresenterTest {
     public void signUp_NullPasswordShowsEmptyPasswordError() { /* Tests if null password is handled
                                                                   like empty password
                                                                   */
-        presenter.signUp(EMAIL, null, CONFIRM_PASSWORD);
+        presenter.signUp(USERNAME, EMAIL, null, CONFIRM_PASSWORD);
 
         verify(view).showEmptyPasswordError();
         verifyNoInteractions(model);
@@ -82,7 +102,7 @@ public class SignupPresenterTest {
                                                                        is shown after given invalid
                                                                        email
                                                                        */
-        presenter.signUp("invalid-email", PASSWORD, CONFIRM_PASSWORD);
+        presenter.signUp(USERNAME, "invalid-email", PASSWORD, CONFIRM_PASSWORD);
 
         verify(view).showInvalidEmailFormatError();
         verifyNoInteractions(model);
@@ -94,7 +114,7 @@ public class SignupPresenterTest {
                                                                                  error is shown after
                                                                                  given empty password
                                                                                  */
-        presenter.signUp(EMAIL, PASSWORD, "");
+        presenter.signUp(USERNAME, EMAIL, PASSWORD, "");
 
         verify(view).showEmptyConfirmPasswordError();
         verifyNoInteractions(model);
@@ -106,7 +126,7 @@ public class SignupPresenterTest {
                                                                                 error is shown after
                                                                                 given empty password
                                                                                 */
-        presenter.signUp(EMAIL, PASSWORD, null);
+        presenter.signUp(USERNAME, EMAIL, PASSWORD, null);
 
         verify(view).showEmptyConfirmPasswordError();
         verifyNoInteractions(model);
@@ -119,7 +139,7 @@ public class SignupPresenterTest {
                                                                             password and confirm
                                                                             password
                                                                             */
-        presenter.signUp(EMAIL, PASSWORD, "DifferentPassword1!");
+        presenter.signUp(USERNAME, EMAIL, PASSWORD, "DifferentPassword1!");
 
         verify(view).showPasswordMismatchError();
         verifyNoInteractions(model);
@@ -129,7 +149,7 @@ public class SignupPresenterTest {
     public void signUp_SignUpAttemptShowsLoading() { /* Tests if loading indicator is shown after an
                                                         attempted signup
                                                         */
-        presenter.signUp(EMAIL, PASSWORD, CONFIRM_PASSWORD);
+        presenter.signUp(USERNAME, EMAIL, PASSWORD, CONFIRM_PASSWORD);
 
         verify(view).showLoadingIndicator();
         verify(view).disableButton();
@@ -139,9 +159,9 @@ public class SignupPresenterTest {
     public void signUp_ValidCredentialsCallsModel() { /* Tests if model is called after given valid
                                                          signup credentials
                                                          */
-        presenter.signUp(EMAIL, PASSWORD, CONFIRM_PASSWORD);
+        presenter.signUp(USERNAME, EMAIL, PASSWORD, CONFIRM_PASSWORD);
 
-        verify(model).signUp(eq(EMAIL), eq(PASSWORD), callbackCaptor.capture());
+        verify(model).signUp(eq(USERNAME), eq(EMAIL), eq(PASSWORD), callbackCaptor.capture());
 
         assertNotNull(callbackCaptor.getValue());
     }
@@ -153,9 +173,9 @@ public class SignupPresenterTest {
                                                                  to the homepage, and no errors are
                                                                  displayed
                                                                  */
-        presenter.signUp(EMAIL, PASSWORD, CONFIRM_PASSWORD);
+        presenter.signUp(USERNAME, EMAIL, PASSWORD, CONFIRM_PASSWORD);
 
-        verify(model).signUp(eq(EMAIL), eq(PASSWORD), callbackCaptor.capture());
+        verify(model).signUp(eq(USERNAME), eq(EMAIL), eq(PASSWORD), callbackCaptor.capture());
 
         callbackCaptor.getValue().onSuccess(UID);
 
@@ -172,9 +192,9 @@ public class SignupPresenterTest {
                                                                  and displays error message. No
                                                                  navigation should happen
                                                                  */
-        presenter.signUp(EMAIL, PASSWORD, CONFIRM_PASSWORD);
+        presenter.signUp(USERNAME, EMAIL, PASSWORD, CONFIRM_PASSWORD);
 
-        verify(model).signUp(eq(EMAIL), eq(PASSWORD), callbackCaptor.capture());
+        verify(model).signUp(eq(USERNAME), eq(EMAIL), eq(PASSWORD), callbackCaptor.capture());
 
         callbackCaptor.getValue().onFailure("User already exists.");
 
@@ -189,9 +209,9 @@ public class SignupPresenterTest {
                                                                   correctly after a successful signup
                                                                   callback
                                                                   */
-        presenter.signUp(EMAIL, PASSWORD, CONFIRM_PASSWORD);
+        presenter.signUp(USERNAME, EMAIL, PASSWORD, CONFIRM_PASSWORD);
 
-        verify(model).signUp(eq(EMAIL), eq(PASSWORD), callbackCaptor.capture());
+        verify(model).signUp(eq(USERNAME), eq(EMAIL), eq(PASSWORD), callbackCaptor.capture());
 
         presenter.onDestroy();
 
@@ -207,9 +227,9 @@ public class SignupPresenterTest {
                                                                   correctly after a failed signup
                                                                   callback
                                                                   */
-        presenter.signUp(EMAIL, PASSWORD, CONFIRM_PASSWORD);
+        presenter.signUp(USERNAME, EMAIL, PASSWORD, CONFIRM_PASSWORD);
 
-        verify(model).signUp(eq(EMAIL), eq(PASSWORD), callbackCaptor.capture());
+        verify(model).signUp(eq(USERNAME), eq(EMAIL), eq(PASSWORD), callbackCaptor.capture());
 
         presenter.onDestroy();
 
@@ -226,7 +246,7 @@ public class SignupPresenterTest {
                                                          */
         presenter.onDestroy();
 
-        presenter.signUp(EMAIL, PASSWORD, CONFIRM_PASSWORD);
+        presenter.signUp(USERNAME, EMAIL, PASSWORD, CONFIRM_PASSWORD);
 
         verifyNoInteractions(view);
         verifyNoInteractions(model);
