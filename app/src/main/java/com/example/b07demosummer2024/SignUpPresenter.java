@@ -16,8 +16,12 @@ public class SignUpPresenter implements SignUpContract.Presenter {
         return email.matches(EMAIL_REGEX);
     }
     @Override
-    public void signUp(String email, String password, String confirmPassword){
+    public void signUp(String username, String email, String password, String confirmPassword){
         if (view == null) {
+            return;
+        }
+        if (username == null || username.isEmpty()){
+            view.showEmptyUsernameError();
             return;
         }
         if (email == null || email.isEmpty()) {
@@ -44,7 +48,7 @@ public class SignUpPresenter implements SignUpContract.Presenter {
         view.showLoadingIndicator();
         view.disableButton();
 
-        model.signUp(email, password, new SignUpContract.Model.Authcallback() {
+        model.signUp(username, email, password, new SignUpContract.Model.Authcallback() {
             @Override
             public void onSuccess(String uid) {
                 if (view == null) {

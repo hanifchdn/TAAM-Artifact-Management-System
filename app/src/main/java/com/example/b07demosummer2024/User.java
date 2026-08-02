@@ -2,6 +2,7 @@ package com.example.b07demosummer2024;
 
 public class User {
 
+    private String username;
     private String email;
     private String uid;
     private boolean isAdmin;
@@ -10,11 +11,17 @@ public class User {
 
     }
 
-    public User(String email, String uid, boolean isAdmin) {
+    public User(String username, String email, String uid, boolean isAdmin) {
+        this.username = username;
         this.email = email;
         this.uid = uid;
         this.isAdmin = isAdmin;
     }
+
+    public String getUsername() {
+        return username;
+    }
+
     public String getUid(){
         return uid;
     }

@@ -57,10 +57,11 @@ public class SignupFragment extends Fragment implements SignUpContract.View {
 
         signupButton.setOnClickListener(v -> {
             clearSignupError();
+            String username = usernameInput.getText().toString().trim();
             String email = emailInput.getText().toString().trim();
             String password = passwordInput.getText().toString();
             String confirmPassword = confirmPasswordInput.getText().toString();
-            presenter.signUp(email, password, confirmPassword);
+            presenter.signUp(username, email, password, confirmPassword);
         });
 
         loginLink.setOnClickListener(v -> {
@@ -132,6 +133,11 @@ public class SignupFragment extends Fragment implements SignUpContract.View {
         passwordInput.setEnabled(true);
         confirmPasswordInput.setEnabled(true);
         loginLink.setEnabled(true);
+    }
+
+    @Override
+    public void showEmptyUsernameError() {
+        showSignUpFailedError("Username cannot be empty.");
     }
 
     @Override

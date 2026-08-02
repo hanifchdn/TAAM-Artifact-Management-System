@@ -30,7 +30,7 @@ public class SignupModel implements SignUpContract.Model{
     }
 
     @Override
-    public void signUp(String email, String password, Authcallback callback){
+    public void signUp(String username, String email, String password, Authcallback callback){
         auth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(task ->  {
                     if (!task.isSuccessful()){
@@ -39,7 +39,7 @@ public class SignupModel implements SignUpContract.Model{
                     }
 
                     String uid = auth.getUid();
-                    db.child(uid).setValue(new User(email, uid, false))
+                    db.child(uid).setValue(new User(username, email, uid, false))
                             .addOnCompleteListener(dbTask -> {
                             if (dbTask.isSuccessful()) {
                                 callback.onSuccess(uid);
