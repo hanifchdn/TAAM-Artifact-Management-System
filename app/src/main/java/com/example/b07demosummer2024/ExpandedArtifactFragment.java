@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import com.bumptech.glide.Glide;
@@ -117,10 +118,7 @@ public class ExpandedArtifactFragment extends Fragment {
                 .into(expandedImage);
 
         buttonReturn.setOnClickListener(v -> getParentFragmentManager().popBackStack());
-        buttonDelete.setOnClickListener(v -> {
-            ArtifactDatabaseWriter writer = new ArtifactDatabaseWriter();
-            writer.deleteFromDatabase(Availability(args.getString(ARG_LOT)));
-        });
+        buttonDelete.setOnClickListener(v -> showDeleteConfirmation(Availability(args.getString(ARG_CURRENT_LOCATION))));
     }
 
     /**
@@ -128,5 +126,33 @@ public class ExpandedArtifactFragment extends Fragment {
      */
     private String Availability(String value) {
         return (value == null || value.trim().isEmpty()) ? "N/A" : value;
+    }
+
+    /**
+     * Shows a warning before deleting an artifact.
+     *
+     * @param artifactLot LOT of the artifact to delete
+     */
+    private void showDeleteConfirmation(String artifactLot) {
+        new AlertDialog.Builder(requireContext()).setTitle("Delete Artifact")
+                .setMessage("Are you sure you want to delete this artifact? "
+                                + "This action cannot be undone.")
+                .setPositiveButton("Delete",
+                        (dialog, which) -> deleteArtifact(artifactLot))
+                .setNegativeButton(
+                        "Cancel",
+                        (dialog, which) -> dialog.dismiss()
+                )
+                .show();
+    }
+
+    /**
+     * Deletes the artifact identified by its LOT.
+     *
+     * @param artifactLot LOT of the artifact to delete
+     */
+    private void deleteArtifact(String artifactLot) {
+        ArtifactDatabaseWriter writer = new ArtifactDatabaseWriter();
+        writer.deleteFromDatabase(artifactLot);
     }
 }
