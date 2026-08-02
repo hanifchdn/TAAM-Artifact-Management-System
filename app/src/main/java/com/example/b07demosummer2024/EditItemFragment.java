@@ -44,7 +44,7 @@ public class EditItemFragment extends Fragment {
 
     private Artifact artifactModel;
     private String artifactLOT;
-    private boolean isdatabaseQueryRunning;
+    private boolean isDatabaseQueryRunning;
 
 
     /**
@@ -54,7 +54,7 @@ public class EditItemFragment extends Fragment {
     public EditItemFragment() {}
 
     /**
-     * Create the edit fragment using an existing artifact to fill in the details
+     * Create the edit fragment using an existing artifact to fill in the text fields
      * @param existingArtifact to display in fields.
      */
     public EditItemFragment(Artifact existingArtifact) {
@@ -104,7 +104,7 @@ public class EditItemFragment extends Fragment {
             if (!validateInputs()) {
                 return;
             }
-            if (isdatabaseQueryRunning) {
+            if (isDatabaseQueryRunning) {
                 Toast.makeText(requireContext(), "Woah! The Artifact is being updated, please wait before trying again", Toast.LENGTH_SHORT).show();
                 return;
             }
@@ -144,26 +144,42 @@ public class EditItemFragment extends Fragment {
 
     }
 
+    /**
+     * Runs an update artifact query based on the artifactModel
+     * Also updates isDatabaseQueryRunning to true/false when query is running
+     * @param artifact to update in firebase db
+     */
     private void updateArtifact(Artifact artifact){
-        isdatabaseQueryRunning = true;
+        isDatabaseQueryRunning = true;
         ArtifactDatabaseWriter writer = new ArtifactDatabaseWriter();
         writer.updateDatabase(artifact, new WriteCallback() {
             @Override
             public void onSuccess(){
                 Toast.makeText(requireContext(), "Artifact updated successfully.", Toast.LENGTH_SHORT).show();
-                isdatabaseQueryRunning = false;
+                isDatabaseQueryRunning = false;
             }
             @Override
             public void onFailure(String e){
                 Toast.makeText(requireContext(), "Failed to update artifact: " + e, Toast.LENGTH_SHORT).show();
-                isdatabaseQueryRunning = false;
+                isDatabaseQueryRunning = false;
             }
 
         });
     }
+
+    /**
+     * Determines if a LOT is valid
+     * @param lot
+     * @return boolean isValid
+     */
     private boolean isValidLot(String lot){
         return lot.matches("^[a-zA-Z0-9-]+$");
     }
+
+    /**
+     * Validates the user's input, if invalid, let user know through textfield warning
+     * @return true if input is valid, false otherwise
+     */
     private boolean validateInputs(){
         String lot = editTextLot.getText().toString().trim();
         String name = editTextArtifactName.getText().toString().trim();
@@ -266,6 +282,7 @@ public class EditItemFragment extends Fragment {
      * Sets the textfields and spinners to be the values of artifactModel
      */
     private void setTextFields() {
+        //set spinners
         ArrayAdapter<CharSequence> materialAdapter =
                 ArrayAdapter.createFromResource(requireContext(), R.array.artifact_materials,
                         android.R.layout.simple_spinner_item);
@@ -285,6 +302,7 @@ public class EditItemFragment extends Fragment {
             spinnerDynasty.setSelection(dynastyAdapter.getPosition(artifactModel.getDynasty()));
         }
 
+        //set text fields
         editTextLot.setText(artifactLOT);
         editTextArtifactName.setText(artifactModel.getName());
         editTextDescription.setText(artifactModel.getDescription());
@@ -298,6 +316,8 @@ public class EditItemFragment extends Fragment {
         editTextProvenance.setText(artifactModel.getProvenance());
         editTextAccessionNumber.setText(artifactModel.getAccessionNumber());
         editTextNotes.setText(artifactModel.getNotes());
+
+        //set image if there is already one
         if (artifactModel.getImageUrl() != null && !artifactModel.getImageUrl().isEmpty()) {
             Glide.with(this).load(artifactModel.getImageUrl()).into(selectedImagePreview);
         }
