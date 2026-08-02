@@ -99,6 +99,14 @@
     <string name="home_title">Home</string>
     <string name="artifact_image_description">Artifact image</string>
     <string name="to_home">Home Page</string>
+    <string name="return_to_home">Return to Home</string>
+    <string name="save_artifact">Save Artifact</string>
+    <string name="comment_section">Artifact Comments</string>
+    <string name="like_artifact">Like Button</string>
+    <string name="edit_artifact">Edit Artifact</string>
+    <string name="delete_artifact">Delete Artifact</string>
+
+
 
     <!-- Login and signup -->
     <string name="login">Login</string>

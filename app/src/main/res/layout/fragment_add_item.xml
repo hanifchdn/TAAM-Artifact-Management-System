@@ -20,7 +20,7 @@
             android:src="@drawable/home"
             android:scaleType="centerInside"
             android:background="@drawable/rounded_corner"
-            android:backgroundTint="#009688"
+            android:backgroundTint="#00BCD4"
             android:contentDescription="@string/to_home"
             android:padding="8dp"
             android:layout_margin="4dp"

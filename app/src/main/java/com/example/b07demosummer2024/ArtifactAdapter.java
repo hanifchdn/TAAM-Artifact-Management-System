@@ -12,14 +12,24 @@ import com.bumptech.glide.Glide;
 
 public class ArtifactAdapter extends RecyclerView.Adapter<ArtifactAdapter.ArtifactViewHolder> {
     private final List<Artifact> artifactList;
+    private final OnArtifactClickListener listener;
+
+    /**
+     * Callback interface for handling clicks on an artifact card.
+     */
+    public interface OnArtifactClickListener {
+        void onArtifactClick(Artifact artifact);
+    }
+
 
     /**
      * Creates an adapter that displays the given list of artifacts.
      *
      * @param artifactList artifacts to display
      */
-    public ArtifactAdapter(List<Artifact> artifactList) {
+    public ArtifactAdapter(List<Artifact> artifactList, OnArtifactClickListener listener) {
         this.artifactList = artifactList;
+        this.listener = listener;
     }
 
     /**
@@ -47,6 +57,7 @@ public class ArtifactAdapter extends RecyclerView.Adapter<ArtifactAdapter.Artifa
                 .fallback(R.drawable.artifact_placeholder)
                 .fitCenter()
                 .into(holder.imageViewArtifact);
+        holder.itemView.setOnClickListener(v -> listener.onArtifactClick(artifact));
     }
 
     /**

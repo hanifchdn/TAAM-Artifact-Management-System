@@ -60,8 +60,6 @@ public class HomeFragment extends Fragment {
         artifactRecyclerView.setLayoutManager(
                 new GridLayoutManager(requireContext(), 2)
         );
-        artifactAdapter = new ArtifactAdapter(artifactList);
-        artifactRecyclerView.setAdapter(artifactAdapter);
 
         /**
          * Binds variables from xml layout to java
@@ -164,6 +162,15 @@ public class HomeFragment extends Fragment {
         addArtifactButton.setOnClickListener(
                 v -> loadFragment(new AddItemFragment())
         );
+
+        /**
+         *  Opens Expanded Artifact View Fragment
+         */
+        artifactAdapter = new ArtifactAdapter(artifactList, artifact -> {
+            ExpandedArtifactFragment detailFragment = ExpandedArtifactFragment.newInstance(artifact);
+            loadFragment(detailFragment);
+        });
+        artifactRecyclerView.setAdapter(artifactAdapter);
     }
 
     /**
