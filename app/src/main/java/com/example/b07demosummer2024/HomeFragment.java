@@ -20,6 +20,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -208,6 +209,8 @@ public class HomeFragment extends Fragment {
      * Navigate from home page to login page when clicking the logout button.
      */
     private void logout() {
+        new SessionModel().logOut();
+
         getParentFragmentManager().popBackStack(
                 null,
                 FragmentManager.POP_BACK_STACK_INCLUSIVE
