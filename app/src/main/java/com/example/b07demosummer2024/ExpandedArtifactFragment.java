@@ -70,6 +70,7 @@ public class ExpandedArtifactFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         ImageButton buttonReturn = view.findViewById(R.id.buttonReturn);
+        ImageButton buttonDelete = view.findViewById(R.id.buttonDelete);
         ImageView expandedImage = view.findViewById(R.id.expandedImage);
         TextView expandedName = view.findViewById(R.id.expandedName);
         TextView expandedDescription = view.findViewById(R.id.expandedDescription);
@@ -116,6 +117,10 @@ public class ExpandedArtifactFragment extends Fragment {
                 .into(expandedImage);
 
         buttonReturn.setOnClickListener(v -> getParentFragmentManager().popBackStack());
+        buttonDelete.setOnClickListener(v -> {
+            ArtifactDatabaseWriter writer = new ArtifactDatabaseWriter();
+            writer.deleteFromDatabase(Availability(args.getString(ARG_LOT)));
+        });
     }
 
     /**
