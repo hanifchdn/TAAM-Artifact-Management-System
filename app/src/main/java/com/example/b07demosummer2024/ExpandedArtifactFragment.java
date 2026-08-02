@@ -115,11 +115,7 @@ public class ExpandedArtifactFragment extends Fragment {
                 .fallback(R.drawable.artifact_placeholder)
                 .into(expandedImage);
 
-        buttonReturn.setOnClickListener(v -> {
-            FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
-            transaction.replace(R.id.fragment_container, new HomeFragment());
-            transaction.commit();
-        });
+        buttonReturn.setOnClickListener(v -> getParentFragmentManager().popBackStack());
     }
 
     /**
