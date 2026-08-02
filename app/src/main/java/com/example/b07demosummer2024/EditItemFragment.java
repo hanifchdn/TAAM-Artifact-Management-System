@@ -44,6 +44,7 @@ public class EditItemFragment extends Fragment {
 
     private Artifact artifactModel;
     private String artifactLOT;
+    private boolean isdatabaseQueryRunning;
 
 
     /**
@@ -103,6 +104,10 @@ public class EditItemFragment extends Fragment {
             if (!validateInputs()) {
                 return;
             }
+            if (isdatabaseQueryRunning) {
+                Toast.makeText(requireContext(), "Woah! The Artifact is being updated, please wait before trying again", Toast.LENGTH_SHORT).show();
+                return;
+            }
 
             // update artifact model
             artifactModel.setName(editTextArtifactName.getText().toString());
@@ -140,15 +145,18 @@ public class EditItemFragment extends Fragment {
     }
 
     private void updateArtifact(Artifact artifact){
+        isdatabaseQueryRunning = true;
         ArtifactDatabaseWriter writer = new ArtifactDatabaseWriter();
         writer.updateDatabase(artifact, new WriteCallback() {
             @Override
             public void onSuccess(){
                 Toast.makeText(requireContext(), "Artifact updated successfully.", Toast.LENGTH_SHORT).show();
+                isdatabaseQueryRunning = false;
             }
             @Override
             public void onFailure(String e){
                 Toast.makeText(requireContext(), "Failed to update artifact: " + e, Toast.LENGTH_SHORT).show();
+                isdatabaseQueryRunning = false;
             }
 
         });
