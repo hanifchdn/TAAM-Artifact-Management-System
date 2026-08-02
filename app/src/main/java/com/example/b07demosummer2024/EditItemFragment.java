@@ -323,6 +323,31 @@ public class EditItemFragment extends Fragment {
         }
     }
 
+    /**
+     * Clears references to the fragment's views when the view is destroyed.
+     */
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        editTextLot = null;
+        editTextArtifactName = null;
+        editTextDescription = null;
+        editTextCulturalOrigin = null;
+        editTextHeight = null;
+        editTextWidth = null;
+        editTextDepth = null;
+        editTextConditionReport = null;
+        editTextCurrentLocation = null;
+        editTextAcquisitionMethod = null;
+        editTextProvenance = null;
+        editTextAccessionNumber = null;
+        editTextNotes = null;
+        spinnerCategory = null;
+        spinnerMaterial = null;
+        spinnerDynasty = null;
+        selectedImagePreview = null;
+    }
+
     public EditText getEditTextLot() {
         return editTextLot;
     }
