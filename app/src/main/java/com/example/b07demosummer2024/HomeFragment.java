@@ -33,6 +33,7 @@ public class HomeFragment extends Fragment {
     private ArtifactAdapter artifactAdapter;
     private final List<Artifact> artifactList = new ArrayList<>();
     private TextView noArtifacts;
+    private LinearLayout artifactLoadingLayout;
 
     @Nullable
     @Override
@@ -73,6 +74,8 @@ public class HomeFragment extends Fragment {
         searchInput = view.findViewById(R.id.searchInput);
         searchUpdateButton = view.findViewById(R.id.searchUpdateButton);
         noArtifacts = view.findViewById(R.id.noArtifacts);
+        artifactLoadingLayout = view.findViewById(R.id.artifactLoadingLayout);
+
         /**
          * Displays searchContainer when searchButton is clicked
          */
@@ -96,6 +99,8 @@ public class HomeFragment extends Fragment {
          */
         searchUpdateButton.setOnClickListener(v -> {
             String input = searchInput.getText().toString().trim();
+            showLoadingIndicator();
+
             ArtifactDatabaseReader reader = new ArtifactDatabaseReader();
 
             ArtifactDatabaseReader.GetArtifactListReaderCallback callback =
@@ -105,6 +110,8 @@ public class HomeFragment extends Fragment {
                             if (!isAdded()) {
                                 return;
                             }
+
+                            hideLoadingIndicator();
                             artifactList.clear();
                             if(artifacts != null){
                                 artifactList.addAll(artifacts);
@@ -128,12 +135,15 @@ public class HomeFragment extends Fragment {
         /**
          * Retrieve artifacts from firebase and displays them
          */
+        showLoadingIndicator();
+
         ArtifactDatabaseReader reader = new ArtifactDatabaseReader();
         reader.getArtifactList(artifacts -> {
             if (!isAdded()) {
                 return;
             }
 
+            hideLoadingIndicator();
             if (!reader.handleArtifactListError(artifacts)) {
                 Toast.makeText(requireContext(), "No artifacts found", Toast.LENGTH_SHORT).show();
                 return;
@@ -159,6 +169,23 @@ public class HomeFragment extends Fragment {
         addArtifactButton.setOnClickListener(
                 v -> loadFragment(new AddItemFragment())
         );
+    }
+
+    /**
+     * Shows the loading indicator and hides both the RecyclerView
+     * and the empty-state message.
+     */
+    private void showLoadingIndicator() {
+        artifactLoadingLayout.setVisibility(View.VISIBLE);
+        artifactRecyclerView.setVisibility(View.GONE);
+        noArtifacts.setVisibility(View.GONE);
+    }
+
+    /**
+     * Hides loading indicator.
+     */
+    private void hideLoadingIndicator() {
+        artifactLoadingLayout.setVisibility(View.GONE);
     }
 
     /**

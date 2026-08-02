@@ -165,6 +165,34 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent" />
 
+    <LinearLayout
+        android:id="@+id/artifactLoadingLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/artifactRecyclerView"
+        app:layout_constraintEnd_toEndOf="@id/artifactRecyclerView"
+        app:layout_constraintStart_toStartOf="@id/artifactRecyclerView"
+        app:layout_constraintTop_toTopOf="@id/artifactRecyclerView">
+
+        <ProgressBar
+            android:id="@+id/artifactLoadingProgressBar"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:indeterminate="true" />
+
+        <TextView
+            android:id="@+id/artifactLoadingTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:text="@string/loading_artifacts"
+            android:textSize="16sp" />
+
+    </LinearLayout>
+
     <TextView
         android:id="@+id/noArtifacts"
         android:layout_width="wrap_content"
