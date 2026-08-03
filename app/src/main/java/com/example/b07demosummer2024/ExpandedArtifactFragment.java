@@ -35,6 +35,7 @@ public class ExpandedArtifactFragment extends Fragment {
     private static final String ARG_ACCESSION_NUMBER = "accessionNumber";
     private static final String ARG_NOTES = "notes";
     private static final String ARG_IMAGE_URL = "imageUrl";
+    private boolean isDeleteQueryRunning;
 
     /**
      * Creates a new instance of this fragment containing a given artifact's information.
@@ -121,7 +122,14 @@ public class ExpandedArtifactFragment extends Fragment {
                 .into(expandedImage);
 
         buttonReturn.setOnClickListener(v -> getParentFragmentManager().popBackStack());
-        buttonDelete.setOnClickListener(v -> showDeleteConfirmation(Availability(args.getString(ARG_LOT))));
+        buttonDelete.setOnClickListener(v -> {
+            if(isDeleteQueryRunning) {
+                Toast.makeText(requireContext(), "Wait! You're already trying to delete this", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            isDeleteQueryRunning = true;
+            showDeleteConfirmation(Availability(args.getString(ARG_LOT)));
+        });
     }
 
     /**
@@ -142,11 +150,13 @@ public class ExpandedArtifactFragment extends Fragment {
                                 + "This action cannot be undone.")
                 .setPositiveButton("Delete",
                         (dialog, which) -> deleteArtifact(artifactLot))
-                .setNegativeButton(
-                        "Cancel",
-                        (dialog, which) -> dialog.dismiss()
-                )
-                .show();
+                .setNegativeButton("Cancel",
+                        (dialog, which) -> {
+                    isDeleteQueryRunning = false;
+                    dialog.dismiss();
+                }).setOnCancelListener((dialogInterface) -> {
+                    isDeleteQueryRunning = false;
+                }).show();
     }
 
     /**
@@ -155,16 +165,20 @@ public class ExpandedArtifactFragment extends Fragment {
      * @param artifactLot LOT of the artifact to delete
      */
     private void deleteArtifact(String artifactLot) {
+        //ensure deletequery
+        isDeleteQueryRunning = true;
         ArtifactDatabaseWriter writer = new ArtifactDatabaseWriter();
         writer.deleteFromDatabase(artifactLot, new WriteCallback() {
             @Override
             public void onSuccess() {
+                isDeleteQueryRunning = false;
                 loadFragment(new HomeFragment());
             }
 
             @Override
             public void onFailure(String err) {
-                Toast.makeText(requireContext(), "Failed to delete Artifact", Toast.LENGTH_SHORT);
+                isDeleteQueryRunning = false;
+                Toast.makeText(requireContext(), "Failed to delete Artifact", Toast.LENGTH_SHORT).show();
             }
         });
     }
