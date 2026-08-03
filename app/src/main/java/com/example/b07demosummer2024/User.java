@@ -41,6 +41,9 @@ public class User {
     public List<String> getLikedArtifacts() {
         return likedArtifacts;
     }
+    public void setLikedArtifacts(List<String> likedArtifacts) {
+        this.likedArtifacts = likedArtifacts;
+    }
 
     /**
      * Adds a artifact lot to it's liked artifact list
