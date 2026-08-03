@@ -23,8 +23,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
-import androidx.fragment.app.FragmentManager;
 
 public class HomeFragment extends Fragment {
     private ImageButton searchButton;
@@ -36,6 +34,8 @@ public class HomeFragment extends Fragment {
     private final List<Artifact> artifactList = new ArrayList<>();
     private TextView noArtifacts;
     private LinearLayout artifactLoadingLayout;
+    private ImageButton savedArtifactsButton;
+    private boolean isSavedArtifactsSelected = false;
 
     @Nullable
     @Override
@@ -75,6 +75,15 @@ public class HomeFragment extends Fragment {
         searchUpdateButton = view.findViewById(R.id.searchUpdateButton);
         noArtifacts = view.findViewById(R.id.noArtifacts);
         artifactLoadingLayout = view.findViewById(R.id.artifactLoadingLayout);
+        savedArtifactsButton = view.findViewById(R.id.savedArtifactsButton);
+
+        savedArtifactsButton.setOnClickListener(v -> {
+            isSavedArtifactsSelected = !isSavedArtifactsSelected;
+            savedArtifactsButton.setImageResource(
+                    isSavedArtifactsSelected ? R.drawable.bookmark : R.drawable.bookmark_hollow
+            );
+            refreshArtifactList();
+        });
 
         /**
          * Displays searchContainer when searchButton is clicked
@@ -188,6 +197,27 @@ public class HomeFragment extends Fragment {
         artifactLoadingLayout.setVisibility(View.VISIBLE);
         artifactRecyclerView.setVisibility(View.GONE);
         noArtifacts.setVisibility(View.GONE);
+    }
+
+    /**
+     * Refresh the Home Page when it is updated
+     */
+    private void refreshArtifactList() {
+        showLoadingIndicator();
+        ArtifactDatabaseReader reader = new ArtifactDatabaseReader();
+        reader.getArtifactList(artifacts -> {
+            if (!isAdded())
+                return;
+            hideLoadingIndicator();
+            if (!reader.handleArtifactListError(artifacts)) {
+                Toast.makeText(requireContext(), "No artifacts found", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            artifactList.clear();
+            artifactList.addAll(artifacts);
+            artifactAdapter.notifyDataSetChanged();
+            updateEmptyState();
+        });
     }
 
     /**
