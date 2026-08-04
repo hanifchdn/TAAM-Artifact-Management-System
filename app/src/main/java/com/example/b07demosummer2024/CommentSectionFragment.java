@@ -86,6 +86,10 @@ public class CommentSectionFragment extends Fragment {
         loadComments();
     }
 
+    /**
+     * Makes a call to the firebase database,
+     * and odds all of the comments onto the screen
+     */
     private void loadComments() {
         CommentDatabaseReader reader = new CommentDatabaseReader();
         reader.getCommentsForArtifact(lot, new CommentDatabaseReader.GetCommentsForArtifactCallback() {
@@ -113,6 +117,10 @@ public class CommentSectionFragment extends Fragment {
         });
     }
 
+    /**
+     * Adds a comment to the firebase database, and reloads the page to show it
+     * @param body of the comment to add
+     */
     private void postComment(String body) {
         FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         if(firebaseUser == null){
@@ -150,10 +158,23 @@ public class CommentSectionFragment extends Fragment {
         });
     }
 
+    /**
+     * Deletes a comment, and reloads the page on successful firebase call
+     * @param comment to delete
+     */
     private void onDeleteComment(Comment comment) {
         CommentDatabaseWriter writer = new CommentDatabaseWriter();
-        writer.deleteFromDatabase(comment);
-        loadComments();
+        writer.deleteFromDatabase(comment, new WriteCallback() {
+            @Override
+            public void onSuccess() {
+                loadComments();
+            }
+
+            @Override
+            public void onFailure(String err) {
+                Toast.makeText(requireContext(), "Error deleting comment", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     @Override

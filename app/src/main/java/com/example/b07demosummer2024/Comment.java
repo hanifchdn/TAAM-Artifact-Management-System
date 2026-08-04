@@ -9,10 +9,20 @@ public class Comment {
     private String body;
     private String artifactLot;
 
+    /**
+     * No Argument constructor for firebase, Do not use this to create a comment
+     */
     public Comment() {
 
     }
 
+    /**
+     * Creates a new comment object
+     * @param userId of owning user
+     * @param username of owing user
+     * @param artifactLot of artifact
+     * @param body of comment
+     */
     public Comment(String userId, String username,
                    String artifactLot, String body) {
         // a unique id is guaranteed to be generated
