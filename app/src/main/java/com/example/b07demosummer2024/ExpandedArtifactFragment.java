@@ -42,6 +42,7 @@ public class ExpandedArtifactFragment extends Fragment {
     private ImageButton buttonLike;
     private ImageButton buttonEdit;
     private ImageButton buttonDelete;
+    private Artifact artifact;
     private boolean isDeleteQueryRunning = false;
 
     /**
@@ -50,6 +51,7 @@ public class ExpandedArtifactFragment extends Fragment {
     public static ExpandedArtifactFragment newInstance(Artifact artifact) {
         ExpandedArtifactFragment fragment = new ExpandedArtifactFragment();
         Bundle args = new Bundle();
+        fragment.artifact = artifact;
         args.putString(ARG_LOT, artifact.getLOT());
         args.putString(ARG_NAME, artifact.getName());
         args.putString(ARG_DESCRIPTION, artifact.getDescription());
@@ -145,6 +147,11 @@ public class ExpandedArtifactFragment extends Fragment {
                 .into(expandedImage);
 
         buttonReturn.setOnClickListener(v -> getParentFragmentManager().popBackStack());
+
+        buttonEdit.setOnClickListener(
+                v -> loadFragment(new EditItemFragment(artifact))
+        );
+
         buttonDelete.setOnClickListener(v -> {
             showDeleteConfirmation(args.getString(ARG_LOT));
         });
@@ -256,6 +263,7 @@ public class ExpandedArtifactFragment extends Fragment {
     private void loadFragment(Fragment fragment) {
         FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
         transaction.replace(R.id.fragment_container, fragment);
+        transaction.addToBackStack(null);
         transaction.commit();
     }
 }
