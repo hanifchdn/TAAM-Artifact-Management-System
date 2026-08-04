@@ -13,6 +13,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import com.bumptech.glide.Glide;
 
+
 public class ExpandedArtifactFragment extends Fragment {
     private static final String ARG_LOT = "lot";
     private static final String ARG_NAME = "name";
@@ -31,6 +32,11 @@ public class ExpandedArtifactFragment extends Fragment {
     private static final String ARG_ACCESSION_NUMBER = "accessionNumber";
     private static final String ARG_NOTES = "notes";
     private static final String ARG_IMAGE_URL = "imageUrl";
+    private static final String ARG_IS_LIKED = "isLiked";
+    private static final String ARG_LIKE_COUNT = "likeCount";
+
+    private boolean isLiked;
+    private int likeCount;
 
     /**
      * Creates a new instance of this fragment containing a given artifact's information.
@@ -55,6 +61,7 @@ public class ExpandedArtifactFragment extends Fragment {
         args.putString(ARG_ACCESSION_NUMBER, artifact.getAccessionNumber());
         args.putString(ARG_NOTES, artifact.getNotes());
         args.putString(ARG_IMAGE_URL, artifact.getImageUrl());
+        args.putInt(ARG_LIKE_COUNT, artifact.getTotalLikes());
         fragment.setArguments(args);
         return fragment;
     }
@@ -85,8 +92,8 @@ public class ExpandedArtifactFragment extends Fragment {
         TextView expandedProvenance = view.findViewById(R.id.expandedProvenance);
         TextView expandedAccessionNumber = view.findViewById(R.id.expandedAccessionNumber);
         TextView expandedNotes = view.findViewById(R.id.expandedNotes);
-        ImageButton likeButton = view.findViewById((R.id.buttonLike);
-        TextView totalLikesText = view.findViewById(R.id.total)
+        ImageButton buttonLike = view.findViewById(R.id.buttonLike);
+        TextView likeCountText = view.findViewById(R.id.likeCount);
 
         Bundle args = getArguments();
         if (args == null) {
@@ -110,6 +117,17 @@ public class ExpandedArtifactFragment extends Fragment {
         expandedAccessionNumber.setText("Accession Number: " + Availability(args.getString(ARG_ACCESSION_NUMBER)));
         expandedNotes.setText("Notes: " + Availability(args.getString(ARG_NOTES)));
 
+        likeCount = args.getInt(ARG_LIKE_COUNT, 0);
+        isLiked = false;
+        updateLikeUi(buttonLike, likeCountText);
+
+        // Incomplete
+        buttonLike.setOnClickListener(v -> {
+            isLiked = !isLiked;
+            likeCount += isLiked ? 1 : -1;
+            updateLikeUi(buttonLike, likeCountText);
+        });
+
         Glide.with(requireContext())
                 .load(args.getString(ARG_IMAGE_URL))
                 .placeholder(R.drawable.artifact_placeholder)
@@ -125,5 +143,13 @@ public class ExpandedArtifactFragment extends Fragment {
      */
     private String Availability(String value) {
         return (value == null || value.trim().isEmpty()) ? "N/A" : value;
+    }
+
+    /**
+     * Syncs the heart icon and the like counter text with the like count (incomplete).
+     */
+    private void updateLikeUi(ImageButton buttonLike, TextView likeCountText) {
+        buttonLike.setImageResource(isLiked ? R.drawable.like : R.drawable.unlike);
+        likeCountText.setText(String.valueOf(likeCount));
     }
 }
