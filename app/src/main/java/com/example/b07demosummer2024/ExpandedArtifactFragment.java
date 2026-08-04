@@ -85,6 +85,8 @@ public class ExpandedArtifactFragment extends Fragment {
         TextView expandedProvenance = view.findViewById(R.id.expandedProvenance);
         TextView expandedAccessionNumber = view.findViewById(R.id.expandedAccessionNumber);
         TextView expandedNotes = view.findViewById(R.id.expandedNotes);
+        ImageButton likeButton = view.findViewById((R.id.buttonLike);
+        TextView totalLikesText = view.findViewById(R.id.total)
 
         Bundle args = getArguments();
         if (args == null) {

@@ -63,11 +63,11 @@
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:layout_marginEnd="10dp"
-                    android:src="@drawable/temporary_asset"
+                    android:src="@drawable/unlike"
                     android:scaleType="centerInside"
                     android:background="@drawable/rounded_corner"
                     android:backgroundTint="#468C98"
-                    android:contentDescription="@string/like_artifact"
+                    android:contentDescription="@string/unlike_artifact"
                     android:padding="10dp" />
 
                 <ImageButton
@@ -81,6 +81,16 @@
                     android:backgroundTint="#468C98"
                     android:contentDescription="@string/edit_artifact"
                     android:padding="10dp" />
+
+                <TextView
+                    android:id="@+id/totalLikeCount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="#BDBDBD"
+                    android:layout_marginTop="8dp"
+                    app:layout_constraintTop_toBottomOf="@id/expandedMaterial"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent" />
 
                 <ImageButton
                     android:id="@+id/buttonDelete"
