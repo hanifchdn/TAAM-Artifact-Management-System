@@ -72,6 +72,12 @@ public class CommentSectionFragment extends Fragment {
                 if (!isAdded()) {
                     return;
                 }
+                if (comments.isEmpty()) {
+                    noCommentsText.setVisibility(View.VISIBLE);
+                }
+                else {
+                    noCommentsText.setVisibility(View.GONE);
+                }
                 adapter.updateComment(comments);
             }
 
