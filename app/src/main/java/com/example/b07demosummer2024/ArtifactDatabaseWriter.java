@@ -1,5 +1,6 @@
 package com.example.b07demosummer2024;
 
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -78,15 +79,19 @@ public class ArtifactDatabaseWriter implements DatabaseAdder, DatabaseDeleter, D
      *
      *
      * @param item The Artifact to delete.
-     *
+     * @param callback a callback that will run a on success/failure method
      */
     @Override
-    public void deleteFromDatabase(DatabaseItem item) {
+    public void deleteFromDatabase(DatabaseItem item, WriteCallback callback) {
         if (!(item instanceof Artifact)) {
+            if(callback != null){
+                callback.onFailure("Item is not an artifact");
+                return;
+            }
             return;
         }
-        Artifact artifact = (Artifact) item;
-        dbReference.child(artifact.getLOT()).removeValue();
+        deleteFromDatabase(item.getLOT(), callback);
+
     }
 
     /**
@@ -99,7 +104,17 @@ public class ArtifactDatabaseWriter implements DatabaseAdder, DatabaseDeleter, D
      * @param LOT the LOT of the artifact to remove
      *
      */
-    public void deleteFromDatabase(String LOT) {
-        dbReference.child(LOT).removeValue();
+    public void deleteFromDatabase(String LOT, WriteCallback callback) {
+        Task<Void> task = dbReference.child(LOT).removeValue();
+        task.addOnSuccessListener(success -> {
+            if(callback != null){
+                callback.onSuccess();
+            }
+        });
+        task.addOnFailureListener((exception) -> {
+            if (callback != null) {
+                callback.onFailure(exception.getMessage());
+            }
+        });
     }
 }
