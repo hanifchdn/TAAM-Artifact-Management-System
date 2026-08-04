@@ -58,6 +58,9 @@ public class HomeFragment extends Fragment {
     ) {
         super.onViewCreated(view, savedInstanceState);
 
+        User curUser = SessionManager.getInstance().getCurrentUser();
+        boolean isAdmin = curUser.isAdmin();
+
         /**
          * Configures RecyclerView and its adapter to display two artifacts on each row.
          */

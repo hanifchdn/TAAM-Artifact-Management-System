@@ -81,6 +81,9 @@ public class ExpandedArtifactFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        User curUser = SessionManager.getInstance().getCurrentUser();
+        boolean isAdmin = curUser.isAdmin();
+
         ImageView expandedImage = view.findViewById(R.id.expandedImage);
         TextView expandedName = view.findViewById(R.id.expandedName);
         TextView expandedDescription = view.findViewById(R.id.expandedDescription);
