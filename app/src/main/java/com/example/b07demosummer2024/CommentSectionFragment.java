@@ -15,6 +15,11 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -109,29 +114,39 @@ public class CommentSectionFragment extends Fragment {
     }
 
     private void postComment(String body) {
-        /* TODO: Retrieve userid and username*/
-        String userId = "UserID";
-        String username = "Username";
-        Comment comment = new Comment(userId, username, lot, body);
-        CommentDatabaseWriter writer = new CommentDatabaseWriter();
-
-        writer.addToDatabase(comment, new WriteCallback() {
-            @Override
-            public void onSuccess() {
-                if (!isAdded()) {
+        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        if(firebaseUser == null){
+            Toast.makeText(requireContext(),"You must be logged in to comment", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        String uid = firebaseUser.getUid();
+        DatabaseReference userReference = FirebaseDatabase.getInstance("https://taam-artifact-storage-system-default-rtdb.firebaseio.com/").getReference("users").child(uid);
+        userReference.get().addOnSuccessListener(snapshot -> {
+            User currentUser = snapshot.getValue(User.class);
+            if(currentUser == null){
+                Toast.makeText(requireContext(), "User profile could not be found", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            Comment comment = new Comment(currentUser.getUid(), currentUser.getUsername(), lot, body);
+            CommentDatabaseWriter writer = new CommentDatabaseWriter();
+            writer.addToDatabase(comment, new WriteCallback(){
+                @Override
+                public void onSuccess(){
+                    if(!isAdded()){
+                        return;
+                    }
+                    commentInput.setText("");
+                    loadComments();
+                }
+                @Override
+                public void onFailure(String errorMessage){
+                    if(!isAdded()){
+                        return;
+                    }
+                    Toast.makeText(requireContext(), "Failed to post comment", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                commentInput.setText("");
-                loadComments();
-            }
-
-            @Override
-            public void onFailure(String errorMessage) {
-                if (!isAdded()) {
-                    return;
-                }
-                Toast.makeText(requireContext(), "Failed to post comment", Toast.LENGTH_SHORT).show();
-            }
+            });
         });
     }
 
