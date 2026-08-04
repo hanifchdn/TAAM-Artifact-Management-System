@@ -56,7 +56,22 @@ public class HomeFragment extends Fragment {
             @NonNull View view,
             @Nullable Bundle savedInstanceState
     ) {
+
+        // run request to update profile in case a change occured
         super.onViewCreated(view, savedInstanceState);
+        SessionModel sessionModel = new SessionModel();
+        sessionModel.fetchUserProfile(SessionManager.getInstance().getCurrentUser().getUid(), new SessionContract.Model.ProfileCallback() {
+            @Override
+            public void onProfileLoaded(User newUser) {
+                SessionManager.getInstance().setCurrentUser(newUser);
+            }
+
+            // Ignore an error, as user does not need to know if a routine refresh failed
+            @Override
+            public void onProfileError(String message) {
+
+            }
+        });
 
         /**
          * Configures RecyclerView and its adapter to display two artifacts on each row.
@@ -107,38 +122,7 @@ public class HomeFragment extends Fragment {
          * activity before accessing the fragment context or updating the user interface.
          */
         searchUpdateButton.setOnClickListener(v -> {
-            String input = searchInput.getText().toString().trim();
-            showLoadingIndicator();
-
-            ArtifactDatabaseReader reader = new ArtifactDatabaseReader();
-
-            ArtifactDatabaseReader.GetArtifactListReaderCallback callback =
-                    new ArtifactDatabaseReader.GetArtifactListReaderCallback() {
-                        @Override
-                        public void getArtifactListCallback(List<Artifact> artifacts) {
-                            if (!isAdded()) {
-                                return;
-                            }
-
-                            hideLoadingIndicator();
-                            artifactList.clear();
-                            if(artifacts != null){
-                                artifactList.addAll(artifacts);
-                            }
-                            artifactAdapter.notifyDataSetChanged();
-                            updateEmptyState();
-                            boolean isValid = reader.handleArtifactListError(artifacts);
-                            if(!isValid){
-                                Toast.makeText(requireContext(), "No artifacts found", Toast.LENGTH_SHORT).show();
-                            }
-                        }
-                    };
-
-            if (input.isEmpty()) {
-                reader.getArtifactList(callback);
-            } else {
-                reader.getArtifactListBySubstring(input, callback);
-            }
+            searchForArtifacts();
         });
 
         /**
@@ -203,21 +187,53 @@ public class HomeFragment extends Fragment {
      * Refresh the Home Page when it is updated
      */
     private void refreshArtifactList() {
+        searchForArtifacts();
+    }
+
+    /**
+     * Searches for artifacts based on search input and user filter
+     */
+    private void searchForArtifacts() {
+        String input = searchInput.getText().toString().trim();
         showLoadingIndicator();
+
         ArtifactDatabaseReader reader = new ArtifactDatabaseReader();
-        reader.getArtifactList(artifacts -> {
-            if (!isAdded())
-                return;
-            hideLoadingIndicator();
-            if (!reader.handleArtifactListError(artifacts)) {
-                Toast.makeText(requireContext(), "No artifacts found", Toast.LENGTH_SHORT).show();
-                return;
-            }
-            artifactList.clear();
-            artifactList.addAll(artifacts);
-            artifactAdapter.notifyDataSetChanged();
-            updateEmptyState();
-        });
+
+        ArtifactDatabaseReader.GetArtifactListReaderCallback callback =
+                new ArtifactDatabaseReader.GetArtifactListReaderCallback() {
+                    @Override
+                    public void getArtifactListCallback(List<Artifact> artifacts) {
+                        if (!isAdded()) {
+                            return;
+                        }
+
+                        hideLoadingIndicator();
+                        artifactList.clear();
+                        if(artifacts != null){
+                            if (isSavedArtifactsSelected) {
+                                for (Artifact artifact : artifacts) {
+                                    if (SessionManager.getInstance().getCurrentUser().containsSavedArtifact(artifact.getLOT())) {
+                                        artifactList.add(artifact);
+                                    }
+                                }
+                            }else {
+                                artifactList.addAll(artifacts);
+                            }
+                        }
+                        artifactAdapter.notifyDataSetChanged();
+                        updateEmptyState();
+                        boolean isValid = reader.handleArtifactListError(artifacts);
+                        if(!isValid){
+                            Toast.makeText(requireContext(), "No artifacts found", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                };
+
+        if (input.isEmpty()) {
+            reader.getArtifactList(callback);
+        } else {
+            reader.getArtifactListBySubstring(input, callback);
+        }
     }
 
     /**
