@@ -42,6 +42,8 @@ public class ExpandedArtifactFragment extends Fragment {
     private ImageButton buttonLike;
     private ImageButton buttonEdit;
     private ImageButton buttonDelete;
+    private User currentUser;
+    private boolean isSaveQueryRunning = false;
     private boolean isDeleteQueryRunning = false;
 
     /**
@@ -104,6 +106,8 @@ public class ExpandedArtifactFragment extends Fragment {
         buttonEdit = view.findViewById(R.id.buttonEdit);
         buttonDelete = view.findViewById(R.id.buttonDelete);
 
+        /* TODO: Retrieve User*/
+
         Bundle args = getArguments();
         if (args == null) {
             return;
@@ -134,9 +138,8 @@ public class ExpandedArtifactFragment extends Fragment {
                 .into(expandedImage);
 
         buttonReturn.setOnClickListener(v -> getParentFragmentManager().popBackStack());
-        buttonDelete.setOnClickListener(v -> {
-            showDeleteConfirmation(args.getString(ARG_LOT));
-        });
+        buttonSave.setOnClickListener(v -> toggleSavedArtifact(args.getString(ARG_LOT)));
+        buttonDelete.setOnClickListener(v -> showDeleteConfirmation(args.getString(ARG_LOT)));
 
         requireActivity().getOnBackPressedDispatcher().addCallback(
                         getViewLifecycleOwner(),
@@ -147,7 +150,7 @@ public class ExpandedArtifactFragment extends Fragment {
                              */
                             @Override
                             public void handleOnBackPressed() {
-                                if (isDeleteQueryRunning) {
+                                if (isQueryRunning()) {
                                     return;
                                 }
                                 setEnabled(false);
@@ -162,6 +165,13 @@ public class ExpandedArtifactFragment extends Fragment {
      */
     private String Availability(String value) {
         return (value == null || value.trim().isEmpty()) ? "N/A" : value;
+    }
+
+    /**
+     * Returns true if a query is running
+     */
+    private boolean isQueryRunning() {
+        return (isDeleteQueryRunning || isSaveQueryRunning);
     }
 
     /**
@@ -180,6 +190,56 @@ public class ExpandedArtifactFragment extends Fragment {
                         (dialog, which) -> dialog.dismiss()
                 )
                 .show();
+    }
+
+    /**
+     * Saves or unsaves the currently displayed artifact.
+     *
+     * @param artifactLot LOT of the artifact to save
+     */
+    private void toggleSavedArtifact(String artifactLot) {
+        isSaveQueryRunning = true;
+        disableButton();
+
+        boolean wasSaved = currentUser.containsSavedArtifact(artifactLot);
+        if (wasSaved) {
+            currentUser.removeSavedArtifact(artifactLot);
+        }
+        else {
+            currentUser.addSavedArtifact(artifactLot);
+        }
+
+        UserDatabaseWriter writer = new UserDatabaseWriter();
+        writer.updateSavedArtifacts(currentUser, new WriteCallback() {
+                    @Override
+                    public void onSuccess() {
+                        if (!isAdded()) {
+                            return;
+                        }
+                        Toast.makeText(requireContext(), wasSaved ? "Artifact unsaved" : "Artifact saved", Toast.LENGTH_SHORT).show();
+                        isSaveQueryRunning = false;
+                        enableButton();
+                    }
+
+                    @Override
+                    public void onFailure(String errorMessage) {
+                        if (wasSaved) {
+                            currentUser.addSavedArtifact(artifactLot);
+                        }
+                        else {
+                            currentUser.removeSavedArtifact(artifactLot);
+                        }
+
+                        if (!isAdded()) {
+                            return;
+                        }
+                        Toast.makeText(requireContext(), "Failed to update saved artifact", Toast.LENGTH_SHORT).show();
+                        isSaveQueryRunning = false;
+                        enableButton();
+                    }
+                }
+
+        );
     }
 
     /**
