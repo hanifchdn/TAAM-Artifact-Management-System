@@ -30,7 +30,6 @@ public class Artifact implements DatabaseItem{
     private String accessionNumber;
     private String notes;
     private String imageUrl;
-    private int totalLikes;
 
     public Artifact() {}
     public Artifact(String LOT, String name, String description, String category, String material, String dynasty) {
@@ -43,20 +42,6 @@ public class Artifact implements DatabaseItem{
 
     }
 
-    /**
-     * Increases Artifact's total likes by one
-     */
-    public void increaseTotalLikesByOne() {
-        totalLikes++;
-    }
-
-    public int getTotalLikes() {
-        return totalLikes;
-    }
-
-    public void setTotalLikes(int totalLikes) {
-        this.totalLikes = totalLikes;
-    }
     public String getLOT() {
         return LOT;
     }

@@ -7,11 +7,16 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import com.bumptech.glide.Glide;
+import com.google.firebase.auth.FirebaseAuth;
+
+import java.util.List;
 
 
 public class ExpandedArtifactFragment extends Fragment {
@@ -35,6 +40,7 @@ public class ExpandedArtifactFragment extends Fragment {
     private static final String ARG_IS_LIKED = "isLiked";
     private static final String ARG_LIKE_COUNT = "likeCount";
 
+    private String lot;
     private boolean isLiked;
     private int likeCount;
 
@@ -61,7 +67,7 @@ public class ExpandedArtifactFragment extends Fragment {
         args.putString(ARG_ACCESSION_NUMBER, artifact.getAccessionNumber());
         args.putString(ARG_NOTES, artifact.getNotes());
         args.putString(ARG_IMAGE_URL, artifact.getImageUrl());
-        args.putInt(ARG_LIKE_COUNT, artifact.getTotalLikes());
+        args.putInt(ARG_LIKE_COUNT, 0);
         fragment.setArguments(args);
         return fragment;
     }
@@ -119,10 +125,74 @@ public class ExpandedArtifactFragment extends Fragment {
 
         likeCount = args.getInt(ARG_LIKE_COUNT, 0);
         isLiked = false;
-        updateLikeUi(buttonLike, likeCountText);
 
-        // Incomplete
+        String artifactLot = args.getString(ARG_LOT);
+        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        LikeDatabaseReader likeDatabaseReader = new LikeDatabaseReader();
+        likeDatabaseReader.hasUserLiked(userId, artifactLot, new LikeDatabaseReader.HasUserLikedCallback() {
+            @Override
+            public void onSuccess(boolean hasLiked) {
+                isLiked = hasLiked;
+                updateLikeUi(buttonLike, likeCountText);
+            }
+
+            @Override
+            public void onFailure(String errorMessage) {
+                Toast.makeText(requireContext(), errorMessage, Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        likeDatabaseReader.GetLikesOnArtifact(artifactLot, new LikeDatabaseReader.GetLikesCallback() {
+            @Override
+            public void onSuccess(int amountOfLikes) {
+                likeCount = amountOfLikes;
+                updateLikeUi(buttonLike, likeCountText);
+            }
+
+            @Override
+            public void onFailure(String errorMessage) {
+                Toast.makeText(requireContext(), errorMessage, Toast.LENGTH_SHORT).show();
+            }
+        });
+
         buttonLike.setOnClickListener(v -> {
+            LikeDatabaseWriter likeDatabaseWriter = new LikeDatabaseWriter();
+            if (isLiked) {
+                likeDatabaseWriter.removeFromDatabase(userId, artifactLot, new WriteCallback() {
+                    // all good on success
+                    @Override
+                    public void onSuccess() {
+
+                    }
+
+                    // undo unlike on failure
+                    @Override
+                    public void onFailure(String err) {
+                        isLiked = !isLiked;
+                        likeCount += isLiked ? 1 : -1;
+                        updateLikeUi(buttonLike, likeCountText);
+                    }
+                });
+            }
+            else {
+                Like newLike = new Like(userId, artifactLot);
+                likeDatabaseWriter.addToDatabase(newLike, new WriteCallback() {
+                    // all good on success
+                    @Override
+                    public void onSuccess() {
+
+                    }
+
+                    // undo like on failure
+                    @Override
+                    public void onFailure(String err) {
+                        isLiked = !isLiked;
+                        likeCount += isLiked ? 1 : -1;
+                        updateLikeUi(buttonLike, likeCountText);
+                        Toast.makeText(requireContext(), "Error liking artifact", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
             isLiked = !isLiked;
             likeCount += isLiked ? 1 : -1;
             updateLikeUi(buttonLike, likeCountText);
@@ -151,5 +221,6 @@ public class ExpandedArtifactFragment extends Fragment {
     private void updateLikeUi(ImageButton buttonLike, TextView likeCountText) {
         buttonLike.setImageResource(isLiked ? R.drawable.like : R.drawable.unlike);
         likeCountText.setText(String.valueOf(likeCount));
+
     }
 }
