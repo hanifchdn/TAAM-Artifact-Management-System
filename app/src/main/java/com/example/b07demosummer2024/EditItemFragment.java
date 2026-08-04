@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
@@ -86,6 +87,8 @@ public class EditItemFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         // UI setup
         super.onViewCreated(view, savedInstanceState);
+        ImageButton backButton = view.findViewById(R.id.backButton);
+        backButton.setOnClickListener(v -> getParentFragmentManager().popBackStack());
         bindTextFields(view);
         bindSpinners(view);
         configureCategorySpinner();
