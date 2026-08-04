@@ -112,15 +112,7 @@ public class HomeFragment extends Fragment {
             }
         });
 
-        /**
-         * Searches for artifacts using the text entered in the search input field.
-         *
-         * If the input is empty, all artifacts are retrieved from the database.
-         * Otherwise, artifacts whose fields contain the entered substring are retrieved.
-         *
-         * The callback first checks whether this fragment is still attached to its
-         * activity before accessing the fragment context or updating the user interface.
-         */
+        // search for artifact on search button click
         searchUpdateButton.setOnClickListener(v -> {
             searchForArtifacts();
         });
@@ -191,7 +183,13 @@ public class HomeFragment extends Fragment {
     }
 
     /**
-     * Searches for artifacts based on search input and user filter
+     * Searches for artifacts using the text entered in the search input field.
+     *
+     * If the input is empty, all artifacts are retrieved from the database.
+     * Otherwise, artifacts whose fields contain the entered substring are retrieved.
+     *
+     * The callback first checks whether this fragment is still attached to its
+     * activity before accessing the fragment context or updating the user interface.
      */
     private void searchForArtifacts() {
         String input = searchInput.getText().toString().trim();
