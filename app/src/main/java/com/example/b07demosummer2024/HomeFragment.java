@@ -169,6 +169,11 @@ public class HomeFragment extends Fragment {
         ImageButton addArtifactButton =
                 view.findViewById(R.id.addArtifactButton);
 
+
+        addArtifactButton.setVisibility(
+                isAdmin ? View.VISIBLE : View.GONE
+        );
+
         addArtifactButton.setOnClickListener(
                 v -> loadFragment(new AddItemFragment())
         );
