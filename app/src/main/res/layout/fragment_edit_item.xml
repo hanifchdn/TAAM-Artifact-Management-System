@@ -1,391 +1,436 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:background="#F4F5F6"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true"
     tools:context=".EditItemFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/toolBar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        tools:context=".EditItemFragment">
+        android:layout_height="64dp"
+        android:paddingStart="10dp"
+        android:paddingEnd="10dp"
+        android:background="#468C98"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <ImageButton
+            android:id="@+id/backButton"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:src="@drawable/back"
+            android:scaleType="centerInside"
+            android:background="@drawable/rounded_corner"
+            android:contentDescription="@string/back"
+            android:padding="13dp"
+            app:tint="#F4F5F6"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
 
         <TextView
-            android:id="@+id/textViewFormTitle"
-            android:layout_width="wrap_content"
+            android:id="@+id/addArtifactsTitle"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="@string/edit_artifact_title"
+            android:text="@string/edit_artifact"
+            android:textColor="#F4F5F6"
+            android:textAlignment="viewStart"
             android:textSize="24sp"
             android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/textViewLot"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:text="@string/lot_label"
-            android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/textViewFormTitle" />
-
-        <EditText
-            android:id="@+id/editTextLot"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:enabled="false"
-            android:hint="@string/lot_hint"
-            android:inputType="text"
-            android:minHeight="48dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textViewLot" />
-
-        <TextView
-            android:id="@+id/textViewArtifactName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:text="@string/artifact_name_label"
-            android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/editTextLot" />
-
-        <EditText
-            android:id="@+id/editTextArtifactName"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:hint="@string/artifact_name_hint"
-            android:inputType="textCapWords"
-            android:minHeight="48dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textViewArtifactName" />
-
-        <TextView
-            android:id="@+id/textViewDescription"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:text="@string/description_label"
-            android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/editTextArtifactName" />
-
-        <EditText
-            android:id="@+id/editTextDescription"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:gravity="top|start"
-            android:hint="@string/description_hint"
-            android:inputType="textCapSentences|textMultiLine"
-            android:minHeight="48dp"
-            android:minLines="4"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textViewDescription" />
-
-        <TextView
-            android:id="@+id/textViewCategory"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:text="@string/category_label"
-            android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/editTextDescription" />
-
-        <Spinner
-            android:id="@+id/spinnerCategory"
-            android:layout_width="0dp"
-            android:layout_height="48dp"
-            android:spinnerMode="dropdown"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textViewCategory" />
-
-        <TextView
-            android:id="@+id/textViewMaterial"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:text="@string/material_label"
-            android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/spinnerCategory" />
-
-        <Spinner
-            android:id="@+id/spinnerMaterial"
-            android:layout_width="0dp"
-            android:layout_height="48dp"
-            android:spinnerMode="dropdown"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textViewMaterial" />
-
-        <TextView
-            android:id="@+id/textViewDynasty"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:text="@string/dynasty_label"
-            android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/spinnerMaterial" />
-
-        <Spinner
-            android:id="@+id/spinnerDynasty"
-            android:layout_width="0dp"
-            android:layout_height="48dp"
-            android:spinnerMode="dropdown"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textViewDynasty" />
-
-        <TextView
-            android:id="@+id/textViewCulturalOrigin"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:text="@string/cultural_origin_label"
-            android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/spinnerDynasty" />
-
-        <EditText
-            android:id="@+id/editTextCulturalOrigin"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:hint="@string/cultural_origin_hint"
-            android:inputType="textCapWords"
-            android:minHeight="48dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textViewCulturalOrigin" />
-
-        <TextView
-            android:id="@+id/textViewDimensionsLabel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:text="@string/dimensions_label"
-            android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/editTextCulturalOrigin" />
-
-        <EditText
-            android:id="@+id/editTextHeight"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:hint="@string/height_hint"
-            android:inputType="numberDecimal"
-            android:minHeight="48dp"
-            app:layout_constraintEnd_toStartOf="@id/editTextWidth"
-            app:layout_constraintHorizontal_weight="1"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/textViewDimensionsLabel" />
-
-        <EditText
-            android:id="@+id/editTextWidth"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:hint="@string/width_hint"
-            android:inputType="numberDecimal"
-            android:minHeight="48dp"
-            app:layout_constraintEnd_toStartOf="@id/editTextDepth"
-            app:layout_constraintHorizontal_weight="1"
-            app:layout_constraintStart_toEndOf="@id/editTextHeight"
-            app:layout_constraintTop_toTopOf="@id/editTextHeight" />
-
-        <EditText
-            android:id="@+id/editTextDepth"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:hint="@string/depth_hint"
-            android:inputType="numberDecimal"
-            android:minHeight="48dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_weight="1"
-            app:layout_constraintStart_toEndOf="@id/editTextWidth"
-            app:layout_constraintTop_toTopOf="@id/editTextHeight" />
-
-        <TextView
-            android:id="@+id/textViewConditionReport"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:text="@string/condition_report_label"
-            android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/editTextHeight" />
-
-        <EditText
-            android:id="@+id/editTextConditionReport"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:gravity="top|start"
-            android:hint="@string/condition_report_hint"
-            android:inputType="textCapSentences"
-            android:minHeight="48dp"
-            android:minLines="4"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textViewConditionReport" />
-
-        <TextView
-            android:id="@+id/textViewCurrentLocation"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:text="@string/current_location_label"
-            android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/editTextConditionReport" />
-
-        <EditText
-            android:id="@+id/editTextCurrentLocation"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:hint="@string/current_location_hint"
-            android:inputType="textCapWords"
-            android:minHeight="48dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textViewCurrentLocation" />
-
-        <TextView
-            android:id="@+id/textViewAcquisitionMethod"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:text="@string/acquisition_method_label"
-            android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/editTextCurrentLocation" />
-
-        <EditText
-            android:id="@+id/editTextAcquisitionMethod"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:hint="@string/acquisition_method_hint"
-            android:inputType="textCapWords"
-            android:minHeight="48dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textViewAcquisitionMethod" />
-
-        <TextView
-            android:id="@+id/textViewProvenance"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:text="@string/provenance_label"
-            android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/editTextAcquisitionMethod" />
-
-        <EditText
-            android:id="@+id/editTextProvenance"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:gravity="top|start"
-            android:hint="@string/provenance_hint"
-            android:inputType="textCapSentences"
-            android:minHeight="48dp"
-            android:minLines="3"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textViewProvenance" />
-
-        <TextView
-            android:id="@+id/textViewAccessionNumber"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:text="@string/accession_number_label"
-            android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/editTextProvenance" />
-
-        <EditText
-            android:id="@+id/editTextAccessionNumber"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:hint="@string/accession_number_hint"
-            android:inputType="numberDecimal"
-            android:minHeight="48dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textViewAccessionNumber" />
-
-        <TextView
-            android:id="@+id/textViewNotes"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:text="@string/notes_label"
-            android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/editTextAccessionNumber" />
-
-        <EditText
-            android:id="@+id/editTextNotes"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:gravity="top|start"
-            android:hint="@string/notes_hint"
-            android:inputType="textCapSentences|textMultiLine"
-            android:minHeight="100dp"
-            android:minLines="4"
-
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textViewNotes" />
-
-        <ImageView
-            android:id="@+id/selectedImagePreview"
-            android:layout_width="160dp"
-            android:layout_height="160dp"
-            android:layout_marginTop="50dp"
-            android:src="@drawable/add_photo"
-            android:scaleType="centerCrop"
-            android:contentDescription="@string/select_image_description"
-            android:clickable="true"
-            android:focusable="true"
-            app:layout_constraintTop_toBottomOf="@+id/editTextNotes"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"/>
-
-        <Button
-            android:id="@+id/buttonSelectImage"
-            android:layout_width="150dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="25dp"
-            android:backgroundTint="#009688"
-            android:text="@string/select_image_description"
-            app:layout_constraintTop_toBottomOf="@+id/selectedImagePreview"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"/>
-
-        <Button
-            android:id="@+id/buttonEdit"
-            android:layout_width="150dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="75dp"
-            android:text="@string/edit_item"
-            android:backgroundTint="#009688"
-            app:layout_constraintTop_toBottomOf="@+id/buttonSelectImage"
+            android:letterSpacing="0.05"
+            android:layout_marginStart="12dp"
+            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"/>
+            app:layout_constraintStart_toEndOf="@+id/backButton"
+            app:layout_constraintEnd_toEndOf="parent" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
-</ScrollView>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:fillViewport="true"
+        app:layout_constraintTop_toBottomOf="@id/toolBar"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:paddingTop="20dp"
+            tools:context=".EditItemFragment">
+
+            <TextView
+                android:id="@+id/textViewLot"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/lot_label"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <EditText
+                android:id="@+id/editTextLot"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:enabled="false"
+                android:hint="@string/lot_hint"
+                android:inputType="text"
+                android:minHeight="48dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textViewLot" />
+
+            <TextView
+                android:id="@+id/textViewArtifactName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="@string/artifact_name_label"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/editTextLot" />
+
+            <EditText
+                android:id="@+id/editTextArtifactName"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:hint="@string/artifact_name_hint"
+                android:inputType="textCapWords"
+                android:minHeight="48dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textViewArtifactName" />
+
+            <TextView
+                android:id="@+id/textViewDescription"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="@string/description_label"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/editTextArtifactName" />
+
+            <EditText
+                android:id="@+id/editTextDescription"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:gravity="top|start"
+                android:hint="@string/description_hint"
+                android:inputType="textCapSentences|textMultiLine"
+                android:minHeight="48dp"
+                android:minLines="4"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textViewDescription" />
+
+            <TextView
+                android:id="@+id/textViewCategory"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="@string/category_label"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/editTextDescription" />
+
+            <Spinner
+                android:id="@+id/spinnerCategory"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:spinnerMode="dropdown"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textViewCategory" />
+
+            <TextView
+                android:id="@+id/textViewMaterial"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="@string/material_label"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/spinnerCategory" />
+
+            <Spinner
+                android:id="@+id/spinnerMaterial"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:spinnerMode="dropdown"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textViewMaterial" />
+
+            <TextView
+                android:id="@+id/textViewDynasty"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="@string/dynasty_label"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/spinnerMaterial" />
+
+            <Spinner
+                android:id="@+id/spinnerDynasty"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:spinnerMode="dropdown"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textViewDynasty" />
+
+            <TextView
+                android:id="@+id/textViewCulturalOrigin"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="@string/cultural_origin_label"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/spinnerDynasty" />
+
+            <EditText
+                android:id="@+id/editTextCulturalOrigin"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:hint="@string/cultural_origin_hint"
+                android:inputType="textCapWords"
+                android:minHeight="48dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textViewCulturalOrigin" />
+
+            <TextView
+                android:id="@+id/textViewDimensionsLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="@string/dimensions_label"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/editTextCulturalOrigin" />
+
+            <EditText
+                android:id="@+id/editTextHeight"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:hint="@string/height_hint"
+                android:inputType="numberDecimal"
+                android:minHeight="48dp"
+                app:layout_constraintEnd_toStartOf="@id/editTextWidth"
+                app:layout_constraintHorizontal_weight="1"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/textViewDimensionsLabel" />
+
+            <EditText
+                android:id="@+id/editTextWidth"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:hint="@string/width_hint"
+                android:inputType="numberDecimal"
+                android:minHeight="48dp"
+                app:layout_constraintEnd_toStartOf="@id/editTextDepth"
+                app:layout_constraintHorizontal_weight="1"
+                app:layout_constraintStart_toEndOf="@id/editTextHeight"
+                app:layout_constraintTop_toTopOf="@id/editTextHeight" />
+
+            <EditText
+                android:id="@+id/editTextDepth"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:hint="@string/depth_hint"
+                android:inputType="numberDecimal"
+                android:minHeight="48dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_weight="1"
+                app:layout_constraintStart_toEndOf="@id/editTextWidth"
+                app:layout_constraintTop_toTopOf="@id/editTextHeight" />
+
+            <TextView
+                android:id="@+id/textViewConditionReport"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="@string/condition_report_label"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/editTextHeight" />
+
+            <EditText
+                android:id="@+id/editTextConditionReport"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:gravity="top|start"
+                android:hint="@string/condition_report_hint"
+                android:inputType="textCapSentences"
+                android:minHeight="48dp"
+                android:minLines="4"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textViewConditionReport" />
+
+            <TextView
+                android:id="@+id/textViewCurrentLocation"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="@string/current_location_label"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/editTextConditionReport" />
+
+            <EditText
+                android:id="@+id/editTextCurrentLocation"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:hint="@string/current_location_hint"
+                android:inputType="textCapWords"
+                android:minHeight="48dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textViewCurrentLocation" />
+
+            <TextView
+                android:id="@+id/textViewAcquisitionMethod"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="@string/acquisition_method_label"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/editTextCurrentLocation" />
+
+            <EditText
+                android:id="@+id/editTextAcquisitionMethod"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:hint="@string/acquisition_method_hint"
+                android:inputType="textCapWords"
+                android:minHeight="48dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textViewAcquisitionMethod" />
+
+            <TextView
+                android:id="@+id/textViewProvenance"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="@string/provenance_label"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/editTextAcquisitionMethod" />
+
+            <EditText
+                android:id="@+id/editTextProvenance"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:gravity="top|start"
+                android:hint="@string/provenance_hint"
+                android:inputType="textCapSentences"
+                android:minHeight="48dp"
+                android:minLines="3"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textViewProvenance" />
+
+            <TextView
+                android:id="@+id/textViewAccessionNumber"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="@string/accession_number_label"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/editTextProvenance" />
+
+            <EditText
+                android:id="@+id/editTextAccessionNumber"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:hint="@string/accession_number_hint"
+                android:inputType="numberDecimal"
+                android:minHeight="48dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textViewAccessionNumber" />
+
+            <TextView
+                android:id="@+id/textViewNotes"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="@string/notes_label"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/editTextAccessionNumber" />
+
+            <EditText
+                android:id="@+id/editTextNotes"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:gravity="top|start"
+                android:hint="@string/notes_hint"
+                android:inputType="textCapSentences|textMultiLine"
+                android:minHeight="100dp"
+                android:minLines="4"
+
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textViewNotes" />
+
+            <ImageView
+                android:id="@+id/selectedImagePreview"
+                android:layout_width="160dp"
+                android:layout_height="160dp"
+                android:layout_marginTop="50dp"
+                android:src="@drawable/add_photo"
+                android:scaleType="centerCrop"
+                android:contentDescription="@string/select_image_description"
+                android:clickable="true"
+                android:focusable="true"
+                app:layout_constraintTop_toBottomOf="@+id/editTextNotes"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
+
+            <Button
+                android:id="@+id/buttonSelectImage"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="25dp"
+                android:backgroundTint="#009688"
+                android:text="@string/select_image_description"
+                app:layout_constraintTop_toBottomOf="@+id/selectedImagePreview"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
+
+            <Button
+                android:id="@+id/buttonEdit"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="75dp"
+                android:text="@string/edit_item"
+                android:backgroundTint="#009688"
+                app:layout_constraintTop_toBottomOf="@+id/buttonSelectImage"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>
