@@ -1,12 +1,9 @@
 package com.example.b07demosummer2024;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -23,8 +20,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
-import androidx.fragment.app.FragmentManager;
 
 public class HomeFragment extends Fragment {
     private ImageButton searchButton;
@@ -167,7 +162,7 @@ public class HomeFragment extends Fragment {
                 view.findViewById(R.id.addArtifactButton);
 
         addArtifactButton.setOnClickListener(
-                v -> loadFragment(new AddItemFragment())
+                v -> loadFragment(new AddArtifactFragment())
         );
 
         /**
