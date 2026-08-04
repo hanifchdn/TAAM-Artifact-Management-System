@@ -19,16 +19,25 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CommentSectionFragment extends Fragment {
-
+    private static final String ARG_LOT = "lot";
     private String lot;
     private RecyclerView recyclerView;
     private TextView noCommentsText;
     private EditText commentInput;
     private CommentAdapter adapter;
-    public CommentSectionFragment() {
-    }
-    public CommentSectionFragment(String lot) {
-        this.lot = lot;
+
+    /**
+     * Creates a comment section for one artifact.
+     *
+     * @param artifactLot LOT number of the artifact
+     * @return configured CommentSectionFragment
+     */
+    public static CommentSectionFragment newInstance(String artifactLot) {
+        CommentSectionFragment fragment = new CommentSectionFragment();
+        Bundle args = new Bundle();
+        args.putString(ARG_LOT, artifactLot);
+        fragment.setArguments(args);
+        return fragment;
     }
 
     @Nullable
@@ -40,6 +49,14 @@ public class CommentSectionFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        Bundle args = getArguments();
+
+        if (args == null) {
+            return;
+        }
+
+        lot = args.getString(ARG_LOT);
         if (lot == null || lot.trim().isEmpty()) {
             Toast.makeText(requireContext(), "Artifact LOT is missing.", Toast.LENGTH_SHORT).show();
             return;

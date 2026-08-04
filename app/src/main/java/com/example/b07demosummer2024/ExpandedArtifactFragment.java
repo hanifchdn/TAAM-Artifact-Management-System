@@ -133,7 +133,13 @@ public class ExpandedArtifactFragment extends Fragment {
                 .fallback(R.drawable.artifact_placeholder)
                 .into(expandedImage);
 
+        String artifactLot = args.getString(ARG_LOT);
+
         buttonReturn.setOnClickListener(v -> getParentFragmentManager().popBackStack());
+        buttonComment.setOnClickListener(v -> {
+            CommentSectionFragment commentFragment = CommentSectionFragment.newInstance(artifactLot);
+            loadFragment(commentFragment, true);
+        });
         buttonDelete.setOnClickListener(v -> {
             showDeleteConfirmation(args.getString(ARG_LOT));
         });
@@ -198,7 +204,7 @@ public class ExpandedArtifactFragment extends Fragment {
                     return;
                 }
                 Toast.makeText(requireContext(), "Artifact deleted successfully", Toast.LENGTH_SHORT).show();
-                loadFragment(new HomeFragment());
+                loadFragment(new HomeFragment(), false);
             }
 
             @Override
@@ -238,13 +244,15 @@ public class ExpandedArtifactFragment extends Fragment {
     }
 
     /**
-     * Loads a new fragment without adding to back stack
+     * Loads a new fragment
      *
      * @param fragment fragment to be loaded
+     * @param addToBackStack set to true if fragment is added to backstack
      */
-    private void loadFragment(Fragment fragment) {
+    private void loadFragment(Fragment fragment, boolean addToBackStack) {
         FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
         transaction.replace(R.id.fragment_container, fragment);
+        if (addToBackStack) transaction.addToBackStack(null);
         transaction.commit();
     }
 }
