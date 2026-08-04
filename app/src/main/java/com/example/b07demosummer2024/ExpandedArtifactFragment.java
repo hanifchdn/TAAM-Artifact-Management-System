@@ -107,6 +107,14 @@ public class ExpandedArtifactFragment extends Fragment {
         buttonEdit = view.findViewById(R.id.buttonEdit);
         buttonDelete = view.findViewById(R.id.buttonDelete);
 
+        buttonEdit.setVisibility(
+                isAdmin ? View.VISIBLE : View.GONE
+        );
+
+        buttonDelete.setVisibility(
+                isAdmin ? View.VISIBLE : View.GONE
+        );
+
         Bundle args = getArguments();
         if (args == null) {
             return;
