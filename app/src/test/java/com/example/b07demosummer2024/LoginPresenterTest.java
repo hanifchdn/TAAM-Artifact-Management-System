@@ -25,6 +25,19 @@ public class LoginPresenterTest {
     @Mock
     private LoginContract.Model model;
 
+    @Mock
+    private SessionContract.Model sessionModel;
+
+    @Mock
+    private SessionManager session;
+
+    @Mock
+    private User user;
+
+    @Captor
+    private ArgumentCaptor<SessionContract.Model.ProfileCallback>
+            profileCallbackCaptor;
+
     @Captor
     private ArgumentCaptor<LoginContract.Model.AuthCallback> callbackCaptor;
 
@@ -32,7 +45,7 @@ public class LoginPresenterTest {
 
     @Before
     public void setUp() {
-        presenter = new LoginPresenter(view, model);
+        presenter = new LoginPresenter(view, model, sessionModel, session);
     }
 
     @Test
@@ -118,6 +131,10 @@ public class LoginPresenterTest {
         verify(model).login(eq(EMAIL), eq(PASSWORD), callbackCaptor.capture());
 
         callbackCaptor.getValue().onSuccess(UID);
+
+        verify(sessionModel).fetchUserProfile(eq(UID), profileCallbackCaptor.capture());
+
+        profileCallbackCaptor.getValue().onProfileLoaded(user);
 
         verify(view).hideLoadingIndicator();
         verify(view).enableButton();
