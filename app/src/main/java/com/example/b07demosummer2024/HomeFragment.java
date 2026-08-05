@@ -56,22 +56,7 @@ public class HomeFragment extends Fragment {
             @NonNull View view,
             @Nullable Bundle savedInstanceState
     ) {
-
-        // run request to update profile in case a change occured
         super.onViewCreated(view, savedInstanceState);
-        SessionModel sessionModel = new SessionModel();
-        sessionModel.fetchUserProfile(SessionManager.getInstance().getCurrentUser().getUid(), new SessionContract.Model.ProfileCallback() {
-            @Override
-            public void onProfileLoaded(User newUser) {
-                SessionManager.getInstance().setCurrentUser(newUser);
-            }
-
-            // Ignore an error, as user does not need to know if a routine refresh failed
-            @Override
-            public void onProfileError(String message) {
-
-            }
-        });
 
         /**
          * Configures RecyclerView and its adapter to display two artifacts on each row.

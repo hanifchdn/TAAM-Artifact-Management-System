@@ -17,6 +17,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import com.bumptech.glide.Glide;
+import com.google.firebase.auth.FirebaseAuth;
 
 public class ExpandedArtifactFragment extends Fragment {
     private static final String ARG_LOT = "lot";
@@ -106,7 +107,22 @@ public class ExpandedArtifactFragment extends Fragment {
         buttonEdit = view.findViewById(R.id.buttonEdit);
         buttonDelete = view.findViewById(R.id.buttonDelete);
 
-        /* TODO: Retrieve User*/
+        // if, for whatever reason, the current user session hasn't been set, set it
+        if(SessionManager.getInstance().getCurrentUser() == null) {
+            SessionModel sessionModel = new SessionModel();
+            sessionModel.fetchUserProfile(FirebaseAuth.getInstance().getUid(), new SessionContract.Model.ProfileCallback() {
+                @Override
+                public void onProfileLoaded(User user) {
+                    SessionManager.getInstance().setCurrentUser(user);
+                }
+
+                @Override
+                public void onProfileError(String message) {
+                    Toast.makeText(requireContext(), "Error logging in", Toast.LENGTH_LONG).show();
+                }
+            });
+        }
+        currentUser = SessionManager.getInstance().getCurrentUser();
 
         Bundle args = getArguments();
         if (args == null) {
@@ -200,7 +216,7 @@ public class ExpandedArtifactFragment extends Fragment {
     private void toggleSavedArtifact(String artifactLot) {
         isSaveQueryRunning = true;
         disableButton();
-
+        currentUser = SessionManager.getInstance().getCurrentUser();
         boolean wasSaved = currentUser.containsSavedArtifact(artifactLot);
         if (wasSaved) {
             currentUser.removeSavedArtifact(artifactLot);
@@ -208,6 +224,7 @@ public class ExpandedArtifactFragment extends Fragment {
         else {
             currentUser.addSavedArtifact(artifactLot);
         }
+
 
         UserDatabaseWriter writer = new UserDatabaseWriter();
         writer.updateSavedArtifacts(currentUser, new WriteCallback() {

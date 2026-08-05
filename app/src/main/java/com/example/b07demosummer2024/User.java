@@ -20,7 +20,6 @@ public class User {
         this.email = email;
         this.uid = uid;
         this.isAdmin = isAdmin;
-        this.savedArtifactList = new ArrayList<>();
     }
 
     /**
@@ -62,7 +61,12 @@ public class User {
     public void setSavedArtifactList(List<String> savedArtifactList) {
         this.savedArtifactList = savedArtifactList;
     }
-    public List<String> getSavedArtifactList() {return savedArtifactList; }
+    public List<String> getSavedArtifactList() {
+        if (savedArtifactList == null) {
+            return new ArrayList<String>();
+        }
+        return savedArtifactList;
+    }
     public String getUsername() {
         return username;
     }

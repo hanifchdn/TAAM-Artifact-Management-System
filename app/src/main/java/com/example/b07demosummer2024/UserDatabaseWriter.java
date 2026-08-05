@@ -15,7 +15,7 @@ public class UserDatabaseWriter {
     private DatabaseReference dbReference;
     public UserDatabaseWriter() {
         db = FirebaseDatabase.getInstance("https://taam-artifact-storage-system-default-rtdb.firebaseio.com/");
-        dbReference = db.getReference();
+        dbReference = db.getReference().child("users");
     }
 
     /**
@@ -25,7 +25,7 @@ public class UserDatabaseWriter {
      * @param callback on success/failure of database query
      */
     public void updateSavedArtifacts(String userUid, List<String> savedArtifactList, WriteCallback callback) {
-        dbReference.child(userUid).child("savedArtifacts").setValue(savedArtifactList).addOnCompleteListener(task -> {
+        dbReference.child(userUid).child("savedArtifactList").setValue(savedArtifactList).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 callback.onSuccess();
                 return;
