@@ -153,16 +153,22 @@ public class ExpandedArtifactFragment extends Fragment {
                 .fallback(R.drawable.artifact_placeholder)
                 .into(expandedImage);
 
+        buttonSave.setImageResource(
+                currentUser.containsSavedArtifact(args.getString(ARG_LOT)) ? R.drawable.bookmark : R.drawable.bookmark_hollow
+        );
+
         buttonReturn.setOnClickListener(v -> getParentFragmentManager().popBackStack());
         buttonSave.setOnClickListener(v -> toggleSavedArtifact(args.getString(ARG_LOT)));
         buttonDelete.setOnClickListener(v -> showDeleteConfirmation(args.getString(ARG_LOT)));
+
+
 
         requireActivity().getOnBackPressedDispatcher().addCallback(
                         getViewLifecycleOwner(),
                         new OnBackPressedCallback(true) {
                             /**
-                             * Ignore the back button while a delete
-                             * request is running.
+                             * Ignore the back button while a
+                             * database query is running.
                              */
                             @Override
                             public void handleOnBackPressed() {
@@ -216,7 +222,6 @@ public class ExpandedArtifactFragment extends Fragment {
     private void toggleSavedArtifact(String artifactLot) {
         isSaveQueryRunning = true;
         disableButton();
-        currentUser = SessionManager.getInstance().getCurrentUser();
         boolean wasSaved = currentUser.containsSavedArtifact(artifactLot);
         if (wasSaved) {
             currentUser.removeSavedArtifact(artifactLot);
@@ -256,6 +261,9 @@ public class ExpandedArtifactFragment extends Fragment {
                     }
                 }
 
+        );
+        buttonSave.setImageResource(
+                currentUser.containsSavedArtifact(artifactLot) ? R.drawable.bookmark : R.drawable.bookmark_hollow
         );
     }
 
