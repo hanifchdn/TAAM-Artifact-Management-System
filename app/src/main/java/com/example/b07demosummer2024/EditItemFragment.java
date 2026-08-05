@@ -2,15 +2,19 @@ package com.example.b07demosummer2024;
 
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
+
+import androidx.activity.OnBackPressedCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
@@ -83,6 +87,8 @@ public class EditItemFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         // UI setup
         super.onViewCreated(view, savedInstanceState);
+        ImageButton backButton = view.findViewById(R.id.backButton);
+        backButton.setOnClickListener(v -> getParentFragmentManager().popBackStack());
         bindTextFields(view);
         bindSpinners(view);
         configureCategorySpinner();
@@ -142,6 +148,24 @@ public class EditItemFragment extends Fragment {
                 updateArtifact(artifactModel);
             }
         });
+
+        requireActivity().getOnBackPressedDispatcher().addCallback(
+                getViewLifecycleOwner(),
+                new OnBackPressedCallback(true) {
+                    /**
+                     * Ignore the back button while a delete
+                     * request is running.
+                     */
+                    @Override
+                    public void handleOnBackPressed() {
+                        if (isDatabaseQueryRunning) {
+                            return;
+                        }
+                        setEnabled(false);
+                        getParentFragmentManager().popBackStack();
+                    }
+                }
+        );
 
     }
 

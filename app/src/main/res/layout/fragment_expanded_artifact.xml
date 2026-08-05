@@ -30,7 +30,7 @@
                     android:src="@drawable/back"
                     android:scaleType="centerInside"
                     android:background="@drawable/rounded_corner"
-                    android:backgroundTint="#468C98"
+                    app:tint="#F4F5F6"
                     android:contentDescription="@string/return_to_home"
                     android:padding="10dp" />
 
@@ -42,7 +42,7 @@
                     android:src="@drawable/bookmark"
                     android:scaleType="centerInside"
                     android:background="@drawable/rounded_corner"
-                    android:backgroundTint="#468C98"
+                    app:tint="#F4F5F6"
                     android:contentDescription="@string/save_artifact"
                     android:padding="10dp" />
 
@@ -54,7 +54,7 @@
                     android:src="@drawable/comment"
                     android:scaleType="centerInside"
                     android:background="@drawable/rounded_corner"
-                    android:backgroundTint="#468C98"
+                    app:tint="#F4F5F6"
                     android:contentDescription="@string/comment_section"
                     android:padding="10dp" />
 
@@ -66,7 +66,7 @@
                     android:src="@drawable/temporary_asset"
                     android:scaleType="centerInside"
                     android:background="@drawable/rounded_corner"
-                    android:backgroundTint="#468C98"
+                    app:tint="#F4F5F6"
                     android:contentDescription="@string/like_artifact"
                     android:padding="10dp" />
 
@@ -78,7 +78,7 @@
                     android:src="@drawable/edit"
                     android:scaleType="centerInside"
                     android:background="@drawable/rounded_corner"
-                    android:backgroundTint="#468C98"
+                    app:tint="#F4F5F6"
                     android:contentDescription="@string/edit_artifact"
                     android:padding="10dp" />
 
@@ -89,7 +89,7 @@
                     android:src="@drawable/delete"
                     android:scaleType="centerInside"
                     android:background="@drawable/rounded_corner"
-                    android:backgroundTint="#468C98"
+                    app:tint="#F4F5F6"
                     android:contentDescription="@string/delete_artifact"
                     android:padding="10dp" />
 

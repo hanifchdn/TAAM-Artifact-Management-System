@@ -119,8 +119,6 @@
     <string name="like_artifact">Like Button</string>
     <string name="edit_artifact">Edit Artifact</string>
     <string name="delete_artifact">Delete Artifact</string>
-
-
     <string name="loading_artifacts">Loading Artifacts ...</string>
 
     <!-- Login and signup -->

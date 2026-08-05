@@ -5,17 +5,17 @@ public class User {
     private String username;
     private String email;
     private String uid;
-    private boolean isAdmin;
+    private boolean admin;
 
     public User(){
 
     }
 
-    public User(String username, String email, String uid, boolean isAdmin) {
+    public User(String username, String email, String uid, boolean admin) {
         this.username = username;
         this.email = email;
         this.uid = uid;
-        this.isAdmin = isAdmin;
+        this.admin = admin;
     }
 
     public String getUsername() {
@@ -29,6 +29,6 @@ public class User {
         return email;
     }
     public boolean isAdmin() {
-        return isAdmin;
+        return admin;
     }
 }
