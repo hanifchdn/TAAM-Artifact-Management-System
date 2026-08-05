@@ -55,6 +55,7 @@ public class ExpandedArtifactFragment extends Fragment {
     private ImageButton buttonDelete;
 
     private boolean isDeleteQueryRunning = false;
+    private boolean isInitalLikedCountObtained = false;
 
     /**
      * Creates a new instance of this fragment containing a given artifact's information.
@@ -151,6 +152,7 @@ public class ExpandedArtifactFragment extends Fragment {
             public void onSuccess(boolean hasLiked) {
                 isLiked = hasLiked;
                 updateLikeUi(buttonLike, likeCountText);
+                isInitalLikedCountObtained = true;
             }
 
             @Override
@@ -173,6 +175,9 @@ public class ExpandedArtifactFragment extends Fragment {
         });
 
         buttonLike.setOnClickListener(v -> {
+            if (!isInitalLikedCountObtained) {
+                return;
+            }
             LikeDatabaseWriter likeDatabaseWriter = new LikeDatabaseWriter();
             if (isLiked) {
                 likeDatabaseWriter.removeFromDatabase(userId, artifactLot, new WriteCallback() {
