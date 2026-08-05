@@ -35,8 +35,6 @@
             android:layout_height="wrap_content"
             android:text="Comment"
             android:layout_marginLeft="3dp"
-            android:maxLines="1"
-            android:ellipsize="end"
             app:layout_constraintTop_toBottomOf="@+id/textViewUsername"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/buttonDeleteComment" />
