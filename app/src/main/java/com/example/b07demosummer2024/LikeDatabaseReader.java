@@ -71,6 +71,11 @@ public class LikeDatabaseReader {
         });
     }
 
+    /**
+     * Determines if a user has liked an artifact or not
+     * @param LOT The LOT of Artifact
+     * @param callback callback function
+     */
     public void hasUserLiked(String userId, String LOT, HasUserLikedCallback callback) {
         dbReference.get().addOnSuccessListener(dataSnapshot -> {
             // for each like
