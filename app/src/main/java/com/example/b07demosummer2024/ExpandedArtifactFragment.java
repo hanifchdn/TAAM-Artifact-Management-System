@@ -55,7 +55,7 @@ public class ExpandedArtifactFragment extends Fragment {
     private boolean isLikeQueryRunning = false;
     private boolean isSaveQueryRunning = false;
     private boolean isDeleteQueryRunning = false;
-    private boolean isInitalLikedCountObtained = false;
+    private TextView likeCountText;
 
     /**
      * Creates a new instance of this fragment containing a given artifact's information.
@@ -114,7 +114,7 @@ public class ExpandedArtifactFragment extends Fragment {
         TextView expandedProvenance = view.findViewById(R.id.expandedProvenance);
         TextView expandedAccessionNumber = view.findViewById(R.id.expandedAccessionNumber);
         TextView expandedNotes = view.findViewById(R.id.expandedNotes);
-        TextView likeCountText = view.findViewById(R.id.likeCount);
+        likeCountText = view.findViewById(R.id.likeCount);
 
         buttonReturn = view.findViewById(R.id.buttonReturn);
         buttonSave = view.findViewById(R.id.buttonSave);
@@ -175,18 +175,21 @@ public class ExpandedArtifactFragment extends Fragment {
         isLiked = false;
 
         String artifactLot = args.getString(ARG_LOT);
+        lot = artifactLot;
+
         String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
         LikeDatabaseReader likeDatabaseReader = new LikeDatabaseReader();
         likeDatabaseReader.hasUserLiked(userId, artifactLot, new LikeDatabaseReader.HasUserLikedCallback() {
             @Override
             public void onSuccess(boolean hasLiked) {
+                if (!isAdded()) return;
                 isLiked = hasLiked;
                 updateLikeUi(buttonLike, likeCountText);
-                isInitalLikedCountObtained = true;
             }
 
             @Override
             public void onFailure(String errorMessage) {
+                if (!isAdded()) return;
                 Toast.makeText(requireContext(), errorMessage, Toast.LENGTH_SHORT).show();
             }
         });
@@ -194,12 +197,14 @@ public class ExpandedArtifactFragment extends Fragment {
         likeDatabaseReader.GetLikesOnArtifact(artifactLot, new LikeDatabaseReader.GetLikesCallback() {
             @Override
             public void onSuccess(int amountOfLikes) {
+                if (!isAdded()) return;
                 likeCount = amountOfLikes;
                 updateLikeUi(buttonLike, likeCountText);
             }
 
             @Override
             public void onFailure(String errorMessage) {
+                if (!isAdded()) return;
                 Toast.makeText(requireContext(), errorMessage, Toast.LENGTH_SHORT).show();
             }
         });
@@ -211,68 +216,60 @@ public class ExpandedArtifactFragment extends Fragment {
             isLikeQueryRunning = true;
             disableButton();
 
-            if (!isInitalLikedCountObtained) {
-                isLikeQueryRunning = false;
-                enableButton();
-                return;
-            }
-            LikeDatabaseWriter likeDatabaseWriter = new LikeDatabaseWriter();
-            if (isLiked) {
-                likeDatabaseWriter.removeFromDatabase(userId, artifactLot, new WriteCallback() {
-                    // all good on success
-                    @Override
-                    public void onSuccess() {
-                        if (!isAdded()) {
-                            return;
-                        }
-                        isLikeQueryRunning = false;
-                        enableButton();
-                    }
+            LikeDatabaseReader newReader = new LikeDatabaseReader();
+            newReader.hasUserLiked(userId, artifactLot, new LikeDatabaseReader.HasUserLikedCallback() {
+                @Override
+                public void onSuccess(boolean currentlyLiked) {
+                    if (!isAdded()) return;
 
-                    // undo unlike on failure
-                    @Override
-                    public void onFailure(String err) {
-                        if (!isAdded()) {
-                            return;
-                        }
-                        isLiked = !isLiked;
-                        likeCount += isLiked ? 1 : -1;
-                        updateLikeUi(buttonLike, likeCountText);
-                        isLikeQueryRunning = false;
-                        enableButton();
-                    }
-                });
-            } else {
-                Like newLike = new Like(userId, artifactLot);
-                likeDatabaseWriter.addToDatabase(newLike, new WriteCallback() {
-                    // all good on success
-                    @Override
-                    public void onSuccess() {
-                        if (!isAdded()) {
-                            return;
-                        }
-                        isLikeQueryRunning = false;
-                        enableButton();
-                    }
+                    LikeDatabaseWriter likeDatabaseWriter = new LikeDatabaseWriter();
 
-                    // undo like on failure
-                    @Override
-                    public void onFailure(String err) {
-                        if (!isAdded()) {
-                            return;
-                        }
-                        isLiked = !isLiked;
-                        likeCount += isLiked ? 1 : -1;
-                        updateLikeUi(buttonLike, likeCountText);
-                        Toast.makeText(requireContext(), "Error liking artifact", Toast.LENGTH_SHORT).show();
-                        isLikeQueryRunning = false;
-                        enableButton();
+                    if (currentlyLiked) {
+                        likeDatabaseWriter.removeFromDatabase(userId, artifactLot, new WriteCallback() {
+                            @Override
+                            public void onSuccess() {
+                                if (!isAdded()) return;
+                                isLiked = false;
+                                refreshLikeCount();
+                            }
+
+                            @Override
+                            public void onFailure(String err) {
+                                if (!isAdded()) return;
+                                Toast.makeText(requireContext(), "Error unliking artifact", Toast.LENGTH_SHORT).show();
+                                isLikeQueryRunning = false;
+                                enableButton();
+                            }
+                        });
+                    } else {
+                        Like newLike = new Like(userId, artifactLot);
+                        likeDatabaseWriter.addToDatabase(newLike, new WriteCallback() {
+                            @Override
+                            public void onSuccess() {
+                                if (!isAdded()) return;
+                                isLiked = true;
+                                refreshLikeCount();
+                            }
+
+                            @Override
+                            public void onFailure(String err) {
+                                if (!isAdded()) return;
+                                Toast.makeText(requireContext(), "Error liking artifact", Toast.LENGTH_SHORT).show();
+                                isLikeQueryRunning = false;
+                                enableButton();
+                            }
+                        });
                     }
-                });
-            }
-            isLiked = !isLiked;
-            likeCount += isLiked ? 1 : -1;
-            updateLikeUi(buttonLike, likeCountText);
+                }
+
+                @Override
+                public void onFailure(String errorMessage) {
+                    if (!isAdded()) return;
+                    Toast.makeText(requireContext(), errorMessage, Toast.LENGTH_SHORT).show();
+                    isLikeQueryRunning = false;
+                    enableButton();
+                }
+            });
         });
 
         Glide.with(requireContext())
@@ -320,6 +317,31 @@ public class ExpandedArtifactFragment extends Fragment {
                     }
                 }
         );
+    }
+    /**
+     * Re-fetches the like count from the database, updates the heart icon and
+     * counter, then re-enables the action buttons and clears the in-flight flag.
+     */
+    private void refreshLikeCount() {
+        LikeDatabaseReader likeDatabaseReader = new LikeDatabaseReader();
+        likeDatabaseReader.GetLikesOnArtifact(lot, new LikeDatabaseReader.GetLikesCallback() {
+            @Override
+            public void onSuccess(int amountOfLikes) {
+                if (!isAdded()) return;
+                likeCount = amountOfLikes;
+                updateLikeUi(buttonLike, likeCountText);
+                isLikeQueryRunning = false;
+                enableButton();
+            }
+
+            @Override
+            public void onFailure(String errorMessage) {
+                if (!isAdded()) return;
+                updateLikeUi(buttonLike, likeCountText);
+                isLikeQueryRunning = false;
+                enableButton();
+            }
+        });
     }
 
     /**
