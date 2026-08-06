@@ -61,11 +61,10 @@ public class LikeDatabaseReader {
      * @param callback callback function
      */
     public void GetLikesOnArtifact(String LOT, GetLikesCallback callback) {
-        dbReference.get().addOnSuccessListener(dataSnapshot -> {
+        dbReference.child(LOT).get().addOnSuccessListener(dataSnapshot -> {
             int amount = 0;
             // for each like
             for (DataSnapshot child: dataSnapshot.getChildren()){
-
                 Like like = child.getValue(Like.class);
                 if ( like != null && like.getArtifactLot().equals(LOT)) {
                     amount += 1;
@@ -83,10 +82,9 @@ public class LikeDatabaseReader {
      * @param callback callback function
      */
     public void hasUserLiked(String userId, String LOT, HasUserLikedCallback callback) {
-        dbReference.get().addOnSuccessListener(dataSnapshot -> {
+        dbReference.child(LOT).get().addOnSuccessListener(dataSnapshot -> {
             // for each like
             for (DataSnapshot child: dataSnapshot.getChildren()){
-
                 Like like = child.getValue(Like.class);
                 if (like.getArtifactLot().equals(LOT) && like.getUserId().equals(userId)) {
                     callback.onSuccess(true);
