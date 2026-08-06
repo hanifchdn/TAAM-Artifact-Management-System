@@ -2,6 +2,12 @@ package com.example.b07demosummer2024;
 
 import com.google.firebase.database.FirebaseDatabase;
 
+/**
+ * Comment class that defines Comment structure
+ *
+ * Represents the type contract and fields of a Comment under an Artifact
+ *
+ */
 public class Comment {
     private String id;
     private String userId;
@@ -19,7 +25,7 @@ public class Comment {
     /**
      * Creates a new comment object
      * @param userId of owning user
-     * @param username of owing user
+     * @param username of owning user
      * @param artifactLot of artifact
      * @param body of comment
      */

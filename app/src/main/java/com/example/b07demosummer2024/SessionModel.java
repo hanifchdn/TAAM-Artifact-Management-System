@@ -14,10 +14,21 @@ import com.google.firebase.database.FirebaseDatabase;
 public class SessionModel implements SessionContract.Model{
     private final FirebaseAuth auth;
     private final DatabaseReference usersRef;
+    /**
+     * Creates a SessionModel using the default Firebase Authentication instance
+     * and users in the Firebase Database
+     */
     public SessionModel() {
         this(FirebaseAuth.getInstance(),
                 FirebaseDatabase.getInstance().getReference("users"));
     }
+    /**
+     * Creates a SessionModel using the given authentication instance and
+     * user reference in the Firebase Database
+     *
+     * @param auth the Firebase Authentication instance used to access the current user
+     * @param usersRef the database reference used for the current user
+     */
     SessionModel(FirebaseAuth auth, DatabaseReference usersRef){
         this.auth = auth;
         this.usersRef = usersRef;

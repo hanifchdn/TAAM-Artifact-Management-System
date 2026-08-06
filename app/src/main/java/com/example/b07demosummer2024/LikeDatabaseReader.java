@@ -7,6 +7,12 @@ import com.google.firebase.database.FirebaseDatabase;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Reads like data from the Firebase Database.
+ *
+ * Provides methods for retrieving an artifact's like count and checking
+ * whether a user has liked an artifact
+ */
 public class LikeDatabaseReader {
 
     /**

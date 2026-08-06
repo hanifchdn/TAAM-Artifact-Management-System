@@ -7,6 +7,11 @@ import com.google.firebase.database.FirebaseDatabase;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Writes like data to the Firebase Database
+ *
+ * Provides methods for adding and deleting likes in the Firebase
+ */
 public class LikeDatabaseWriter {
     // firebase db instances
     FirebaseDatabase db;

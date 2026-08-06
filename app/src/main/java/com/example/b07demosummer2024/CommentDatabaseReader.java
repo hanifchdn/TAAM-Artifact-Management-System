@@ -6,6 +6,13 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 import java.util.List;
+
+/**
+ * Reads comment data from the Firebase Database
+ *
+ * Provides methods for comment retrieval under a specific artifact
+ *
+ */
 public class CommentDatabaseReader {
     FirebaseDatabase db;
     DatabaseReference dbReference;
