@@ -102,9 +102,10 @@ public class ArtifactDatabaseWriter implements DatabaseAdder, DatabaseDeleter, D
     }
 
     /**
-     *Deletes an artifact form the Database using it's LOT .
+     * Deletes an artifact from the Database using its LOT.
+     * Also deletes all comments under the artifact.
      *
-     *If deleting an artifact that does not exist, the method
+     * If deleting an artifact that does not exist, the method
      * will do nothing.
      *
      *
@@ -115,33 +116,26 @@ public class ArtifactDatabaseWriter implements DatabaseAdder, DatabaseDeleter, D
         commentReference.orderByChild("artifactLot").equalTo(LOT).get()
                 .addOnSuccessListener(snapshot ->{
                     List<Task<Void>> deleteTask = new ArrayList<>();
-                    for(DataSnapshot child: snapshot.getChildren()){
-                        Task<Void> commentDeleteTask = child.getRef().removeValue();
-                        commentDeleteTask.addOnSuccessListener(x -> {
-                            Log.d("delete_debug", "successfully delete comment" + child.getKey());
-                        }).addOnFailureListener(e ->{
-                            Log.e("delete_debug", "fail to delete comment"+ child.getKey());
-                        });
+
+                    for (DataSnapshot child : snapshot.getChildren()) {
                         deleteTask.add(child.getRef().removeValue());
                     }
+
                     deleteTask.add(dbReference.child(LOT).removeValue());
+
                     Tasks.whenAll(deleteTask).addOnSuccessListener(x ->{
                         if(callback != null){
                             callback.onSuccess();
                         }
                     }).addOnFailureListener(e -> {
-                        Log.d("haha", e.getMessage());
                         if(callback != null){
                             callback.onFailure(e.getMessage());
                         }
                     });
                 }).addOnFailureListener(e -> {
-                    Log.e("ArtifactDelete", "A delete task failed", e);
                     if(callback != null){
                         callback.onFailure(e.getMessage());
                     }
                 });
     }
-
-
 }
