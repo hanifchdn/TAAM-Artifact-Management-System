@@ -14,7 +14,21 @@ import android.os.Handler;
 public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentViewHolder> {
     private List<Comment> comments;
     private final OnDeleteClickListener listener;
+    /**
+     * Handler used to refresh the displayed timestamps every minute.
+     */
+    private final Handler timestampHandler = new Handler(Looper.getMainLooper());
+    /**
+     * Runnable that refreshes the comment list every minute so that relative
+     */
 
+    private final Runnable timestampUpdater = new Runnable() {
+        @Override
+        public void run() {
+            notifyDataSetChanged();
+            timestampHandler.postDelayed(this, 60_000L);
+        }
+    };
     /**
      * Callback used when the delete button for a comment is clicked.
      */
@@ -76,6 +90,11 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
             }
         });
     }
+    /**
+     * Converts a timestamp into a shortened relative time, e.g:"just now", "5m", "2h", "3d", and "1w"
+     * @param timestamp the comment creation time in milliseconds
+     * @return the shortened relative time
+     */
     private String getTime(long timestamp) {
         long diff = System.currentTimeMillis() - timestamp;
         long minute = 60L * 1000L;
@@ -96,15 +115,12 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
         }
         return diff / week + "w";
     }
-    private final Handler timestampHandler = new Handler(Looper.getMainLooper());
 
-    private final Runnable timestampUpdater = new Runnable() {
-        @Override
-        public void run() {
-            notifyDataSetChanged();
-            timestampHandler.postDelayed(this, 60_000L);
-        }
-    };
+    /**
+     * Stops the automatic timestamp refreshes which is called
+     * when the fragment's view is destroyed to prevent
+     * the adapter from continuing to schedule updates.
+     */
     public void stopTimestampUpdates() {
         timestampHandler.removeCallbacks(timestampUpdater);
     }
