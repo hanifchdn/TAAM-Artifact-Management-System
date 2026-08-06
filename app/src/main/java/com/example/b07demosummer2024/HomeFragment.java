@@ -76,7 +76,6 @@ public class HomeFragment extends Fragment {
         noArtifacts = view.findViewById(R.id.noArtifacts);
         artifactLoadingLayout = view.findViewById(R.id.artifactLoadingLayout);
         savedArtifactsButton = view.findViewById(R.id.savedArtifactsButton);
-
         savedArtifactsButton.setOnClickListener(v -> {
             isSavedArtifactsSelected = !isSavedArtifactsSelected;
             savedArtifactsButton.setImageResource(
@@ -148,6 +147,19 @@ public class HomeFragment extends Fragment {
             loadFragment(detailFragment);
         });
         artifactRecyclerView.setAdapter(artifactAdapter);
+    }
+
+    /**
+     * On resume, i.e going back to homefragment from expanded artifact view
+     * refreshes the page in case of update
+     */
+    @Override
+    public void onResume() {
+        super.onResume();
+        savedArtifactsButton.setImageResource(
+                isSavedArtifactsSelected ? R.drawable.bookmark : R.drawable.bookmark_hollow
+        );
+        refreshArtifactList();
     }
 
     /**
@@ -269,7 +281,7 @@ public class HomeFragment extends Fragment {
         FragmentTransaction transaction = temp.beginTransaction();
 
         transaction.hide(this);
-        transaction.add(R.id.fragment_container, fragment);
+        transaction.replace(R.id.fragment_container, fragment);
         transaction.addToBackStack(null);
         transaction.commit();
     }
