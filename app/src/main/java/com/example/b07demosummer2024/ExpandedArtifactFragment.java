@@ -203,9 +203,15 @@ public class ExpandedArtifactFragment extends Fragment {
         });
 
         buttonLike.setOnClickListener(v -> {
+            if (isLikeQueryRunning) {
+                return;
+            }
             isLikeQueryRunning = true;
+            disableButton();
 
             if (!isInitalLikedCountObtained) {
+                isLikeQueryRunning = false;
+                enableButton();
                 return;
             }
             LikeDatabaseWriter likeDatabaseWriter = new LikeDatabaseWriter();
@@ -214,16 +220,24 @@ public class ExpandedArtifactFragment extends Fragment {
                     // all good on success
                     @Override
                     public void onSuccess() {
+                        if (!isAdded()) {
+                            return;
+                        }
                         isLikeQueryRunning = false;
+                        enableButton();
                     }
 
                     // undo unlike on failure
                     @Override
                     public void onFailure(String err) {
+                        if (!isAdded()) {
+                            return;
+                        }
                         isLiked = !isLiked;
                         likeCount += isLiked ? 1 : -1;
                         updateLikeUi(buttonLike, likeCountText);
                         isLikeQueryRunning = false;
+                        enableButton();
                     }
                 });
             } else {
@@ -232,17 +246,25 @@ public class ExpandedArtifactFragment extends Fragment {
                     // all good on success
                     @Override
                     public void onSuccess() {
+                        if (!isAdded()) {
+                            return;
+                        }
                         isLikeQueryRunning = false;
+                        enableButton();
                     }
 
                     // undo like on failure
                     @Override
                     public void onFailure(String err) {
+                        if (!isAdded()) {
+                            return;
+                        }
                         isLiked = !isLiked;
                         likeCount += isLiked ? 1 : -1;
                         updateLikeUi(buttonLike, likeCountText);
                         Toast.makeText(requireContext(), "Error liking artifact", Toast.LENGTH_SHORT).show();
                         isLikeQueryRunning = false;
+                        enableButton();
                     }
                 });
             }
