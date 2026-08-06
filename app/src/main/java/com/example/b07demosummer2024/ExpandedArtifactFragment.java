@@ -149,7 +149,7 @@ public class ExpandedArtifactFragment extends Fragment {
         buttonReturn.setOnClickListener(v -> getParentFragmentManager().popBackStack());
 
         buttonEdit.setOnClickListener(
-                v -> loadFragment(new EditItemFragment(artifact))
+                v -> loadFragment(new EditArtifactFragment(artifact))
         );
 
         buttonDelete.setOnClickListener(v -> {
