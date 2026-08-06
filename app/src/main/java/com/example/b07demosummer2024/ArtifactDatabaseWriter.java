@@ -102,7 +102,7 @@ public class ArtifactDatabaseWriter implements DatabaseAdder, DatabaseDeleter, D
 
     /**
      * Deletes an artifact from the Database using its LOT.
-     * Also deletes all comments under the artifact.
+     * Also deletes all comments and likes under the artifact.
      *
      * If deleting an artifact that does not exist, the method
      * will do nothing.
