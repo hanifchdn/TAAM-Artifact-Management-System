@@ -31,6 +31,8 @@ public class HomeFragment extends Fragment {
     private final List<Artifact> artifactList = new ArrayList<>();
     private TextView noArtifacts;
     private LinearLayout artifactLoadingLayout;
+    private ImageButton savedArtifactsButton;
+    private boolean isSavedArtifactsSelected = false;
 
     @Nullable
     @Override
@@ -73,6 +75,15 @@ public class HomeFragment extends Fragment {
         searchUpdateButton = view.findViewById(R.id.searchUpdateButton);
         noArtifacts = view.findViewById(R.id.noArtifacts);
         artifactLoadingLayout = view.findViewById(R.id.artifactLoadingLayout);
+        savedArtifactsButton = view.findViewById(R.id.savedArtifactsButton);
+
+        savedArtifactsButton.setOnClickListener(v -> {
+            isSavedArtifactsSelected = !isSavedArtifactsSelected;
+            savedArtifactsButton.setImageResource(
+                    isSavedArtifactsSelected ? R.drawable.bookmark : R.drawable.bookmark_hollow
+            );
+            refreshArtifactList();
+        });
 
         /**
          * Displays searchContainer when searchButton is clicked
@@ -86,48 +97,9 @@ public class HomeFragment extends Fragment {
             }
         });
 
-        /**
-         * Searches for artifacts using the text entered in the search input field.
-         *
-         * If the input is empty, all artifacts are retrieved from the database.
-         * Otherwise, artifacts whose fields contain the entered substring are retrieved.
-         *
-         * The callback first checks whether this fragment is still attached to its
-         * activity before accessing the fragment context or updating the user interface.
-         */
+        // search for artifact on search button click
         searchUpdateButton.setOnClickListener(v -> {
-            String input = searchInput.getText().toString().trim();
-            showLoadingIndicator();
-
-            ArtifactDatabaseReader reader = new ArtifactDatabaseReader();
-
-            ArtifactDatabaseReader.GetArtifactListReaderCallback callback =
-                    new ArtifactDatabaseReader.GetArtifactListReaderCallback() {
-                        @Override
-                        public void getArtifactListCallback(List<Artifact> artifacts) {
-                            if (!isAdded()) {
-                                return;
-                            }
-
-                            hideLoadingIndicator();
-                            artifactList.clear();
-                            if(artifacts != null){
-                                artifactList.addAll(artifacts);
-                            }
-                            artifactAdapter.notifyDataSetChanged();
-                            updateEmptyState();
-                            boolean isValid = reader.handleArtifactListError(artifacts);
-                            if(!isValid){
-                                Toast.makeText(requireContext(), "No artifacts found", Toast.LENGTH_SHORT).show();
-                            }
-                        }
-                    };
-
-            if (input.isEmpty()) {
-                reader.getArtifactList(callback);
-            } else {
-                reader.getArtifactListBySubstring(input, callback);
-            }
+            searchForArtifacts();
         });
 
         /**
@@ -191,6 +163,65 @@ public class HomeFragment extends Fragment {
         artifactLoadingLayout.setVisibility(View.VISIBLE);
         artifactRecyclerView.setVisibility(View.GONE);
         noArtifacts.setVisibility(View.GONE);
+    }
+
+    /**
+     * Refresh the Home Page when it is updated
+     */
+    private void refreshArtifactList() {
+        searchForArtifacts();
+    }
+
+    /**
+     * Searches for artifacts using the text entered in the search input field.
+     *
+     * If the input is empty, all artifacts are retrieved from the database.
+     * Otherwise, artifacts whose fields contain the entered substring are retrieved.
+     *
+     * The callback first checks whether this fragment is still attached to its
+     * activity before accessing the fragment context or updating the user interface.
+     */
+    private void searchForArtifacts() {
+        String input = searchInput.getText().toString().trim();
+        showLoadingIndicator();
+
+        ArtifactDatabaseReader reader = new ArtifactDatabaseReader();
+
+        ArtifactDatabaseReader.GetArtifactListReaderCallback callback =
+                new ArtifactDatabaseReader.GetArtifactListReaderCallback() {
+                    @Override
+                    public void getArtifactListCallback(List<Artifact> artifacts) {
+                        if (!isAdded()) {
+                            return;
+                        }
+
+                        hideLoadingIndicator();
+                        artifactList.clear();
+                        if(artifacts != null){
+                            if (isSavedArtifactsSelected) {
+                                for (Artifact artifact : artifacts) {
+                                    if (SessionManager.getInstance().getCurrentUser().containsSavedArtifact(artifact.getLOT())) {
+                                        artifactList.add(artifact);
+                                    }
+                                }
+                            }else {
+                                artifactList.addAll(artifacts);
+                            }
+                        }
+                        artifactAdapter.notifyDataSetChanged();
+                        updateEmptyState();
+                        boolean isValid = reader.handleArtifactListError(artifacts);
+                        if(!isValid){
+                            Toast.makeText(requireContext(), "No artifacts found", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                };
+
+        if (input.isEmpty()) {
+            reader.getArtifactList(callback);
+        } else {
+            reader.getArtifactListBySubstring(input, callback);
+        }
     }
 
     /**

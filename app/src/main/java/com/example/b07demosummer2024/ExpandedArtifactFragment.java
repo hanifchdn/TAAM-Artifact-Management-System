@@ -14,13 +14,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
-
-import java.util.List;
-
 
 public class ExpandedArtifactFragment extends Fragment {
     private static final String ARG_LOT = "lot";
@@ -54,6 +50,8 @@ public class ExpandedArtifactFragment extends Fragment {
     private ImageButton buttonEdit;
     private ImageButton buttonDelete;
     private Artifact artifact;
+    private User currentUser;
+    private boolean isSaveQueryRunning = false;
     private boolean isDeleteQueryRunning = false;
     private boolean isInitalLikedCountObtained = false;
 
@@ -130,6 +128,23 @@ public class ExpandedArtifactFragment extends Fragment {
         buttonDelete.setVisibility(
                 isAdmin ? View.VISIBLE : View.GONE
         );
+
+        // if, for whatever reason, the current user session hasn't been set, set it
+        if(SessionManager.getInstance().getCurrentUser() == null) {
+            SessionModel sessionModel = new SessionModel();
+            sessionModel.fetchUserProfile(FirebaseAuth.getInstance().getUid(), new SessionContract.Model.ProfileCallback() {
+                @Override
+                public void onProfileLoaded(User user) {
+                    SessionManager.getInstance().setCurrentUser(user);
+                }
+
+                @Override
+                public void onProfileError(String message) {
+                    Toast.makeText(requireContext(), "Error logging in", Toast.LENGTH_LONG).show();
+                }
+            });
+        }
+        currentUser = SessionManager.getInstance().getCurrentUser();
 
         Bundle args = getArguments();
         if (args == null) {
@@ -249,20 +264,20 @@ public class ExpandedArtifactFragment extends Fragment {
             loadFragment(commentFragment, true);
         });
 
-        buttonDelete.setOnClickListener(v -> {
-            showDeleteConfirmation(args.getString(ARG_LOT));
-        });
+        buttonSave.setOnClickListener(v -> toggleSavedArtifact(args.getString(ARG_LOT)));
+
+        buttonDelete.setOnClickListener(v -> showDeleteConfirmation(args.getString(ARG_LOT)));
 
         requireActivity().getOnBackPressedDispatcher().addCallback(
                 getViewLifecycleOwner(),
                 new OnBackPressedCallback(true) {
                     /**
-                     * Ignore the back button while a delete
-                     * request is running.
+                     * Ignore the back button while a
+                     * database query is running.
                      */
                     @Override
                     public void handleOnBackPressed() {
-                        if (isDeleteQueryRunning) {
+                        if (isQueryRunning()) {
                             return;
                         }
                         setEnabled(false);
@@ -290,6 +305,13 @@ public class ExpandedArtifactFragment extends Fragment {
     }
 
     /**
+     * Returns true if a query is running
+     */
+    private boolean isQueryRunning() {
+        return (isDeleteQueryRunning || isSaveQueryRunning);
+    }
+
+    /**
      * Shows a warning before deleting an artifact.
      *
      * @param artifactLot LOT of the artifact to delete
@@ -310,6 +332,59 @@ public class ExpandedArtifactFragment extends Fragment {
                         (dialog, which) -> dialog.dismiss()
                 )
                 .show();
+    }
+
+    /**
+     * Saves or unsaves the currently displayed artifact.
+     *
+     * @param artifactLot LOT of the artifact to save
+     */
+    private void toggleSavedArtifact(String artifactLot) {
+        isSaveQueryRunning = true;
+        disableButton();
+        boolean wasSaved = currentUser.containsSavedArtifact(artifactLot);
+        if (wasSaved) {
+            currentUser.removeSavedArtifact(artifactLot);
+        }
+        else {
+            currentUser.addSavedArtifact(artifactLot);
+        }
+
+
+        UserDatabaseWriter writer = new UserDatabaseWriter();
+        writer.updateSavedArtifacts(currentUser, new WriteCallback() {
+                    @Override
+                    public void onSuccess() {
+                        if (!isAdded()) {
+                            return;
+                        }
+                        Toast.makeText(requireContext(), wasSaved ? "Artifact unsaved" : "Artifact saved", Toast.LENGTH_SHORT).show();
+                        isSaveQueryRunning = false;
+                        enableButton();
+                    }
+
+                    @Override
+                    public void onFailure(String errorMessage) {
+                        if (wasSaved) {
+                            currentUser.addSavedArtifact(artifactLot);
+                        }
+                        else {
+                            currentUser.removeSavedArtifact(artifactLot);
+                        }
+
+                        if (!isAdded()) {
+                            return;
+                        }
+                        Toast.makeText(requireContext(), "Failed to update saved artifact", Toast.LENGTH_SHORT).show();
+                        isSaveQueryRunning = false;
+                        enableButton();
+                    }
+                }
+
+        );
+        buttonSave.setImageResource(
+                currentUser.containsSavedArtifact(artifactLot) ? R.drawable.bookmark : R.drawable.bookmark_hollow
+        );
     }
 
     /**
