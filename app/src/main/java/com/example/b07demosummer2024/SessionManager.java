@@ -37,14 +37,6 @@ public class SessionManager {
     }
 
     /**
-     *
-     * @return true if a user is set and that user is an admin, false otherwise
-     */
-    public boolean isAdmin(){
-        return currentUser != null && currentUser.isAdmin();
-    }
-
-    /**
      * Clears the current session by removing the current user.
      */
     public void clear(){
