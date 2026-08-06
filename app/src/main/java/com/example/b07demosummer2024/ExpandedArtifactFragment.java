@@ -51,6 +51,7 @@ public class ExpandedArtifactFragment extends Fragment {
     private ImageButton buttonDelete;
     private Artifact artifact;
     private User currentUser;
+    private boolean isLikeQueryRunning = false;
     private boolean isSaveQueryRunning = false;
     private boolean isDeleteQueryRunning = false;
     private boolean isInitalLikedCountObtained = false;
@@ -202,6 +203,8 @@ public class ExpandedArtifactFragment extends Fragment {
         });
 
         buttonLike.setOnClickListener(v -> {
+            isLikeQueryRunning = true;
+
             if (!isInitalLikedCountObtained) {
                 return;
             }
@@ -211,7 +214,7 @@ public class ExpandedArtifactFragment extends Fragment {
                     // all good on success
                     @Override
                     public void onSuccess() {
-
+                        isLikeQueryRunning = false;
                     }
 
                     // undo unlike on failure
@@ -220,6 +223,7 @@ public class ExpandedArtifactFragment extends Fragment {
                         isLiked = !isLiked;
                         likeCount += isLiked ? 1 : -1;
                         updateLikeUi(buttonLike, likeCountText);
+                        isLikeQueryRunning = false;
                     }
                 });
             } else {
@@ -228,7 +232,7 @@ public class ExpandedArtifactFragment extends Fragment {
                     // all good on success
                     @Override
                     public void onSuccess() {
-
+                        isLikeQueryRunning = false;
                     }
 
                     // undo like on failure
@@ -238,6 +242,7 @@ public class ExpandedArtifactFragment extends Fragment {
                         likeCount += isLiked ? 1 : -1;
                         updateLikeUi(buttonLike, likeCountText);
                         Toast.makeText(requireContext(), "Error liking artifact", Toast.LENGTH_SHORT).show();
+                        isLikeQueryRunning = false;
                     }
                 });
             }
@@ -314,7 +319,7 @@ public class ExpandedArtifactFragment extends Fragment {
      * Returns true if a query is running
      */
     private boolean isQueryRunning() {
-        return (isDeleteQueryRunning || isSaveQueryRunning);
+        return (isDeleteQueryRunning || isSaveQueryRunning || isLikeQueryRunning);
     }
 
     /**
