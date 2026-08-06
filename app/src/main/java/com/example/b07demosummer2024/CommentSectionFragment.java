@@ -152,7 +152,8 @@ public class CommentSectionFragment extends Fragment {
                 Toast.makeText(requireContext(), "User profile could not be found", Toast.LENGTH_SHORT).show();
                 return;
             }
-            Comment comment = new Comment(currentUser.getUid(), currentUser.getUsername(), lot, body);
+            long timestamp = System.currentTimeMillis();
+            Comment comment = new Comment(currentUser.getUid(), currentUser.getUsername(), lot, body, timestamp);
             CommentDatabaseWriter writer = new CommentDatabaseWriter();
             writer.addToDatabase(comment, new WriteCallback(){
                 @Override
@@ -200,6 +201,9 @@ public class CommentSectionFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        if (adapter != null) {
+            adapter.stopTimestampUpdates();
+        }
         recyclerView = null;
         noCommentsText = null;
         commentInput = null;

@@ -1,6 +1,6 @@
 package com.example.b07demosummer2024;
 
-import android.text.format.DateUtils;
+import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,6 +9,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
+import android.os.Handler;
 
 public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentViewHolder> {
     private List<Comment> comments;
@@ -29,6 +30,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
     public CommentAdapter(List<Comment> comments, OnDeleteClickListener listener) {
         this.comments = comments;
         this.listener = listener;
+        timestampHandler.post(timestampUpdater);
     }
 
     /**
@@ -67,13 +69,45 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
         Comment comment = comments.get(position);
         holder.textViewUsername.setText(comment.getUsername());
         holder.textViewComment.setText(comment.getBody());
+        holder.textViewTimestamp.setText(getTime(comment.getTimestamp()));
         holder.buttonDeleteComment.setOnClickListener(v -> {
             if (listener != null) {
                 listener.onDeleteClick(comment);
             }
         });
     }
+    private String getTime(long timestamp) {
+        long diff = System.currentTimeMillis() - timestamp;
+        long minute = 60L * 1000L;
+        long hour = 60L * minute;
+        long day = 24L * hour;
+        long week = 7L * day;
+        if (diff < minute){
+            return "just now";
+        }
+        if (diff < hour){
+            return diff / minute + "m";
+        }
+        if (diff < day) {
+            return diff / hour + "h";
+        }
+        if (diff < week) {
+            return diff / day + "d";
+        }
+        return diff / week + "w";
+    }
+    private final Handler timestampHandler = new Handler(Looper.getMainLooper());
 
+    private final Runnable timestampUpdater = new Runnable() {
+        @Override
+        public void run() {
+            notifyDataSetChanged();
+            timestampHandler.postDelayed(this, 60_000L);
+        }
+    };
+    public void stopTimestampUpdates() {
+        timestampHandler.removeCallbacks(timestampUpdater);
+    }
     /**
      * Returns the number of comments currently displayed.
      */
@@ -89,11 +123,13 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
         private TextView textViewUsername;
         private TextView textViewComment;
         private ImageButton buttonDeleteComment;
+        private TextView textViewTimestamp;
         public CommentViewHolder(@NonNull View commentView) {
             super(commentView);
             textViewUsername = commentView.findViewById(R.id.textViewUsername);
             textViewComment = commentView.findViewById(R.id.textViewComment);
             buttonDeleteComment = commentView.findViewById(R.id.buttonDeleteComment);
+            textViewTimestamp = commentView.findViewById(R.id.textViewTimestamp);
         }
     }
 }
