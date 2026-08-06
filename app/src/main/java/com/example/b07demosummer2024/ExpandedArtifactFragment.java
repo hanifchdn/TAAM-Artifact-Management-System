@@ -42,6 +42,7 @@ public class ExpandedArtifactFragment extends Fragment {
     private ImageButton buttonLike;
     private ImageButton buttonEdit;
     private ImageButton buttonDelete;
+    private Artifact artifact;
     private boolean isDeleteQueryRunning = false;
 
     /**
@@ -50,6 +51,7 @@ public class ExpandedArtifactFragment extends Fragment {
     public static ExpandedArtifactFragment newInstance(Artifact artifact) {
         ExpandedArtifactFragment fragment = new ExpandedArtifactFragment();
         Bundle args = new Bundle();
+        fragment.artifact = artifact;
         args.putString(ARG_LOT, artifact.getLOT());
         args.putString(ARG_NAME, artifact.getName());
         args.putString(ARG_DESCRIPTION, artifact.getDescription());
@@ -81,6 +83,9 @@ public class ExpandedArtifactFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        User curUser = SessionManager.getInstance().getCurrentUser();
+        boolean isAdmin = curUser.isAdmin();
+
         ImageView expandedImage = view.findViewById(R.id.expandedImage);
         TextView expandedName = view.findViewById(R.id.expandedName);
         TextView expandedDescription = view.findViewById(R.id.expandedDescription);
@@ -103,6 +108,14 @@ public class ExpandedArtifactFragment extends Fragment {
         buttonLike = view.findViewById(R.id.buttonLike);
         buttonEdit = view.findViewById(R.id.buttonEdit);
         buttonDelete = view.findViewById(R.id.buttonDelete);
+
+        buttonEdit.setVisibility(
+                isAdmin ? View.VISIBLE : View.GONE
+        );
+
+        buttonDelete.setVisibility(
+                isAdmin ? View.VISIBLE : View.GONE
+        );
 
         Bundle args = getArguments();
         if (args == null) {
@@ -134,6 +147,11 @@ public class ExpandedArtifactFragment extends Fragment {
                 .into(expandedImage);
 
         buttonReturn.setOnClickListener(v -> getParentFragmentManager().popBackStack());
+
+        buttonEdit.setOnClickListener(
+                v -> loadFragment(new EditItemFragment(artifact))
+        );
+
         buttonDelete.setOnClickListener(v -> {
             showDeleteConfirmation(args.getString(ARG_LOT));
         });
@@ -245,6 +263,7 @@ public class ExpandedArtifactFragment extends Fragment {
     private void loadFragment(Fragment fragment) {
         FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
         transaction.replace(R.id.fragment_container, fragment);
+        transaction.addToBackStack(null);
         transaction.commit();
     }
 }
