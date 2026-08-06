@@ -8,18 +8,32 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 
+/**
+ * Model that handle user authentication with Firebase
+ */
 public class LoginModel implements LoginContract.Model{
     private final FirebaseAuth auth;
 
+    /**
+     * Create a login model using the FirebaseAuth instance
+     */
     public LoginModel() {
         this(FirebaseAuth.getInstance());
     }
 
-    // Added to allow for unit testing
+    /**
+     * Created a login model with a provided FirebaseAuth instance
+     * @param auth FirebaseAuth instance to use
+     */
     LoginModel(FirebaseAuth auth) {
         this.auth = auth;
     }
-
+    /**
+     * Attempts to authenticate a user with email and password
+     * @param email User's email address
+     * @param password User's password
+     * @param callback Callback for login success or failure
+     */
     @Override
     public void login(String email, String password, AuthCallback callback) {
         auth.signInWithEmailAndPassword(email, password).addOnCompleteListener(
@@ -33,7 +47,11 @@ public class LoginModel implements LoginContract.Model{
             });
 
     }
-
+    /**
+     * Converts Firebase authentication errors into user-friendly messages
+     * @param ex Authentication exception
+     * @return Error message to display
+     */
     private String checkError(Exception ex) {
 
         if (ex instanceof FirebaseAuthInvalidCredentialsException || ex instanceof FirebaseAuthInvalidUserException){

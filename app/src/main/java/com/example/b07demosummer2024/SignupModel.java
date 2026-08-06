@@ -12,10 +12,15 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+/**
+ * Model that handles user registration and profile creation
+ */
 public class SignupModel implements SignUpContract.Model{
     private final FirebaseAuth auth;
     private final DatabaseReference db;
-
+    /**
+     * Creates a sign-up model using default Firebase instances.
+     */
     public SignupModel() {
         this(
                 FirebaseAuth.getInstance(),
@@ -23,12 +28,23 @@ public class SignupModel implements SignUpContract.Model{
         );
     }
 
-    // Added to allow for unit testing
+    /**
+     * Creates a sign-up model with provided Firebase dependencies.
+     * @param auth Firebase authentication instance
+     * @param db User database reference
+     */
     SignupModel(FirebaseAuth auth, DatabaseReference db) {
         this.auth = auth;
         this.db = db;
     }
 
+    /**
+     * Creates a new user account and stores the user profile.
+     * @param username User's username
+     * @param email User's email
+     * @param password User's password
+     * @param callback Callback for sign-up success or failure
+     */
     @Override
     public void signUp(String username, String email, String password, Authcallback callback){
         auth.createUserWithEmailAndPassword(email, password)
@@ -63,13 +79,21 @@ public class SignupModel implements SignUpContract.Model{
                         });
             });
     }
-
+    /**
+     * Converts database errors into user-friendly messages.
+     * @param ex Database exception
+     * @return Error message to display
+     */
     private String checkDBError(Exception ex) {
 
         Log.e("SIGNUP", "reason", ex);
         return "Something went wrong.";
     }
-
+    /**
+     * Converts authentication errors into user-friendly messages.
+     * @param ex Authentication exception
+     * @return Error message to display
+     */
     private String checkError(Exception ex) {
         if (ex instanceof FirebaseAuthUserCollisionException){
             return "User already exists.";
