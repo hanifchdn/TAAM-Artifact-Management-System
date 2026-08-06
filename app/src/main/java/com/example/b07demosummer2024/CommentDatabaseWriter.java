@@ -19,10 +19,10 @@ public class CommentDatabaseWriter {
     }
 
     /**
-     *Adds a comment to the database.
-     *Uses the comments id in order to create a new comment item in the database
+     * Adds a comment to the database.
+     * Uses the comments id in order to create a new comment item in the database
      * @param comment the comment to write to the database
-     * @param callback a Write callback on error
+     * @param callback the callback notified when the write succeeds or fails
      */
     public void addToDatabase(Comment comment, WriteCallback callback) {
         dbReference.child(comment.getId()).setValue(comment)

@@ -9,6 +9,10 @@ import java.util.List;
 public class CommentDatabaseReader {
     FirebaseDatabase db;
     DatabaseReference dbReference;
+    /**
+     * Creates a database reader and initializes a reference to the comments
+     * section of the Firebase Realtime Database.
+     */
     public CommentDatabaseReader() {
         //set database cursor to comment section
         db = FirebaseDatabase.getInstance("https://taam-artifact-storage-system-default-rtdb.firebaseio.com/");
@@ -19,7 +23,15 @@ public class CommentDatabaseReader {
      * Callback used to report the result of a getCommentsForArtifact() call
      */
     public interface GetCommentsForArtifactCallback {
+        /**
+         * Called when the comments are retrieved successfully.
+         * @param comments the list of comments belonging to the artifact
+         */
         void onSuccess(List<Comment> comments);
+        /**
+         * Called when the comments cannot be retrieved.
+         * @param e a message describing the error that occurred
+         */
         void onFailure(String e);
     }
 

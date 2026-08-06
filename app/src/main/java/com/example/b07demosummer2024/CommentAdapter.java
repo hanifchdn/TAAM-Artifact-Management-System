@@ -1,5 +1,6 @@
 package com.example.b07demosummer2024;
 
+import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,11 +21,10 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
         void onDeleteClick(Comment comment);
     }
 
-
     /**
-     * Creates an adapter that displays the given list of comments.
-     *
+     * Create an adapter that displays the given list of comments
      * @param comments comments to display
+     * @param listener the callback used when the delete button is clicked
      */
     public CommentAdapter(List<Comment> comments, OnDeleteClickListener listener) {
         this.comments = comments;
@@ -33,14 +33,19 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
 
     /**
      * Replaced the currently displayed comments
-     * @param newComments
+     * @param newComments the new list of comments to display
      */
     public void updateComment(List<Comment> newComments){
         this.comments = newComments;
         notifyDataSetChanged();
     }
     /**
-     * Creates a ViewHolder for one comment.
+     * Creates a ViewHolder for one comment
+     * @param parent The ViewGroup into which the new View will be added after it is bound to
+     *               an adapter position.
+     * @param viewType The view type of the new View.
+     *
+     * @return a ViewHolder for one comment
      */
     @NonNull
     @Override
@@ -49,6 +54,14 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
         return new CommentViewHolder(view);
     }
 
+    /**
+     * Binds the comment at the specified position to the provided ViewHolder.
+     * Updates the displayed username, comment body, timestamp, and delete button
+     * click listener.
+     *
+     * @param holder the ViewHolder that displays the comment data
+     * @param position the position of the comment in the adapter's data set
+     */
     @Override
     public void onBindViewHolder(@NonNull CommentViewHolder holder, int position) {
         Comment comment = comments.get(position);
@@ -69,6 +82,9 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
         return comments.size();
     }
 
+    /**
+     * ViewHolder that stores and manage the views used to display one comment
+     */
     public static class CommentViewHolder extends RecyclerView.ViewHolder {
         private TextView textViewUsername;
         private TextView textViewComment;
