@@ -75,13 +75,6 @@ public class ArtifactDatabaseWriterAddUpdateTest {
         mockedFirebaseDatabase.close();
     }
 
-    /**
-     * Sets the Firebase write chain:
-     * /artifacts
-     *      -> child("LOT100")
-     *      -> setValue(artifact)
-     */
-
     @Test
     public void addToDatabase_validArtifactWritesCorrectly() { /* Tests if the artifact is written
                                                                   to the Firebase correctly
@@ -173,6 +166,12 @@ public class ArtifactDatabaseWriterAddUpdateTest {
         verify(writerSpy).addToDatabase(artifact, callback);
     }
 
+    /**
+     * Sets the Firebase write chain:
+     * /artifacts
+     *      -> child("LOT100")
+     *      -> setValue(artifact)
+     */
     private void configureFirebaseWrite() {
         when(artifactsDir.child("LOT100"))
                 .thenReturn(lot);
