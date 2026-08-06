@@ -119,6 +119,11 @@
     <string name="like_artifact">Like Button</string>
     <string name="edit_artifact">Edit Artifact</string>
     <string name="delete_artifact">Delete Artifact</string>
+    <string name="return_to_artifact">Return to Expanded Artifact</string>
+    <string name="comments_title">Comments</string>
+    <string name="no_comments">No comments yet.</string>
+    <string name="add_a_comment">Add a comment</string>
+    <string name="post_comment">Post Comment</string>
     <string name="loading_artifacts">Loading Artifacts ...</string>
 
     <!-- Login and signup -->

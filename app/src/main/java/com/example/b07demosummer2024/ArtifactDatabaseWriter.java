@@ -1,10 +1,16 @@
 package com.example.b07demosummer2024;
 
+import android.util.Log;
+
 import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
+import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Allows for easy Writing to the db using the Artifact class.
@@ -17,11 +23,13 @@ public class ArtifactDatabaseWriter implements DatabaseAdder, DatabaseDeleter, D
     // firebase db instances
     FirebaseDatabase db;
     DatabaseReference dbReference;
+    DatabaseReference commentReference;
 
     public ArtifactDatabaseWriter() {
         // set database cursor to artifacts section
         db = FirebaseDatabase.getInstance("https://taam-artifact-storage-system-default-rtdb.firebaseio.com/");
         dbReference = db.getReference("/artifacts");
+        commentReference = db.getReference("/comments");
     }
 
     /**
@@ -105,16 +113,34 @@ public class ArtifactDatabaseWriter implements DatabaseAdder, DatabaseDeleter, D
      *
      */
     public void deleteFromDatabase(String LOT, WriteCallback callback) {
-        Task<Void> task = dbReference.child(LOT).removeValue();
-        task.addOnSuccessListener(success -> {
-            if(callback != null){
-                callback.onSuccess();
-            }
-        });
-        task.addOnFailureListener((exception) -> {
-            if (callback != null) {
-                callback.onFailure(exception.getMessage());
-            }
-        });
+        commentReference.orderByChild("artifactLot").equalTo(LOT).get()
+                .addOnSuccessListener(snapshot ->{
+                    List<Task<Void>> deleteTask = new ArrayList<>();
+                    for(DataSnapshot child: snapshot.getChildren()){
+                        Task<Void> commentDeleteTask = child.getRef().removeValue();
+                        commentDeleteTask.addOnSuccessListener(x -> {
+                            Log.d("delete_debug", "successfully delete comment" + child.getKey());
+                        }).addOnFailureListener(e ->{
+                            Log.e("delete_debug", "fail to delete comment"+ child.getKey());
+                        });
+                        deleteTask.add(child.getRef().removeValue());
+                    }
+                    deleteTask.add(dbReference.child(LOT).removeValue());
+                    Tasks.whenAll(deleteTask).addOnSuccessListener(x ->{
+                        if(callback != null){
+                            callback.onSuccess();
+                        }
+                    }).addOnFailureListener(e -> {
+                        Log.d("haha", e.getMessage());
+                        if(callback != null){
+                            callback.onFailure(e.getMessage());
+                        }
+                    });
+                }).addOnFailureListener(e -> {
+                    Log.e("ArtifactDelete", "A delete task failed", e);
+                    if(callback != null){
+                        callback.onFailure(e.getMessage());
+                    }
+                });
     }
 }
