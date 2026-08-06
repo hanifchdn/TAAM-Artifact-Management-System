@@ -253,6 +253,12 @@ public class ExpandedArtifactFragment extends Fragment {
                 .fallback(R.drawable.artifact_placeholder)
                 .into(expandedImage);
 
+        boolean alreadySaved = currentUser.containsSavedArtifact(artifactLot);
+
+        buttonSave.setImageResource(
+                alreadySaved ? R.drawable.bookmark : R.drawable.bookmark_hollow
+        );
+
         buttonReturn.setOnClickListener(v -> getParentFragmentManager().popBackStack());
 
         buttonEdit.setOnClickListener(
