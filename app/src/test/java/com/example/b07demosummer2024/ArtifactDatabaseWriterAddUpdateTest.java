@@ -19,7 +19,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 @RunWith(MockitoJUnitRunner.class)
-public class ArtifactDatabaseWriterTest {
+public class ArtifactDatabaseWriterAddUpdateTest {
 
     private static final String DATABASE_URL = "https://taam-artifact-storage-system-default-rtdb.firebaseio.com/";
 
@@ -81,19 +81,6 @@ public class ArtifactDatabaseWriterTest {
      *      -> child("LOT100")
      *      -> setValue(artifact)
      */
-    private void configureFirebaseWrite() {
-        when(artifactsDir.child("LOT100"))
-                .thenReturn(lot);
-
-        when(lot.setValue(artifact))
-                .thenReturn(setValueTask);
-
-        when(setValueTask.addOnSuccessListener(any(OnSuccessListener.class)))
-                .thenReturn(setValueTask);
-
-        when(setValueTask.addOnFailureListener(any(OnFailureListener.class)))
-                .thenReturn(setValueTask);
-    }
 
     @Test
     public void addToDatabase_validArtifactWritesCorrectly() { /* Tests if the artifact is written
@@ -184,5 +171,19 @@ public class ArtifactDatabaseWriterTest {
         writerSpy.updateDatabase(artifact, callback);
 
         verify(writerSpy).addToDatabase(artifact, callback);
+    }
+
+    private void configureFirebaseWrite() {
+        when(artifactsDir.child("LOT100"))
+                .thenReturn(lot);
+
+        when(lot.setValue(artifact))
+                .thenReturn(setValueTask);
+
+        when(setValueTask.addOnSuccessListener(any(OnSuccessListener.class)))
+                .thenReturn(setValueTask);
+
+        when(setValueTask.addOnFailureListener(any(OnFailureListener.class)))
+                .thenReturn(setValueTask);
     }
 }
