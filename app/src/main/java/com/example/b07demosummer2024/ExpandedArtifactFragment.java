@@ -17,6 +17,10 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import com.bumptech.glide.Glide;
+import com.google.firebase.auth.FirebaseAuth;
+
+import java.util.List;
+
 
 public class ExpandedArtifactFragment extends Fragment {
     private static final String ARG_LOT = "lot";
@@ -36,6 +40,13 @@ public class ExpandedArtifactFragment extends Fragment {
     private static final String ARG_ACCESSION_NUMBER = "accessionNumber";
     private static final String ARG_NOTES = "notes";
     private static final String ARG_IMAGE_URL = "imageUrl";
+    private static final String ARG_IS_LIKED = "isLiked";
+    private static final String ARG_LIKE_COUNT = "likeCount";
+
+    private String lot;
+    private boolean isLiked;
+    private int likeCount;
+
     private ImageButton buttonReturn;
     private ImageButton buttonSave;
     private ImageButton buttonComment;
@@ -44,6 +55,7 @@ public class ExpandedArtifactFragment extends Fragment {
     private ImageButton buttonDelete;
     private Artifact artifact;
     private boolean isDeleteQueryRunning = false;
+    private boolean isInitalLikedCountObtained = false;
 
     /**
      * Creates a new instance of this fragment containing a given artifact's information.
@@ -69,6 +81,7 @@ public class ExpandedArtifactFragment extends Fragment {
         args.putString(ARG_ACCESSION_NUMBER, artifact.getAccessionNumber());
         args.putString(ARG_NOTES, artifact.getNotes());
         args.putString(ARG_IMAGE_URL, artifact.getImageUrl());
+        args.putInt(ARG_LIKE_COUNT, 0);
         fragment.setArguments(args);
         return fragment;
     }
@@ -101,6 +114,7 @@ public class ExpandedArtifactFragment extends Fragment {
         TextView expandedProvenance = view.findViewById(R.id.expandedProvenance);
         TextView expandedAccessionNumber = view.findViewById(R.id.expandedAccessionNumber);
         TextView expandedNotes = view.findViewById(R.id.expandedNotes);
+        TextView likeCountText = view.findViewById(R.id.likeCount);
 
         buttonReturn = view.findViewById(R.id.buttonReturn);
         buttonSave = view.findViewById(R.id.buttonSave);
@@ -139,14 +153,90 @@ public class ExpandedArtifactFragment extends Fragment {
         expandedAccessionNumber.setText("Accession Number: " + Availability(args.getString(ARG_ACCESSION_NUMBER)));
         expandedNotes.setText("Notes: " + Availability(args.getString(ARG_NOTES)));
 
+        likeCount = args.getInt(ARG_LIKE_COUNT, 0);
+        isLiked = false;
+
+        String artifactLot = args.getString(ARG_LOT);
+        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        LikeDatabaseReader likeDatabaseReader = new LikeDatabaseReader();
+        likeDatabaseReader.hasUserLiked(userId, artifactLot, new LikeDatabaseReader.HasUserLikedCallback() {
+            @Override
+            public void onSuccess(boolean hasLiked) {
+                isLiked = hasLiked;
+                updateLikeUi(buttonLike, likeCountText);
+                isInitalLikedCountObtained = true;
+            }
+
+            @Override
+            public void onFailure(String errorMessage) {
+                Toast.makeText(requireContext(), errorMessage, Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        likeDatabaseReader.GetLikesOnArtifact(artifactLot, new LikeDatabaseReader.GetLikesCallback() {
+            @Override
+            public void onSuccess(int amountOfLikes) {
+                likeCount = amountOfLikes;
+                updateLikeUi(buttonLike, likeCountText);
+            }
+
+            @Override
+            public void onFailure(String errorMessage) {
+                Toast.makeText(requireContext(), errorMessage, Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        buttonLike.setOnClickListener(v -> {
+            if (!isInitalLikedCountObtained) {
+                return;
+            }
+            LikeDatabaseWriter likeDatabaseWriter = new LikeDatabaseWriter();
+            if (isLiked) {
+                likeDatabaseWriter.removeFromDatabase(userId, artifactLot, new WriteCallback() {
+                    // all good on success
+                    @Override
+                    public void onSuccess() {
+
+                    }
+
+                    // undo unlike on failure
+                    @Override
+                    public void onFailure(String err) {
+                        isLiked = !isLiked;
+                        likeCount += isLiked ? 1 : -1;
+                        updateLikeUi(buttonLike, likeCountText);
+                    }
+                });
+            } else {
+                Like newLike = new Like(userId, artifactLot);
+                likeDatabaseWriter.addToDatabase(newLike, new WriteCallback() {
+                    // all good on success
+                    @Override
+                    public void onSuccess() {
+
+                    }
+
+                    // undo like on failure
+                    @Override
+                    public void onFailure(String err) {
+                        isLiked = !isLiked;
+                        likeCount += isLiked ? 1 : -1;
+                        updateLikeUi(buttonLike, likeCountText);
+                        Toast.makeText(requireContext(), "Error liking artifact", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+            isLiked = !isLiked;
+            likeCount += isLiked ? 1 : -1;
+            updateLikeUi(buttonLike, likeCountText);
+        });
+
         Glide.with(requireContext())
                 .load(args.getString(ARG_IMAGE_URL))
                 .placeholder(R.drawable.artifact_placeholder)
                 .error(R.drawable.artifact_placeholder)
                 .fallback(R.drawable.artifact_placeholder)
                 .into(expandedImage);
-
-        String artifactLot = args.getString(ARG_LOT);
 
         buttonReturn.setOnClickListener(v -> getParentFragmentManager().popBackStack());
 
@@ -164,22 +254,22 @@ public class ExpandedArtifactFragment extends Fragment {
         });
 
         requireActivity().getOnBackPressedDispatcher().addCallback(
-                        getViewLifecycleOwner(),
-                        new OnBackPressedCallback(true) {
-                            /**
-                             * Ignore the back button while a delete
-                             * request is running.
-                             */
-                            @Override
-                            public void handleOnBackPressed() {
-                                if (isDeleteQueryRunning) {
-                                    return;
-                                }
-                                setEnabled(false);
-                                getParentFragmentManager().popBackStack();
-                            }
+                getViewLifecycleOwner(),
+                new OnBackPressedCallback(true) {
+                    /**
+                     * Ignore the back button while a delete
+                     * request is running.
+                     */
+                    @Override
+                    public void handleOnBackPressed() {
+                        if (isDeleteQueryRunning) {
+                            return;
                         }
-                );
+                        setEnabled(false);
+                        getParentFragmentManager().popBackStack();
+                    }
+                }
+        );
     }
 
     /**
@@ -190,16 +280,31 @@ public class ExpandedArtifactFragment extends Fragment {
     }
 
     /**
+     * Syncs the heart icon and like counter with the current state.
+     */
+    private void updateLikeUi(ImageButton buttonLike, TextView likeCountText) {
+        buttonLike.setImageResource(
+                isLiked ? R.drawable.like : R.drawable.unlike
+        );
+        likeCountText.setText(String.valueOf(likeCount));
+    }
+
+    /**
      * Shows a warning before deleting an artifact.
      *
      * @param artifactLot LOT of the artifact to delete
      */
     private void showDeleteConfirmation(String artifactLot) {
-        new AlertDialog.Builder(requireContext()).setTitle("Delete Artifact")
-                .setMessage("Are you sure you want to delete this artifact? "
-                                + "This action cannot be undone.")
-                .setPositiveButton("Delete",
-                        (dialog, which) -> deleteArtifact(artifactLot))
+        new AlertDialog.Builder(requireContext())
+                .setTitle("Delete Artifact")
+                .setMessage(
+                        "Are you sure you want to delete this artifact? "
+                                + "This action cannot be undone."
+                )
+                .setPositiveButton(
+                        "Delete",
+                        (dialog, which) -> deleteArtifact(artifactLot)
+                )
                 .setNegativeButton(
                         "Cancel",
                         (dialog, which) -> dialog.dismiss()
@@ -215,6 +320,7 @@ public class ExpandedArtifactFragment extends Fragment {
     private void deleteArtifact(String artifactLot) {
         isDeleteQueryRunning = true;
         disableButton();
+
         ArtifactDatabaseWriter writer = new ArtifactDatabaseWriter();
         writer.deleteFromDatabase(artifactLot, new WriteCallback() {
             @Override
@@ -231,16 +337,19 @@ public class ExpandedArtifactFragment extends Fragment {
                 if (!isAdded()) {
                     return;
                 }
-                Toast.makeText(requireContext(), "Failed to delete Artifact", Toast.LENGTH_SHORT).show();
+
+                Toast.makeText(
+                        requireContext(),
+                        "Failed to delete Artifact",
+                        Toast.LENGTH_SHORT
+                ).show();
+
                 isDeleteQueryRunning = false;
                 enableButton();
             }
         });
     }
 
-    /**
-     * Disables the buttons functionality
-     */
     public void disableButton() {
         buttonReturn.setEnabled(false);
         buttonSave.setEnabled(false);
@@ -250,9 +359,6 @@ public class ExpandedArtifactFragment extends Fragment {
         buttonDelete.setEnabled(false);
     }
 
-    /**
-     * Enables the buttons functionality
-     */
     public void enableButton() {
         buttonReturn.setEnabled(true);
         buttonSave.setEnabled(true);

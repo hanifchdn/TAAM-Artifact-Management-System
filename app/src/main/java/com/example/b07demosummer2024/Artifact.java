@@ -1,5 +1,9 @@
 package com.example.b07demosummer2024;
 
+import com.google.firebase.database.Exclude;
+
+import java.util.ArrayList;
+
 /**
  * Artifact class that defines the Artifact structure
  *
@@ -37,6 +41,7 @@ public class Artifact implements DatabaseItem{
         this.dynasty = dynasty;
 
     }
+
     public String getLOT() {
         return LOT;
     }
@@ -168,5 +173,6 @@ public class Artifact implements DatabaseItem{
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
     }
+
 
 }

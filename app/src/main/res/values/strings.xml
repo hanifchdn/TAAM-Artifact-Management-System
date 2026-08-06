@@ -117,6 +117,7 @@
     <string name="save_artifact">Save Artifact</string>
     <string name="comment_section">Artifact Comments</string>
     <string name="like_artifact">Like Button</string>
+    <string name="unlike_artifact">Unlike Button</string>
     <string name="edit_artifact">Edit Artifact</string>
     <string name="delete_artifact">Delete Artifact</string>
     <string name="return_to_artifact">Return to Expanded Artifact</string>

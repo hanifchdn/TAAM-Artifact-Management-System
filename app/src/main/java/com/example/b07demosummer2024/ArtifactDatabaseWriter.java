@@ -78,7 +78,6 @@ public class ArtifactDatabaseWriter implements DatabaseAdder, DatabaseDeleter, D
     public void updateDatabase(DatabaseItem item, WriteCallback writeCallback) {
         addToDatabase(item, writeCallback);
     }
-
     /**
      *Deletes an artifact form the Database.
      *
@@ -143,4 +142,6 @@ public class ArtifactDatabaseWriter implements DatabaseAdder, DatabaseDeleter, D
                     }
                 });
     }
+
+
 }
