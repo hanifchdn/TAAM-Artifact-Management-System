@@ -13,13 +13,18 @@ import java.util.List;
 public class UserDatabaseWriter {
     private FirebaseDatabase db;
     private DatabaseReference dbReference;
+
+    /**
+     * Creates a UserDatabaseWriter and initializes a reference to the users
+     * section of the Firebase Database
+     */
     public UserDatabaseWriter() {
         db = FirebaseDatabase.getInstance("https://taam-artifact-storage-system-default-rtdb.firebaseio.com/");
         dbReference = db.getReference().child("users");
     }
 
     /**
-     * Updates the savedArtifacts of a given useruid
+     * Updates the savedArtifacts of a given userUid
      * @param userUid of the user to update savedArtifactList
      * @param savedArtifactList of the user to update
      * @param callback on success/failure of database query
@@ -32,7 +37,7 @@ public class UserDatabaseWriter {
             }
             else {
                 if (task.getException() == null) {
-                    callback.onFailure("An unknown error occured");
+                    callback.onFailure("An unknown error occurred");
                     return;
                 }
                 callback.onFailure(task.getException().toString());
@@ -43,7 +48,7 @@ public class UserDatabaseWriter {
 
 
     /**
-     * Updates the savedArtifacts of a given useruid
+     * Updates the savedArtifacts of a given userUid
      * @param user object on which to update savedArtifacts in database
      * @param callback on success/failure of database query
      */

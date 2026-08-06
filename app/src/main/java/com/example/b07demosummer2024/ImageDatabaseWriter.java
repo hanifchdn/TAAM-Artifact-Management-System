@@ -9,10 +9,18 @@ import java.util.concurrent.CompletableFuture;
  */
 public class ImageDatabaseWriter{
 
+    /**
+     * Callback used to return the URL of an uploaded image
+     */
     public interface UrlCallback {
+
+        /**
+         * Called upon image upload success or failure
+         *
+         * @param url the URL of the uploaded image, or null if the upload fails
+         */
         void getUrl(String url);
     }
-
     /**
      *
      * @param imageUploader A SupabaseImageUploader that must be created when the URI is obtained with SupabaseImageUploader imageUploader(getContext());

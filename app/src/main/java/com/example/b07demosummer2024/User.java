@@ -3,8 +3,11 @@ package com.example.b07demosummer2024;
 import java.util.ArrayList;
 import java.util.List;
 
-import kotlin.collections.ArrayDeque;
-
+/**
+ * User class that defines User structure
+ *
+ * Represents the type contract and fields of a User
+ */
 public class User {
 
     private String username;
@@ -13,10 +16,21 @@ public class User {
     private boolean admin;
     private List<String> savedArtifactList;
 
+    /**
+     * No Argument constructor for firebase, Do not use this to create a User
+     */
     public User(){
 
     }
 
+    /**
+     * Creates a User with the given account information
+     *
+     * @param username the user's username
+     * @param email the user's email address
+     * @param uid the unique ID of the user
+     * @param admin whether the user is an administrator
+     */
     public User(String username, String email, String uid, boolean admin) {
         this.username = username;
         this.email = email;

@@ -47,6 +47,7 @@ public class ExpandedArtifactFragment extends Fragment {
     private ImageButton buttonSave;
     private ImageButton buttonComment;
     private ImageButton buttonLike;
+    private View likeContainer;
     private ImageButton buttonEdit;
     private ImageButton buttonDelete;
     private Artifact artifact;
@@ -119,6 +120,7 @@ public class ExpandedArtifactFragment extends Fragment {
         buttonSave = view.findViewById(R.id.buttonSave);
         buttonComment = view.findViewById(R.id.buttonComment);
         buttonLike = view.findViewById(R.id.buttonLike);
+        likeContainer = view.findViewById(R.id.likeContainer);
         buttonEdit = view.findViewById(R.id.buttonEdit);
         buttonDelete = view.findViewById(R.id.buttonDelete);
 
@@ -202,7 +204,7 @@ public class ExpandedArtifactFragment extends Fragment {
             }
         });
 
-        buttonLike.setOnClickListener(v -> {
+        likeContainer.setOnClickListener(v -> {
             if (isLikeQueryRunning) {
                 return;
             }

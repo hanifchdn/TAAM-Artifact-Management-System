@@ -4,6 +4,11 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+/**
+ * Writes comment data to the Firebase Database
+ *
+ * Provides methods for adding and deleting comments in the Firebase
+ */
 public class CommentDatabaseWriter {
     // firebase db instances
     FirebaseDatabase db;

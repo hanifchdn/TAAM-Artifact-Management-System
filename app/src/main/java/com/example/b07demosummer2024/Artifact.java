@@ -31,7 +31,21 @@ public class Artifact implements DatabaseItem{
     private String notes;
     private String imageUrl;
 
+    /**
+     * No Argument constructor for firebase, do not use to create an artifact
+     */
     public Artifact() {}
+
+    /**
+     * Creates an Artifact with its basic required information
+     *
+     * @param LOT the unique lot identifier of the artifact
+     * @param name the name of the artifact
+     * @param description a description of the artifact
+     * @param category the category the artifact belongs to
+     * @param material the material the artifact is made of
+     * @param dynasty the dynasty or historical period the artifact is from
+     */
     public Artifact(String LOT, String name, String description, String category, String material, String dynasty) {
         this.LOT = LOT;
         this.name = name;
