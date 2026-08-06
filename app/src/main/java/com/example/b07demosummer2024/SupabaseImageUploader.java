@@ -22,9 +22,24 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
+/**
+ * Uploads images to the Supabase using the URI of an image
+ */
 public class SupabaseImageUploader {
+
+    /**
+     * Callback used on upload
+     */
     public interface UploadCallback {
+        /**
+         * On a successful upload callback with url
+         * @param publicUrl of image
+         */
         void onSuccess(String publicUrl);
+        /**
+         * On a failed upload callback with url
+         * @param message of error
+         */
         void onError(String message);
     }
 
@@ -37,6 +52,10 @@ public class SupabaseImageUploader {
     private final String supabaseAnonKey;
     private final String bucketName;
 
+    /**
+     * Creates a SupabaseImageUploader, and syncs url and anon key
+     * @param context of android app for R.String constants
+     */
     public SupabaseImageUploader(Context context) {
         appContext = context.getApplicationContext();
         supabaseUrl = appContext.getString(R.string.supabase_url).trim();
@@ -44,6 +63,12 @@ public class SupabaseImageUploader {
         bucketName = appContext.getString(R.string.supabase_image_bucket).trim();
     }
 
+    /**
+     * Uploads an image to the supabase, and runs a callback on completion
+     * @param imageUri of image to upload
+     * @param lotNumber of artifact (for unique identification of url)
+     * @param callback method on completion following UploadCallback
+     */
     public void uploadImage(Uri imageUri, String lotNumber, UploadCallback callback) {
         // Make sure the Supabase project URL, anon key, and bucket name were provided
         if (isBlank(supabaseUrl) || isBlank(supabaseAnonKey) || isBlank(bucketName)) {
@@ -124,6 +149,12 @@ public class SupabaseImageUploader {
         });
     }
 
+    /**
+     * Reads the bytes of the image and puts it into an array of bytes
+     * @param imageUri to read the image bytes
+     * @return image represented as bytes
+     * @throws IOException on bad image stream
+     */
     private byte[] readBytes(Uri imageUri) throws IOException {
         ContentResolver resolver = appContext.getContentResolver();
         try (InputStream inputStream = resolver.openInputStream(imageUri);
@@ -143,11 +174,23 @@ public class SupabaseImageUploader {
         }
     }
 
+    /**
+     * Creates the unique filepath for an image
+     * @param lotNumber of artifact
+     * @param extension of image type
+     * @return A unique file path
+     */
     private String buildFilePath(String lotNumber, String extension) {
         String safeLotNumber = lotNumber.replaceAll("[^A-Za-z0-9_-]", "_");
         return "artifacts/" + safeLotNumber + "/" + System.currentTimeMillis() + "." + extension;
     }
 
+    /**
+     * Creates the URL to the supabase storage
+     * @param storagePath path to the storage
+     * @param filePath part to the file
+     * @return an HttpUrl of the storage
+     */
     private HttpUrl buildStorageUrl(String storagePath, String filePath) {
         HttpUrl baseUrl = HttpUrl.parse(supabaseUrl);
         if (baseUrl == null) {
@@ -160,14 +203,29 @@ public class SupabaseImageUploader {
                 .build();
     }
 
+    /**
+     * On success, run onSuccess callback
+     * @param callback to run
+     * @param publicUrl to use as callback argument
+     */
     private void postSuccess(UploadCallback callback, String publicUrl) {
         mainHandler.post(() -> callback.onSuccess(publicUrl));
     }
 
+    /**
+     * On failure, run onFailure callback
+     * @param callback to run
+     * @param message the error message to use as callback argument
+     */
     private void postError(UploadCallback callback, String message) {
         mainHandler.post(() -> callback.onError(message));
     }
 
+    /**
+     * Returns if a string is blank or not, accepting null strings.
+     * @param value of string
+     * @return boolean if the string is blank or not
+     */
     private boolean isBlank(String value) {
         return value == null || value.trim().isEmpty();
     }
