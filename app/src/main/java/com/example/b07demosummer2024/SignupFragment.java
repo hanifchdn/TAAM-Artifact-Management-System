@@ -53,7 +53,7 @@ public class SignupFragment extends Fragment implements SignUpContract.View {
         signupErrorText = view.findViewById(R.id.signupErrorText);
         signupProgressBar = view.findViewById(R.id.signupProgressBar);
 
-        presenter = new SignUpPresenter(this, new SignupModel());
+        presenter = new SignUpPresenter(this, new SignupModel(), new SessionModel());
 
         signupButton.setOnClickListener(v -> {
             clearSignupError();

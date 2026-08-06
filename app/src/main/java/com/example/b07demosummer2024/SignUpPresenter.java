@@ -4,11 +4,13 @@ public class SignUpPresenter implements SignUpContract.Presenter {
 
     private SignUpContract.View view;
     private SignUpContract.Model model;
+    private SessionContract.Model sessionModel;
 
-    public SignUpPresenter(SignUpContract.View view, SignUpContract.Model model){
+    public SignUpPresenter(SignUpContract.View view, SignUpContract.Model model, SessionContract.Model sessionModel){
 
         this.view = view;
         this.model = model;
+        this.sessionModel = sessionModel;
     }
     private static final String EMAIL_REGEX = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@" +
             "(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
@@ -54,9 +56,26 @@ public class SignUpPresenter implements SignUpContract.Presenter {
                 if (view == null) {
                     return;
                 }
-                view.hideLoadingIndicator();
-                view.enableButton();
-                view.navigateToHome();
+                SessionManager session = SessionManager.getInstance();
+                if (session.getCurrentUser() != null){
+                    session.clear();
+                }
+                sessionModel.fetchUserProfile(uid, new SessionContract.Model.ProfileCallback() {
+                    @Override
+                    public void onProfileLoaded(User user) {
+                        if (view == null) return;
+                        session.setCurrentUser(user);
+                        view.hideLoadingIndicator(); view.enableButton(); view.navigateToHome();
+                    }
+
+                    @Override
+                    public void onProfileError(String message) {
+                        sessionModel.logOut();
+
+                        if (view == null) return;
+                        view.hideLoadingIndicator(); view.enableButton(); view.showSignUpFailedError(message);
+                    }
+                });
             }
             @Override
             public void onFailure(String message) {
