@@ -19,7 +19,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 @RunWith(MockitoJUnitRunner.class)
-public class ArtifactDatabaseWriterAddTest {
+public class ArtifactDatabaseWriterTest {
 
     private static final String DATABASE_URL = "https://taam-artifact-storage-system-default-rtdb.firebaseio.com/";
 
@@ -170,5 +170,19 @@ public class ArtifactDatabaseWriterAddTest {
         verify(callback).onFailure("Item is not an artifact");
 
         verify(artifactsDir, never()).child(any());
+    }
+
+    @Test
+    public void updateDatabase_callsAddToDatabase() { /* Tests if updating an artifact passes the
+                                                         write to addToDatabase using the same
+                                                         artifact and callback
+                                                         */
+        ArtifactDatabaseWriter writerSpy = spy(writer);
+
+        doNothing().when(writerSpy).addToDatabase(artifact, callback);
+
+        writerSpy.updateDatabase(artifact, callback);
+
+        verify(writerSpy).addToDatabase(artifact, callback);
     }
 }
