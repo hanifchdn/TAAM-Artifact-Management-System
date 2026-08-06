@@ -21,12 +21,14 @@ public class ArtifactDatabaseWriter implements DatabaseAdder, DatabaseDeleter, D
     FirebaseDatabase db;
     DatabaseReference dbReference;
     DatabaseReference commentReference;
+    DatabaseReference likeReference;
 
     public ArtifactDatabaseWriter() {
         // set database cursor to artifacts section
         db = FirebaseDatabase.getInstance("https://taam-artifact-storage-system-default-rtdb.firebaseio.com/");
         dbReference = db.getReference("/artifacts");
         commentReference = db.getReference("/comments");
+        likeReference = db.getReference("/likes");
     }
 
     /**
@@ -111,26 +113,37 @@ public class ArtifactDatabaseWriter implements DatabaseAdder, DatabaseDeleter, D
      */
     public void deleteFromDatabase(String LOT, WriteCallback callback) {
         commentReference.orderByChild("artifactLot").equalTo(LOT).get()
-                .addOnSuccessListener(snapshot ->{
+                .addOnSuccessListener(commentSnapshot -> {
                     List<Task<Void>> deleteTask = new ArrayList<>();
 
-                    for (DataSnapshot child : snapshot.getChildren()) {
+                    for (DataSnapshot child : commentSnapshot.getChildren()) {
                         deleteTask.add(child.getRef().removeValue());
                     }
 
-                    deleteTask.add(dbReference.child(LOT).removeValue());
+                    likeReference.orderByChild("artifactLot").equalTo(LOT).get()
+                            .addOnSuccessListener(likeSnapshot -> {
+                                for (DataSnapshot child : likeSnapshot.getChildren()) {
+                                    deleteTask.add(child.getRef().removeValue());
+                                }
 
-                    Tasks.whenAll(deleteTask).addOnSuccessListener(x ->{
-                        if(callback != null){
-                            callback.onSuccess();
-                        }
-                    }).addOnFailureListener(e -> {
-                        if(callback != null){
-                            callback.onFailure(e.getMessage());
-                        }
-                    });
+                                deleteTask.add(dbReference.child(LOT).removeValue());
+
+                                Tasks.whenAll(deleteTask).addOnSuccessListener(x -> {
+                                    if (callback != null) {
+                                        callback.onSuccess();
+                                    }
+                                }).addOnFailureListener(e -> {
+                                    if (callback != null) {
+                                        callback.onFailure(e.getMessage());
+                                    }
+                                });
+                            }).addOnFailureListener(e -> {
+                                if (callback != null) {
+                                    callback.onFailure(e.getMessage());
+                                }
+                            });
                 }).addOnFailureListener(e -> {
-                    if(callback != null){
+                    if (callback != null) {
                         callback.onFailure(e.getMessage());
                     }
                 });
