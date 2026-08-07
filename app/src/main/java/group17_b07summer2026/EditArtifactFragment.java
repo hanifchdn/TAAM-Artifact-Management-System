@@ -22,6 +22,9 @@ import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
 
+/**
+ * Allows an admin user to edit an existing artifact
+ */
 public class EditArtifactFragment extends Fragment {
 
     private EditText editTextLot;

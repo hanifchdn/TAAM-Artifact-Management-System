@@ -10,6 +10,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 import com.bumptech.glide.Glide;
 
+/**
+ * Displays artifacts in a RecyclerView.
+ */
 public class ArtifactAdapter extends RecyclerView.Adapter<ArtifactAdapter.ArtifactViewHolder> {
     private final List<Artifact> artifactList;
     private final OnArtifactClickListener listener;
@@ -68,6 +71,9 @@ public class ArtifactAdapter extends RecyclerView.Adapter<ArtifactAdapter.Artifa
         return artifactList.size();
     }
 
+    /**
+     * Stores references to the views used for one artifact item.
+     */
     public static class ArtifactViewHolder extends RecyclerView.ViewHolder {
 
         private ImageView imageViewArtifact;
@@ -76,6 +82,7 @@ public class ArtifactAdapter extends RecyclerView.Adapter<ArtifactAdapter.Artifa
         private TextView textViewCategory;
         private TextView textViewMaterial;
         private TextView textViewDynasty;
+
         public ArtifactViewHolder(@NonNull View artifactView) {
             super(artifactView);
             imageViewArtifact = artifactView.findViewById(R.id.imageViewArtifact);

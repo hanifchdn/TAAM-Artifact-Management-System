@@ -23,6 +23,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Displays and manages comments for a selected artifact.
+ */
 public class CommentSectionFragment extends Fragment {
     private static final String ARG_LOT = "lot";
     private String lot;

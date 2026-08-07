@@ -21,6 +21,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Displays, searches, and provides navigation for artifacts on the homepage.
+ */
 public class HomeFragment extends Fragment {
     private ImageButton searchButton;
     private ImageButton searchUpdateButton;
