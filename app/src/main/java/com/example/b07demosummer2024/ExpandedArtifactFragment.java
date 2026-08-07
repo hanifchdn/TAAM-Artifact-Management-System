@@ -527,6 +527,7 @@ public class ExpandedArtifactFragment extends Fragment {
         buttonSave.setEnabled(false);
         buttonComment.setEnabled(false);
         buttonLike.setEnabled(false);
+        likeContainer.setEnabled(false);
         buttonEdit.setEnabled(false);
         buttonDelete.setEnabled(false);
     }
@@ -536,6 +537,7 @@ public class ExpandedArtifactFragment extends Fragment {
         buttonSave.setEnabled(true);
         buttonComment.setEnabled(true);
         buttonLike.setEnabled(true);
+        likeContainer.setEnabled(true);
         buttonEdit.setEnabled(true);
         buttonDelete.setEnabled(true);
     }
