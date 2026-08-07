@@ -48,6 +48,7 @@ public class LoginFragment extends Fragment implements LoginContract.View {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_login, container, false);
     }
+
     /**
      * Initializes UI components and click listeners.
      * @param view The View returned by {@link #onCreateView(LayoutInflater, ViewGroup, Bundle)}.
@@ -58,7 +59,7 @@ public class LoginFragment extends Fragment implements LoginContract.View {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        // Binds variables from XML layout to java
+        //Binds variables from XML layout to java
         usernameInput = view.findViewById(R.id.username_input);
         passwordInput = view.findViewById(R.id.password_input);
         loginButton = view.findViewById(R.id.loginButton);
@@ -66,8 +67,10 @@ public class LoginFragment extends Fragment implements LoginContract.View {
         loginProgressBar = view.findViewById(R.id.loginProgressBar);
         loginErrorText = view.findViewById(R.id.loginErrorText);
 
+        //Link LoginPresenter with LoginView
         presenter = new LoginPresenter(this, new LoginModel(), new SessionModel(), SessionManager.getInstance());
 
+        //Setup loginButton clickListener
         loginButton.setOnClickListener(v -> {
             clearLoginError();
             String email = usernameInput.getText().toString().trim();
@@ -75,11 +78,12 @@ public class LoginFragment extends Fragment implements LoginContract.View {
             presenter.login(email, password);
         });
 
+        //Setup signupLink to launch SignupFragment
         signupLink.setOnClickListener(v -> {
             loadFragment(new SignupFragment(), true);
         });
 
-        // Password visibility listener
+        //Password visibility touchListener
         passwordInput.setOnTouchListener((v, event) -> {
             final int DRAWABLE_END = 2;
             if (event.getAction() == MotionEvent.ACTION_UP) {

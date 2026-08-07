@@ -63,9 +63,7 @@ public class SignupFragment extends Fragment implements SignUpContract.View {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        /**
-         * Binds variables from xml layout to java
-         */
+        //Binds variables from xml layout to java
         usernameInput = view.findViewById(R.id.signup_username_input);
         passwordInput = view.findViewById(R.id.signup_password_input);
         emailInput = view.findViewById(R.id.signup_email_input);
@@ -75,8 +73,10 @@ public class SignupFragment extends Fragment implements SignUpContract.View {
         signupErrorText = view.findViewById(R.id.signupErrorText);
         signupProgressBar = view.findViewById(R.id.signupProgressBar);
 
+        //Link LoginPresenter with LoginView
         presenter = new SignUpPresenter(this, new SignupModel(), new SessionModel());
 
+        //Setup signupButton clickListener
         signupButton.setOnClickListener(v -> {
             clearSignupError();
             String username = usernameInput.getText().toString().trim();
@@ -86,10 +86,12 @@ public class SignupFragment extends Fragment implements SignUpContract.View {
             presenter.signUp(username, email, password, confirmPassword);
         });
 
+        //Setup loginLink to launch LoginFragment
         loginLink.setOnClickListener(v -> {
             loadFragment(new LoginFragment(), true);
         });
 
+        //Password visibility touchListener
         passwordInput.setOnTouchListener((v, event) -> {
             final int DRAWABLE_END = 2;
             if (event.getAction() == MotionEvent.ACTION_UP) {

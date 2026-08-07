@@ -37,7 +37,7 @@ public class SupabaseImageUploader {
          */
         void onSuccess(String publicUrl);
         /**
-         * On a failed upload callback with url
+         * On a failed upload callback
          * @param message of error
          */
         void onError(String message);
@@ -46,7 +46,15 @@ public class SupabaseImageUploader {
      * Callback used on delete
      */
     public interface DeleteCallback {
+        /**
+         * On a successful delete callback
+         */
         void onSuccess();
+
+        /**
+         * On a failed delete callback with error message
+         * @param message Error message
+         */
         void onError(String message);
     }
 
@@ -155,6 +163,12 @@ public class SupabaseImageUploader {
             }
         });
     }
+
+    /**
+     * Deletes an image from Supabase using its public URL
+     * @param publicUrl Public Url of image to delete
+     * @param callback callbcak method on completion following DeleteCallback
+     */
     public void deleteImage(String publicUrl, DeleteCallback callback) {
         String filePath = extractFilePath(publicUrl);
         if (isBlank(filePath)) {
@@ -195,6 +209,12 @@ public class SupabaseImageUploader {
             }
         });
     }
+
+    /**
+     * Extracts the image file path from its public Supabase URL
+     * @param publicUrl of image
+     * @return file path of image, or null if the URL is invalid
+     */
     private String extractFilePath(String publicUrl) {
         HttpUrl url = HttpUrl.parse(publicUrl);
         if (url == null) {
@@ -272,17 +292,26 @@ public class SupabaseImageUploader {
     }
 
     /**
-     * On failure, run onFailure callback
+     * On failure, run onError callback
      * @param callback to run
      * @param message the error message to use as callback argument
      */
     private void postError(UploadCallback callback, String message) {
         mainHandler.post(() -> callback.onError(message));
     }
+    /**
+     * On successful deletion, run onSuccess callback
+     * @param callback to run
+     */
     private void postDeleteSuccess(DeleteCallback callback) {
         mainHandler.post(() -> callback.onSuccess());
     }
 
+    /**
+     * On failure, run onError callback
+     * @param callback to run
+     * @param message Error message
+     */
     private void postDeleteError(DeleteCallback callback, String message) {
         mainHandler.post(() -> callback.onError(message));
     }

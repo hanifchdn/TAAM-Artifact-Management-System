@@ -34,6 +34,17 @@ public class HomeFragment extends Fragment {
     private ImageButton savedArtifactsButton;
     private boolean isSavedArtifactsSelected = false;
 
+    /**
+     * Creates and returns the HomePage view.
+     * @param inflater The LayoutInflater object that can be used to inflate
+     * any views in the fragment,
+     * @param container If non-null, this is the parent view that the fragment's
+     * UI should be attached to.  The fragment should not add the view itself,
+     * but this can be used to generate the LayoutParams of the view.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed
+     * from a previous saved state as given here.
+     * @return Inflated homepage view
+     */
     @Nullable
     @Override
     public View onCreateView(
@@ -48,6 +59,12 @@ public class HomeFragment extends Fragment {
         );
     }
 
+    /**
+     * Initializes UI components and click listeners.
+     * @param view The View returned by {@link #onCreateView(LayoutInflater, ViewGroup, Bundle)}.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed
+     * from a previous saved state as given here.
+     */
     @Override
     public void onViewCreated(
             @NonNull View view,
@@ -72,6 +89,8 @@ public class HomeFragment extends Fragment {
         noArtifacts = view.findViewById(R.id.noArtifacts);
         artifactLoadingLayout = view.findViewById(R.id.artifactLoadingLayout);
         savedArtifactsButton = view.findViewById(R.id.savedArtifactsButton);
+
+        //Configures savedArtifactsButton
         savedArtifactsButton.setOnClickListener(v -> {
             isSavedArtifactsSelected = !isSavedArtifactsSelected;
             savedArtifactsButton.setImageResource(
@@ -90,7 +109,7 @@ public class HomeFragment extends Fragment {
             }
         });
 
-        // search for artifact on search button click
+        // Search for artifact on search button click
         searchUpdateButton.setOnClickListener(v -> {
             searchForArtifacts();
         });
@@ -117,7 +136,7 @@ public class HomeFragment extends Fragment {
         });
 
 
-
+        //Configures logoutButton
         ImageButton logoutButton = view.findViewById(R.id.logoutButton);
         logoutButton.setOnClickListener(v -> logout());
 
@@ -265,8 +284,12 @@ public class HomeFragment extends Fragment {
         );
 
         transaction.commit();
-    } // Note (clear later): The firebase is backend
+    }
 
+    /**
+     * Replaces the current fragment and add transaction to the back stack.
+     * @param fragment Fragment to display.
+     */
     private void loadFragment(Fragment fragment) {
         FragmentManager temp = getParentFragmentManager();
         FragmentTransaction transaction = temp.beginTransaction();
