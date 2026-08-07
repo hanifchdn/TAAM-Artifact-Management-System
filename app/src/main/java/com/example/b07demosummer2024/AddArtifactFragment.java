@@ -40,6 +40,12 @@ public class AddArtifactFragment extends Fragment {
     private Uri imageUri;
     private ImageView selectedImagePreview;
     private SupabaseImageUploader imageUploader;
+
+    /**
+     * Launches the Android photo picker to allow the user to select an image.
+     * When an image is selected, updates the preview and initializes the image
+     * uploader for future uploads.
+     */
     private ActivityResultLauncher<String> imageSelectionLauncher =
             registerForActivityResult(new ActivityResultContracts.GetContent(), uri -> {
                         if (uri != null) {
@@ -51,12 +57,29 @@ public class AddArtifactFragment extends Fragment {
             );
 
 
+    /**
+     * Creates and returns the AddArtifact view.
+     * @param inflater The LayoutInflater object that can be used to inflate
+     * any views in the fragment,
+     * @param container If non-null, this is the parent view that the fragment's
+     * UI should be attached to.  The fragment should not add the view itself,
+     * but this can be used to generate the LayoutParams of the view.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed
+     * from a previous saved state as given here.
+     * @return Inflated AddArtifact view
+     */
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_add_artifact, container, false);
     }
 
+    /**
+     * Initializes UI components and click listeners.
+     * @param view The View returned by {@link #onCreateView(LayoutInflater, ViewGroup, Bundle)}.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed
+     * from a previous saved state as given here.
+     */
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -67,10 +90,14 @@ public class AddArtifactFragment extends Fragment {
         configureCategorySpinner();
         configureMaterialSpinner();
         configureDynastySpinner();
+
+        // Bind the buttons and preview
         Button buttonSelectImage = view.findViewById(R.id.buttonSelectImage);
         buttonSelectImage.setOnClickListener(v -> imageSelectionLauncher.launch("image/*"));
         selectedImagePreview = view.findViewById(R.id.selectedImagePreview);
         Button buttonAddArtifact = view.findViewById(R.id.buttonAdd);
+
+        // Setup buttonAddArtifact clickListener
         buttonAddArtifact.setOnClickListener(v -> {
             if (!validateInputs()) {
                 return;
@@ -122,6 +149,11 @@ public class AddArtifactFragment extends Fragment {
             });
         });
     }
+
+    /**
+     * Makes a query to add artifact to the database
+     * @param artifact artifact to be added to the database
+     */
     private void writeArtifact(Artifact artifact){
         ArtifactDatabaseWriter  writer = new ArtifactDatabaseWriter(requireContext());
         writer.addToDatabase(artifact, new WriteCallback() {
@@ -137,9 +169,20 @@ public class AddArtifactFragment extends Fragment {
 
         });
     }
+
+    /**
+     *
+     * @param lot lot to be checked
+     * @return Whether lot is valid
+     */
     private boolean isValidLot(String lot){
         return lot.matches("^[a-zA-Z0-9-]+$");
     }
+
+    /**
+     * Checks whether all required fields are filled in
+     * @return Whether input is valid
+     */
     private boolean validateInputs(){
         String lot = editTextLot.getText().toString().trim();
         String name = editTextArtifactName.getText().toString().trim();
@@ -259,76 +302,6 @@ public class AddArtifactFragment extends Fragment {
         spinnerDynasty = null;
         selectedImagePreview = null;
     }
-
-    public EditText getEditTextLot() {
-        return editTextLot;
-    }
-
-    public EditText getEditTextArtifactName() {
-        return editTextArtifactName;
-    }
-
-    public EditText getEditTextDescription() {
-        return editTextDescription;
-    }
-
-    public EditText getEditTextCulturalOrigin() {
-        return editTextCulturalOrigin;
-    }
-
-    public EditText getEditTextAcquisitionMethod() {
-        return editTextAcquisitionMethod;
-    }
-
-    public EditText getEditTextHeight() {
-        return editTextHeight;
-    }
-
-    public EditText getEditTextWidth() {
-        return editTextWidth;
-    }
-
-    public EditText getEditTextDepth() {
-        return editTextDepth;
-    }
-
-    public EditText getEditTextConditionReport() {
-        return editTextConditionReport;
-    }
-
-    public EditText getEditTextCurrentLocation() {
-        return editTextCurrentLocation;
-    }
-
-    public EditText getEditTextProvenance() {
-        return editTextProvenance;
-    }
-
-    public EditText getEditTextAccessionNumber() {
-        return editTextAccessionNumber;
-    }
-
-    public EditText getEditTextNotes() {
-        return editTextNotes;
-    }
-
-    public Spinner getSpinnerCategory() {
-        return spinnerCategory;
-    }
-
-    public Spinner getSpinnerMaterial() {
-        return spinnerMaterial;
-    }
-
-    public Spinner getSpinnerDynasty() {
-        return spinnerDynasty;
-    }
-
-    public Uri getSelectedImageUri() {
-        return imageUri;
-    }
-
-    public SupabaseImageUploader getSupabaseImageUploader() {return imageUploader;}
 
 }
 
