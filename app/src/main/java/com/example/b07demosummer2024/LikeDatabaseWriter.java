@@ -32,7 +32,7 @@ public class LikeDatabaseWriter {
      * @param callback a Write callback on error
      */
     public void addToDatabase(Like like, WriteCallback callback) {
-        dbReference.child(like.getLikeId()).setValue(like)
+        dbReference.child(like.getArtifactLot()).child(like.getUserId()).setValue(like)
                 .addOnSuccessListener( a -> {
                     if(callback != null){
                         callback.onSuccess();
@@ -56,27 +56,9 @@ public class LikeDatabaseWriter {
      * @param callback a Write callback on error
      */
     public void removeFromDatabase(String userId, String artifactLot, WriteCallback callback) {
-        dbReference.get().addOnSuccessListener(dataSnapshot -> {
-            List<Like> likes = new ArrayList<>();
-
-            // for each like
-            for (DataSnapshot child: dataSnapshot.getChildren()){
-                Like like = child.getValue(Like.class);
-                if (like == null || like.getUserId() == null || like.getArtifactLot() == null) {
-                    callback.onFailure("Bad data");
-                }
-                if (like.getUserId().compareTo(userId) == 0 && like.getArtifactLot().compareTo(artifactLot) == 0) {
-                    dbReference.child(like.getLikeId()).removeValue().addOnCompleteListener(task -> {
-                        if (task.isSuccessful()) {
-                            callback.onSuccess();
-                            return;
-                        }
-                        else {
-                            callback.onFailure("Bad Database read");
-                        }
-                    });
-                }
-            }
+        dbReference.child(artifactLot).child(userId).removeValue().addOnSuccessListener(dataSnapshot -> {
+            callback.onSuccess();
+            return;
         }).addOnFailureListener(e -> {
             callback.onFailure("Error connecting to firebase");
         });
