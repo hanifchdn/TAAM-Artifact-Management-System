@@ -82,10 +82,9 @@ public class ArtifactDatabaseWriter implements DatabaseAdder, DatabaseDeleter, D
     }
     /**
      * Deletes an artifact form the Database.
-     * Note that the Artifact that will be deleted will only depend on the LOT number,
-     * if you wish to delete using the LOT number, use the overloaded method with int LOT
-     *
-     *
+     * If the artifact has an associated image, then the image is first deleted
+     * from Supabase before the artifact is removed from the database.
+     * The artifact to delete is identified by its LOT number.
      * @param item The Artifact to delete.
      * @param callback a callback that will run an on success/failure method
      */
