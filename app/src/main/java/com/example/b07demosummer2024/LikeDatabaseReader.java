@@ -88,7 +88,7 @@ public class LikeDatabaseReader {
             for (DataSnapshot child: dataSnapshot.getChildren()){
 
                 Like like = child.getValue(Like.class);
-                if (like != null && like.getArtifactLot().equals(LOT) && like.getUserId().equals(userId)) {
+                if (like.getArtifactLot().equals(LOT) && like.getUserId().equals(userId)) {
                     callback.onSuccess(true);
                     return;
                 }
