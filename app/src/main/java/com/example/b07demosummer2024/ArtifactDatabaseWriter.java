@@ -142,28 +142,20 @@ public class ArtifactDatabaseWriter implements DatabaseAdder, DatabaseDeleter, D
                         deleteTask.add(child.getRef().removeValue());
                     }
 
-                    likeReference.orderByChild("artifactLot").equalTo(LOT).get()
-                            .addOnSuccessListener(likeSnapshot -> {
-                                for (DataSnapshot child : likeSnapshot.getChildren()) {
-                                    deleteTask.add(child.getRef().removeValue());
-                                }
+                    deleteTask.add(likeReference.child(LOT).removeValue());
 
-                                deleteTask.add(dbReference.child(LOT).removeValue());
+                    deleteTask.add(dbReference.child(LOT).removeValue());
 
-                                Tasks.whenAll(deleteTask).addOnSuccessListener(x -> {
-                                    if (callback != null) {
-                                        callback.onSuccess();
-                                    }
-                                }).addOnFailureListener(e -> {
-                                    if (callback != null) {
-                                        callback.onFailure(e.getMessage());
-                                    }
-                                });
-                            }).addOnFailureListener(e -> {
-                                if (callback != null) {
-                                    callback.onFailure(e.getMessage());
-                                }
-                            });
+                    Tasks.whenAll(deleteTask).addOnSuccessListener(x -> {
+                        if (callback != null) {
+                            callback.onSuccess();
+                        }
+                    }).addOnFailureListener(e -> {
+                        if (callback != null) {
+                            callback.onFailure(e.getMessage());
+                        }
+                    });
+
                 }).addOnFailureListener(e -> {
                     if (callback != null) {
                         callback.onFailure(e.getMessage());
