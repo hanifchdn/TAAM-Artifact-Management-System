@@ -44,6 +44,9 @@ public class User {
      * @param lot of artifact to remove
      */
     public void removeSavedArtifact(String lot) {
+        if(savedArtifactList == null) {
+            return;
+        }
         savedArtifactList.remove(lot);
     }
 

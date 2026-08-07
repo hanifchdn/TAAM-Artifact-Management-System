@@ -501,7 +501,24 @@ public class ExpandedArtifactFragment extends Fragment {
                     return;
                 }
                 Toast.makeText(requireContext(), "Artifact deleted successfully", Toast.LENGTH_SHORT).show();
-                loadFragment(new HomeFragment(), false);
+                // If the artifact was deleted, delete the saved artifacts in users
+                UserDatabaseWriter userDatabaseWriter = new UserDatabaseWriter();
+                userDatabaseWriter.deleteSavedArtifactFromUser(artifactLot, new WriteCallback() {
+                    @Override
+                    public void onSuccess() {
+                        loadFragment(new HomeFragment(), false);
+                    }
+
+                    @Override
+                    public void onFailure(String err) {
+                        Toast.makeText(
+                                requireContext(),
+                                err,
+                                Toast.LENGTH_SHORT
+                        ).show();
+                    }
+                });
+
             }
 
             @Override

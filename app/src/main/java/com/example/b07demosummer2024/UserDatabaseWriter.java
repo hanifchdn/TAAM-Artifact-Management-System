@@ -1,5 +1,6 @@
 package com.example.b07demosummer2024;
 
+import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import java.util.List;
@@ -51,6 +52,29 @@ public class UserDatabaseWriter {
      */
     public void updateSavedArtifacts(User user, WriteCallback callback) {
         updateSavedArtifacts(user.getUid(), user.getSavedArtifactList(), callback);
+    }
+
+    /**
+     * Given an artifact lot, removes all instances of that artifact in saved artifacts.
+     * @param artifactLOT to delete from user's saved artifacts
+     * @param callback once delete query is processed
+     */
+    public void deleteSavedArtifactFromUser(String artifactLOT, WriteCallback callback) {
+        dbReference.get().addOnSuccessListener(dataSnapshot -> {
+            // for each user
+            for (DataSnapshot child: dataSnapshot.getChildren()){
+                User user  = child.getValue(User.class);
+                if (user != null) {
+                    user.removeSavedArtifact(artifactLOT);
+                    dbReference.child(user.getUid()).child("savedArtifactList").setValue(user.getSavedArtifactList());
+                }
+            }
+            callback.onSuccess();
+            return;
+        }).addOnFailureListener(e -> {
+            callback.onFailure(e.getMessage());
+            return;
+        });
     }
 
 
