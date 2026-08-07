@@ -123,7 +123,7 @@ public class AddArtifactFragment extends Fragment {
         });
     }
     private void writeArtifact(Artifact artifact){
-        ArtifactDatabaseWriter  writer = new ArtifactDatabaseWriter();
+        ArtifactDatabaseWriter  writer = new ArtifactDatabaseWriter(requireContext());
         writer.addToDatabase(artifact, new WriteCallback() {
             @Override
             public void onSuccess(){

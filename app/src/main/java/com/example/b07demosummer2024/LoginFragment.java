@@ -58,9 +58,7 @@ public class LoginFragment extends Fragment implements LoginContract.View {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        /**
-         * Binds variables from xml layout to java
-         */
+        // Binds variables from XML layout to java
         usernameInput = view.findViewById(R.id.username_input);
         passwordInput = view.findViewById(R.id.password_input);
         loginButton = view.findViewById(R.id.loginButton);
@@ -81,9 +79,7 @@ public class LoginFragment extends Fragment implements LoginContract.View {
             loadFragment(new SignupFragment(), true);
         });
 
-        /**
-         * Password visibility listener
-         */
+        // Password visibility listener
         passwordInput.setOnTouchListener((v, event) -> {
             final int DRAWABLE_END = 2;
             if (event.getAction() == MotionEvent.ACTION_UP) {

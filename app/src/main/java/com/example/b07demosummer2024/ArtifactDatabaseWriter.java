@@ -8,10 +8,10 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 import java.util.List;
+import android.content.Context;
 
 /**
  * Allows for easy Writing to the db using the Artifact class.
- *
  * When passed in an Artifact object, the class will send a write request to the firebase db depending on nature of the request.
  * i.e delete will delete, update will update, and add will add.
  *
@@ -22,18 +22,22 @@ public class ArtifactDatabaseWriter implements DatabaseAdder, DatabaseDeleter, D
     DatabaseReference dbReference;
     DatabaseReference commentReference;
     DatabaseReference likeReference;
+    private final SupabaseImageUploader imageUploader;
 
-    public ArtifactDatabaseWriter() {
-        // set database cursor to artifacts section
+    public ArtifactDatabaseWriter(Context context) {
+        this(context, new SupabaseImageUploader(context));
+    }
+
+    public ArtifactDatabaseWriter(Context context, SupabaseImageUploader imageUploader) {
         db = FirebaseDatabase.getInstance("https://taam-artifact-storage-system-default-rtdb.firebaseio.com/");
         dbReference = db.getReference("/artifacts");
         commentReference = db.getReference("/comments");
         likeReference = db.getReference("/likes");
+        this.imageUploader = imageUploader;
     }
 
     /**
      *Adds an Artifact to the database.
-     *
      * Uses the artifact LOT number as the unique ID to save the artifact.
      *
      * @param item the Artifact to add to database.
@@ -65,10 +69,9 @@ public class ArtifactDatabaseWriter implements DatabaseAdder, DatabaseDeleter, D
     }
 
     /**
-     *Edits/Overwrites an Artifact to the database.
-     *
+     * Edits/Overwrites an Artifact to the database.
      * Uses the artifact LOT number as the unique ID to overwrite the data associated with that LOT number.
-     * Note that updateDatabase will act like ArtfactDatabaseWriter if it does not exist yet.
+     * Note that updateDatabase will act like ArtifactDatabaseWriter if it does not exist yet.
      *
      * @param item the Artifact to overwrite
      * @param writeCallback A callback on failure/success
@@ -78,14 +81,13 @@ public class ArtifactDatabaseWriter implements DatabaseAdder, DatabaseDeleter, D
         addToDatabase(item, writeCallback);
     }
     /**
-     *Deletes an artifact form the Database.
-     *
+     * Deletes an artifact form the Database.
      * Note that the Artifact that will be deleted will only depend on the LOT number,
      * if you wish to delete using the LOT number, use the overloaded method with int LOT
      *
      *
      * @param item The Artifact to delete.
-     * @param callback a callback that will run a on success/failure method
+     * @param callback a callback that will run an on success/failure method
      */
     @Override
     public void deleteFromDatabase(DatabaseItem item, WriteCallback callback) {
@@ -96,17 +98,31 @@ public class ArtifactDatabaseWriter implements DatabaseAdder, DatabaseDeleter, D
             }
             return;
         }
-        deleteFromDatabase(item.getLOT(), callback);
+        Artifact artifact = (Artifact) item;
+        if(artifact.getImageUrl() == null || artifact.getImageUrl().trim().isEmpty()){
+            deleteFromDatabase(artifact.getLOT(), callback);
+            return;
+        }
+        imageUploader.deleteImage(artifact.getImageUrl(), new SupabaseImageUploader.DeleteCallback(){
+            @Override
+            public void onSuccess(){
+                deleteFromDatabase(artifact.getLOT(), callback);
+            }
+            @Override
+            public void onError(String message){
+                if(callback != null){
+                    callback.onFailure(message);
+                }
+            }
+        });
 
     }
 
     /**
      * Deletes an artifact from the Database using its LOT.
      * Also deletes all comments and likes under the artifact.
-     *
      * If deleting an artifact that does not exist, the method
      * will do nothing.
-     *
      *
      * @param LOT the LOT of the artifact to remove
      *
@@ -120,28 +136,20 @@ public class ArtifactDatabaseWriter implements DatabaseAdder, DatabaseDeleter, D
                         deleteTask.add(child.getRef().removeValue());
                     }
 
-                    likeReference.orderByChild("artifactLot").equalTo(LOT).get()
-                            .addOnSuccessListener(likeSnapshot -> {
-                                for (DataSnapshot child : likeSnapshot.getChildren()) {
-                                    deleteTask.add(child.getRef().removeValue());
-                                }
+                    deleteTask.add(likeReference.child(LOT).removeValue());
 
-                                deleteTask.add(dbReference.child(LOT).removeValue());
+                    deleteTask.add(dbReference.child(LOT).removeValue());
 
-                                Tasks.whenAll(deleteTask).addOnSuccessListener(x -> {
-                                    if (callback != null) {
-                                        callback.onSuccess();
-                                    }
-                                }).addOnFailureListener(e -> {
-                                    if (callback != null) {
-                                        callback.onFailure(e.getMessage());
-                                    }
-                                });
-                            }).addOnFailureListener(e -> {
-                                if (callback != null) {
-                                    callback.onFailure(e.getMessage());
-                                }
-                            });
+                    Tasks.whenAll(deleteTask).addOnSuccessListener(x -> {
+                        if (callback != null) {
+                            callback.onSuccess();
+                        }
+                    }).addOnFailureListener(e -> {
+                        if (callback != null) {
+                            callback.onFailure(e.getMessage());
+                        }
+                    });
+
                 }).addOnFailureListener(e -> {
                     if (callback != null) {
                         callback.onFailure(e.getMessage());

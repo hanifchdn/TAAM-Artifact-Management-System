@@ -9,9 +9,7 @@ import java.util.List;
 
 /**
  * Reads comment data from the Firebase Database
- *
  * Provides methods for comment retrieval under a specific artifact
- *
  */
 public class CommentDatabaseReader {
     FirebaseDatabase db;

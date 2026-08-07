@@ -1,28 +1,13 @@
 package com.example.b07demosummer2024;
 
-import android.util.Log;
-
-import androidx.annotation.NonNull;
-
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
-
-import java.util.concurrent.ExecutionException;
 import java.util.ArrayList;
 import java.util.List;
-import android.widget.Toast;
-import android.content.Context;
-
 
 /**
  * Allows for easy Reading to the db using the Artifact class.
- *
  * Due to Async nature of reading, all read functions will use async callback functions
  * For an example usage of this callback, view the contains method associated with this.
  */
@@ -79,10 +64,10 @@ public class ArtifactDatabaseReader {
      * @return true if artifact exist and can be shown, false otherwise.
      */
     public boolean handleArtifactListError(List<Artifact> artifacts){
-        if(artifacts == null){
+        if(artifacts == null) {
             return false;
         }
-        else if(artifacts.isEmpty()){
+        else if (artifacts.isEmpty()) {
             return false;
         }
         return true;

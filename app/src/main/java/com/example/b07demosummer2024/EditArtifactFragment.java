@@ -2,7 +2,6 @@ package com.example.b07demosummer2024;
 
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -175,7 +174,7 @@ public class EditArtifactFragment extends Fragment {
      * @param artifact to update in firebase db
      */
     private void updateArtifact(Artifact artifact){
-        ArtifactDatabaseWriter writer = new ArtifactDatabaseWriter();
+        ArtifactDatabaseWriter writer = new ArtifactDatabaseWriter(requireContext());
         writer.updateDatabase(artifact, new WriteCallback() {
             @Override
             public void onSuccess(){

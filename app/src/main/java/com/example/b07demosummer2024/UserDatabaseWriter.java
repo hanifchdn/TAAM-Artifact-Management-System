@@ -2,9 +2,6 @@ package com.example.b07demosummer2024;
 
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.core.WriteTree;
-
-import java.util.ArrayList;
 import java.util.List;
 
 /**

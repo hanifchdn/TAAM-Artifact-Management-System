@@ -4,7 +4,6 @@ import com.google.firebase.database.FirebaseDatabase;
 
 /**
  * Like class that defines Like structure
- *
  * Represents the type contract and fields of a Like under an Artifact
  */
 public class Like {

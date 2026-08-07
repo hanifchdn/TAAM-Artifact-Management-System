@@ -27,14 +27,23 @@ public class SignupPresenterTest {
     @Mock
     private SignUpContract.Model model;
 
+    @Mock
+    private SessionContract.Model sessionModel;
+
+    @Mock
+    private User user;
+
     @Captor
     private ArgumentCaptor<SignUpContract.Model.Authcallback> callbackCaptor;
+
+    @Captor
+    private ArgumentCaptor<SessionContract.Model.ProfileCallback> profileCallbackCaptor;
 
     private SignUpPresenter presenter;
 
     @Before
     public void setUp() {
-        presenter = new SignUpPresenter(view, model);
+        presenter = new SignUpPresenter(view, model, sessionModel);
     }
 
     @Test
@@ -179,10 +188,16 @@ public class SignupPresenterTest {
 
         callbackCaptor.getValue().onSuccess(UID);
 
+        verify(sessionModel).fetchUserProfile(eq(UID), profileCallbackCaptor.capture());
+
+        profileCallbackCaptor.getValue().onProfileLoaded(user);
+
         verify(view).hideLoadingIndicator();
         verify(view).enableButton();
         verify(view).navigateToHome();
         verify(view, never()).showSignUpFailedError(anyString());
+
+        assertSame(user, SessionManager.getInstance().getCurrentUser());
     }
 
     @Test
@@ -220,6 +235,30 @@ public class SignupPresenterTest {
         callbackCaptor.getValue().onSuccess(UID);
 
         verifyNoInteractions(view);
+        verifyNoInteractions(sessionModel);
+    }
+
+    @Test
+    public void signUp_ProfileSuccessHandlesDestroyCorrectly() { /* Tests if presenter handles
+                                                                    destroy correctly after a
+                                                                    successful signup, but before
+                                                                    profile load
+                                                                    */
+        presenter.signUp(USERNAME, EMAIL, PASSWORD, CONFIRM_PASSWORD);
+
+        verify(model).signUp(eq(USERNAME), eq(EMAIL), eq(PASSWORD), callbackCaptor.capture());
+
+        callbackCaptor.getValue().onSuccess(UID);
+
+        verify(sessionModel).fetchUserProfile(eq(UID), profileCallbackCaptor.capture());
+
+        presenter.onDestroy();
+
+        clearInvocations(view);
+
+        profileCallbackCaptor.getValue().onProfileLoaded(user);
+
+        verifyNoInteractions(view);
     }
 
     @Test
@@ -238,6 +277,7 @@ public class SignupPresenterTest {
         callbackCaptor.getValue().onFailure("User already exists.");
 
         verifyNoInteractions(view);
+        verifyNoInteractions(sessionModel);
     }
 
     @Test
@@ -250,6 +290,7 @@ public class SignupPresenterTest {
 
         verifyNoInteractions(view);
         verifyNoInteractions(model);
+        verifyNoInteractions(sessionModel);
     }
 
 }

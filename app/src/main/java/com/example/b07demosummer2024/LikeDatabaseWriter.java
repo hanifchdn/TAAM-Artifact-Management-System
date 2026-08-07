@@ -1,15 +1,10 @@
 package com.example.b07demosummer2024;
 
-import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * Writes like data to the Firebase Database
- *
  * Provides methods for adding and deleting likes in the Firebase
  */
 public class LikeDatabaseWriter {
@@ -24,8 +19,7 @@ public class LikeDatabaseWriter {
     }
 
     /**
-     *Adds an Like to the database.
-     *
+     * Adds a Like to the database.
      * Uses the LikeId as the unique ID to save the like.
      *
      * @param like the like to add to database.
@@ -47,9 +41,8 @@ public class LikeDatabaseWriter {
     }
 
     /**
-     *Removes an Like to the database.
-     *
-     * Uses the artifact Lot numebr and userID to remove the like
+     * Removes a Like to the database.
+     * Uses the artifact Lot number and userID to remove the like
      *
      * @param userId the userId of the owner of the like
      * @param artifactLot the LOT of the artifact
