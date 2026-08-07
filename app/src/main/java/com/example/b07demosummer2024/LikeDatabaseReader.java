@@ -4,8 +4,12 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Reads like data from the Firebase Database.
+ *
  * Provides methods for retrieving an artifact's like count and checking
  * whether a user has liked an artifact
  */
@@ -70,20 +74,10 @@ public class LikeDatabaseReader {
      * @param callback callback function
      */
     public void hasUserLiked(String userId, String LOT, HasUserLikedCallback callback) {
-        dbReference.child(LOT).get().addOnSuccessListener(dataSnapshot -> {
-            // for each like
-            for (DataSnapshot child: dataSnapshot.getChildren()){
-                Like like = child.getValue(Like.class);
-                if (like.getArtifactLot().equals(LOT) && like.getUserId().equals(userId)) {
-                    callback.onSuccess(true);
-                    return;
-                }
-            }
-            callback.onSuccess(false);
-            return;
+        dbReference.child(LOT).child(userId).get().addOnSuccessListener(dataSnapshot -> {
+            callback.onSuccess(dataSnapshot.exists());
         }).addOnFailureListener(e -> {
             callback.onFailure(e.getMessage());
-            return;
         });
     }
 }
