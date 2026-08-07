@@ -72,6 +72,20 @@ public class HomeFragment extends Fragment {
     ) {
         super.onViewCreated(view, savedInstanceState);
 
+        // refresh user data
+        SessionModel sessionModel = new SessionModel();
+        sessionModel.fetchUserProfile(SessionManager.getInstance().getCurrentUser().getUid(), new SessionContract.Model.ProfileCallback() {
+                    @Override
+                    public void onProfileLoaded(User user) {
+                        SessionManager.getInstance().setCurrentUser(user);
+                    }
+
+                    @Override
+                    public void onProfileError(String message) {
+
+                    }
+                });
+
         User curUser = SessionManager.getInstance().getCurrentUser();
         boolean isAdmin = curUser.isAdmin();
 
@@ -171,6 +185,21 @@ public class HomeFragment extends Fragment {
         savedArtifactsButton.setImageResource(
                 isSavedArtifactsSelected ? R.drawable.bookmark : R.drawable.bookmark_hollow
         );
+
+        // refresh user data
+        SessionModel sessionModel = new SessionModel();
+        sessionModel.fetchUserProfile(SessionManager.getInstance().getCurrentUser().getUid(), new SessionContract.Model.ProfileCallback() {
+            @Override
+            public void onProfileLoaded(User user) {
+                SessionManager.getInstance().setCurrentUser(user);
+            }
+
+            @Override
+            public void onProfileError(String message) {
+
+            }
+        });
+
         refreshArtifactList();
     }
 
