@@ -76,6 +76,9 @@ public class ExpandedArtifactFragment extends Fragment {
 
     /**
      * Creates a new instance of this fragment containing a given artifact's information.
+     *
+     * @param artifact values of the artifact
+     * @return configured ExpandedArtifactFragment
      */
     public static ExpandedArtifactFragment newInstance(Artifact artifact) {
         ExpandedArtifactFragment fragment = new ExpandedArtifactFragment();
@@ -103,12 +106,29 @@ public class ExpandedArtifactFragment extends Fragment {
         return fragment;
     }
 
+    /**
+     * Creates and returns the ExpandedArtifact view.
+     * @param inflater The LayoutInflater object that can be used to inflate
+     * any views in the fragment,
+     * @param container If non-null, this is the parent view that the fragment's
+     * UI should be attached to.  The fragment should not add the view itself,
+     * but this can be used to generate the LayoutParams of the view.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed
+     * from a previous saved state as given here.
+     * @return Inflated Expanded Artifact view
+     */
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_expanded_artifact, container, false);
     }
 
+    /**
+     * Initialize views, set up listener, and loads initial comments
+     * @param view The View returned by {@link #onCreateView(LayoutInflater, ViewGroup, Bundle)}.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed
+     * from a previous saved state as given here.
+     */
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
