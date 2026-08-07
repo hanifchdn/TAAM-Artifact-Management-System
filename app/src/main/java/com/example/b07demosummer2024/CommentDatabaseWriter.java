@@ -6,7 +6,6 @@ import com.google.firebase.database.FirebaseDatabase;
 
 /**
  * Writes comment data to the Firebase Database
- *
  * Provides methods for adding and deleting comments in the Firebase
  */
 public class CommentDatabaseWriter {
@@ -27,7 +26,7 @@ public class CommentDatabaseWriter {
      * Adds a comment to the database.
      * Uses the comments id in order to create a new comment item in the database
      * @param comment the comment to write to the database
-     * @param callback the callback notified when the write succeeds or fails
+     * @param callback the callback notified when write succeeds or fails
      */
     public void addToDatabase(Comment comment, WriteCallback callback) {
         dbReference.child(comment.getId()).setValue(comment)
@@ -46,7 +45,7 @@ public class CommentDatabaseWriter {
 
     /**
      *Deletes a comment from the Database.
-     * Note that the comment that will be deleted is based on it's id, and nothing else
+     * Note that the comment that will be deleted is based on its id, and nothing else
      * If the comment does not exist, this method will do nothing and report no errors
      * @param comment The comment to delete.
      * @param callback The write callback on success/delete
@@ -57,7 +56,7 @@ public class CommentDatabaseWriter {
 
     /**
      *Deletes a comment from the Database.
-     * Note that the comment that will be deleted is based on it's id, and nothing else
+     * Note that the comment that will be deleted is based on its id, and nothing else
      * If the comment does not exist, this method will do nothing and report no errors
      * @param commentId The comment to delete.
      * @param callback The write callback on success/delete
@@ -71,7 +70,7 @@ public class CommentDatabaseWriter {
             }
             else {
                 if (completeTask.getException() != null) {
-                    callback.onFailure("Unknown error occured");
+                    callback.onFailure("Unknown error occurred");
                     return;
                 }
                 else {

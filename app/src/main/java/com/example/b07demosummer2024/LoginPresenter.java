@@ -1,6 +1,5 @@
 package com.example.b07demosummer2024;
 
-import android.util.Log;
 
 /**
  * Presenter that handles login validation, authentication,

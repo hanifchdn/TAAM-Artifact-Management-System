@@ -1,12 +1,7 @@
 package com.example.b07demosummer2024;
 
-import com.google.firebase.database.Exclude;
-
-import java.util.ArrayList;
-
 /**
  * Artifact class that defines the Artifact structure
- *
  * Represents the type contract and fields of an Artifact.
  *
  */

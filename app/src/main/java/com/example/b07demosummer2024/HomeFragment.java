@@ -58,17 +58,13 @@ public class HomeFragment extends Fragment {
         User curUser = SessionManager.getInstance().getCurrentUser();
         boolean isAdmin = curUser.isAdmin();
 
-        /**
-         * Configures RecyclerView and its adapter to display two artifacts on each row.
-         */
+        // Configures RecyclerView and its adapter to display two artifacts on each row.
         artifactRecyclerView = view.findViewById(R.id.artifactRecyclerView);
         artifactRecyclerView.setLayoutManager(
                 new GridLayoutManager(requireContext(), 2)
         );
 
-        /**
-         * Binds variables from xml layout to java
-         */
+        // Binds variables from XML layout to java.
         searchButton = view.findViewById(R.id.searchButton);
         searchContainer = view.findViewById(R.id.searchContainer);
         searchInput = view.findViewById(R.id.searchInput);
@@ -84,9 +80,7 @@ public class HomeFragment extends Fragment {
             refreshArtifactList();
         });
 
-        /**
-         * Displays searchContainer when searchButton is clicked
-         */
+        // Displays searchContainer when searchButton is clicked
         searchButton.setOnClickListener(v -> {
             if (searchContainer.getVisibility() == View.GONE) {
                 searchContainer.setVisibility(View.VISIBLE);
@@ -101,9 +95,7 @@ public class HomeFragment extends Fragment {
             searchForArtifacts();
         });
 
-        /**
-         * Retrieve artifacts from firebase and displays them
-         */
+        // Retrieve artifacts from firebase and displays them
         showLoadingIndicator();
 
         ArtifactDatabaseReader reader = new ArtifactDatabaseReader();
@@ -129,9 +121,7 @@ public class HomeFragment extends Fragment {
         ImageButton logoutButton = view.findViewById(R.id.logoutButton);
         logoutButton.setOnClickListener(v -> logout());
 
-        /**
-         * Navigates to the add-artifact page when the add artifact button is tapped.
-         */
+        // Navigates to the add-artifact page when the add artifact button is tapped.
         ImageButton addArtifactButton =
                 view.findViewById(R.id.addArtifactButton);
 
@@ -144,9 +134,7 @@ public class HomeFragment extends Fragment {
                 v -> loadFragment(new AddArtifactFragment())
         );
 
-        /**
-         *  Opens Expanded Artifact View Fragment
-         */
+        // Opens Expanded Artifact View Fragment
         artifactAdapter = new ArtifactAdapter(artifactList, artifact -> {
             ExpandedArtifactFragment detailFragment = ExpandedArtifactFragment.newInstance(artifact);
             loadFragment(detailFragment);
@@ -155,7 +143,7 @@ public class HomeFragment extends Fragment {
     }
 
     /**
-     * On resume, i.e going back to homefragment from expanded artifact view
+     * On resume, navigates to home fragment from expanded artifact view
      * refreshes the page in case of update
      */
     @Override
@@ -186,10 +174,8 @@ public class HomeFragment extends Fragment {
 
     /**
      * Searches for artifacts using the text entered in the search input field.
-     *
      * If the input is empty, all artifacts are retrieved from the database.
      * Otherwise, artifacts whose fields contain the entered substring are retrieved.
-     *
      * The callback first checks whether this fragment is still attached to its
      * activity before accessing the fragment context or updating the user interface.
      */

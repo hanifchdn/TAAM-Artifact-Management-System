@@ -4,9 +4,7 @@ import com.google.firebase.database.FirebaseDatabase;
 
 /**
  * Comment class that defines Comment structure
- *
  * Represents the type contract and fields of a Comment under an Artifact
- *
  */
 public class Comment {
     private String id;
