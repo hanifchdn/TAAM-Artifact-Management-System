@@ -18,6 +18,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+/**
+ * Allows an admin user to add a new artifact to the database.
+ */
 public class AddArtifactFragment extends Fragment {
 
     private EditText editTextLot;

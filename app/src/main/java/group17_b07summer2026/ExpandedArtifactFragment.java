@@ -18,6 +18,9 @@ import androidx.fragment.app.FragmentTransaction;
 import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
 
+/**
+ * Displays the full details and available actions for a selected artifact.
+ */
 public class ExpandedArtifactFragment extends Fragment {
     private static final String ARG_LOT = "lot";
     private static final String ARG_NAME = "name";

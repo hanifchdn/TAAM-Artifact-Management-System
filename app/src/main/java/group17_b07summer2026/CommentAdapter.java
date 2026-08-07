@@ -11,6 +11,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 import android.os.Handler;
 
+/**
+ * Displays comments in a RecyclerView and handles comment actions.
+ */
 public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentViewHolder> {
     private List<Comment> comments;
     private final OnDeleteClickListener listener;

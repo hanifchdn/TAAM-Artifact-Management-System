@@ -4,6 +4,9 @@ package group17_b07summer2026;
  *  Contract on how the Session Model will be implemented.
  */
 public interface SessionContract {
+    /**
+     * Defines the operations provided by the session model
+     */
     interface Model {
         /**
          * Returns the UID of the currently authenticated user.
