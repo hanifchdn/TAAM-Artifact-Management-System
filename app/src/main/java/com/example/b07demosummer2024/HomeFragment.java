@@ -75,6 +75,21 @@ public class HomeFragment extends Fragment {
         User curUser = SessionManager.getInstance().getCurrentUser();
         boolean isAdmin = curUser.isAdmin();
 
+        // refresh user data
+        SessionModel sessionModel = new SessionModel();
+        sessionModel.fetchUserProfile(SessionManager.getInstance().getCurrentUser().getUid(), new SessionContract.Model.ProfileCallback() {
+            @Override
+            public void onProfileLoaded(User user) {
+                SessionManager.getInstance().setCurrentUser(user);
+            }
+
+            @Override
+            public void onProfileError(String message) {
+
+            }
+        });
+
+
         // Configures RecyclerView and its adapter to display two artifacts on each row.
         artifactRecyclerView = view.findViewById(R.id.artifactRecyclerView);
         artifactRecyclerView.setLayoutManager(
@@ -172,6 +187,19 @@ public class HomeFragment extends Fragment {
                 isSavedArtifactsSelected ? R.drawable.bookmark : R.drawable.bookmark_hollow
         );
         refreshArtifactList();
+        // refresh user data
+        SessionModel sessionModel = new SessionModel();
+        sessionModel.fetchUserProfile(SessionManager.getInstance().getCurrentUser().getUid(), new SessionContract.Model.ProfileCallback() {
+            @Override
+            public void onProfileLoaded(User user) {
+                SessionManager.getInstance().setCurrentUser(user);
+            }
+
+            @Override
+            public void onProfileError(String message) {
+
+            }
+        });
     }
 
     /**
