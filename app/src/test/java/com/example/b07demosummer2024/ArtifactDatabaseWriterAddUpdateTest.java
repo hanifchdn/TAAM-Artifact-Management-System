@@ -12,6 +12,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
+import android.content.Context;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -41,6 +42,12 @@ public class ArtifactDatabaseWriterAddUpdateTest {
     @Mock
     private DatabaseItem notAnArtifact;
 
+    @Mock
+    private Context context;
+
+    @Mock
+    private SupabaseImageUploader imageUploader;
+
     private MockedStatic<FirebaseDatabase> mockedFirebaseDatabase;
 
     private ArtifactDatabaseWriter writer;
@@ -58,7 +65,7 @@ public class ArtifactDatabaseWriterAddUpdateTest {
         when(firebaseDatabase.getReference("/artifacts"))
                 .thenReturn(artifactsDir);
 
-        writer = new ArtifactDatabaseWriter();
+        writer = new ArtifactDatabaseWriter(context, imageUploader);
 
         artifact = new Artifact(
                 "LOT100",
@@ -88,10 +95,10 @@ public class ArtifactDatabaseWriterAddUpdateTest {
     }
 
     @Test
-    public void addToDatabase_firebaseSuccessCallsSucessCallback() { /* Tests if a successful
-                                                                            write calls the success
-                                                                            callback
-                                                                            */
+    public void addToDatabase_firebaseSuccessCallsSuccessCallback() { /* Tests if a successful
+                                                                        write calls the success
+                                                                        callback
+                                                                        */
         configureFirebaseWrite();
 
         ArgumentCaptor<OnSuccessListener<Void>> successCaptor = ArgumentCaptor.forClass(OnSuccessListener.class);

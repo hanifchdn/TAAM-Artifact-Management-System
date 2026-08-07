@@ -9,9 +9,11 @@ import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import static org.mockito.ArgumentMatchers.*;
 import static org.junit.Assert.*;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
+
+import android.content.Context;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -33,6 +35,8 @@ public class ArtifactDatabaseWriterDeleteTest {
 
     private static final String DATABASE_URL = "https://taam-artifact-storage-system-default-rtdb.firebaseio.com/";
 
+    private static final String IMAGE_URL = "https://example.supabase.co/storage/v1/object/public/artifacts/LOT100.jpg";
+
     @Mock
     private FirebaseDatabase firebaseDatabase;
 
@@ -49,28 +53,19 @@ public class ArtifactDatabaseWriterDeleteTest {
     private DatabaseReference lot;
 
     @Mock
+    private DatabaseReference likeLot;
+
+    @Mock
     private Query commentsOrderedByArtifactLot;
 
     @Mock
     private Query matchingComments;
 
     @Mock
-    private Query likesOrderedByArtifactLot;
-
-    @Mock
-    private Query matchingLikes;
-
-    @Mock
     private Task<DataSnapshot> commentGetTask;
 
     @Mock
-    private Task<DataSnapshot> likeGetTask;
-
-    @Mock
     private DataSnapshot commentSnapshot;
-
-    @Mock
-    private DataSnapshot likeSnapshot;
 
     @Mock
     private DataSnapshot commentOne;
@@ -79,22 +74,10 @@ public class ArtifactDatabaseWriterDeleteTest {
     private DataSnapshot commentTwo;
 
     @Mock
-    private DataSnapshot likeOne;
-
-    @Mock
-    private DataSnapshot likeTwo;
-
-    @Mock
     private DatabaseReference commentOneRef;
 
     @Mock
     private DatabaseReference commentTwoRef;
-
-    @Mock
-    private DatabaseReference likeOneRef;
-
-    @Mock
-    private DatabaseReference likeTwoRef;
 
     @Mock
     private Task<Void> commentOneDeleteTask;
@@ -103,10 +86,7 @@ public class ArtifactDatabaseWriterDeleteTest {
     private Task<Void> commentTwoDeleteTask;
 
     @Mock
-    private Task<Void> likeOneDeleteTask;
-
-    @Mock
-    private Task<Void> likeTwoDeleteTask;
+    private Task<Void> likeDeleteTask;
 
     @Mock
     private Task<Void> artifactDeleteTask;
@@ -119,6 +99,12 @@ public class ArtifactDatabaseWriterDeleteTest {
 
     @Mock
     private DatabaseItem notAnArtifact;
+
+    @Mock
+    private Context context;
+
+    @Mock
+    private SupabaseImageUploader imageUploader;
 
     private MockedStatic<FirebaseDatabase> mockedFirebaseDatabase;
     private MockedStatic<Tasks> mockedTasks;
@@ -143,7 +129,7 @@ public class ArtifactDatabaseWriterDeleteTest {
         when(firebaseDatabase.getReference("/likes"))
                 .thenReturn(likesDir);
 
-        writer = new ArtifactDatabaseWriter();
+        writer = new ArtifactDatabaseWriter(context, imageUploader);
 
         artifact = new Artifact(
                 "LOT100",
@@ -153,87 +139,38 @@ public class ArtifactDatabaseWriterDeleteTest {
                 "Ceramic",
                 "Ming Dynasty (1368-1644 CE)"
         );
-
-        // Configuring queries
-        when(commentsDir.orderByChild("artifactLot"))
-                .thenReturn(commentsOrderedByArtifactLot);
-
-        when(commentsOrderedByArtifactLot.equalTo("LOT100"))
-                .thenReturn(matchingComments);
-
-        when(matchingComments.get())
-                .thenReturn(commentGetTask);
-
-        when(commentGetTask.addOnSuccessListener(any(OnSuccessListener.class)))
-                .thenReturn(commentGetTask);
-
-        when(commentGetTask.addOnFailureListener(any(OnFailureListener.class)))
-                .thenReturn(commentGetTask);
-
-        when(likesDir.orderByChild("artifactLot"))
-                .thenReturn(likesOrderedByArtifactLot);
-
-        when(likesOrderedByArtifactLot.equalTo("LOT100"))
-                .thenReturn(matchingLikes);
-
-        when(matchingLikes.get())
-                .thenReturn(likeGetTask);
-
-        when(likeGetTask.addOnSuccessListener(any(OnSuccessListener.class)))
-                .thenReturn(likeGetTask);
-
-        when(likeGetTask.addOnFailureListener(any(OnFailureListener.class)))
-                .thenReturn(likeGetTask);
-
-        // Configure delete
-        when(artifactsDir.child("LOT100"))
-                .thenReturn(lot);
-
-        when(lot.removeValue())
-                .thenReturn(artifactDeleteTask);
-
-        // Configure whenAll task
-        when(allDeleteTask.addOnSuccessListener(any(OnSuccessListener.class)))
-                .thenReturn(allDeleteTask);
-
-        when(allDeleteTask.addOnFailureListener(any(OnFailureListener.class)))
-                .thenReturn(allDeleteTask);
-
-        mockedTasks.when(() -> Tasks.whenAll(anyCollection()))
-                .thenAnswer(invocation -> {
-                    Collection<? extends Task<?>> tasks =
-                            invocation.getArgument(0);
-
-                    capturedDeleteTasks = new ArrayList<>(tasks);
-
-                    return allDeleteTask;
-                });
     }
 
     @After
     public void tearDown() {
         mockedTasks.close();
-
         mockedFirebaseDatabase.close();
     }
 
     @Test
-    public void deleteFromDatabase_validLotQueriesCommentsAndLikes() { /* Tests if comments and likes
-                                                                         are queried correctly
-                                                                         */
-        configureRelatedCommentsAndLikes();
+    public void deleteFromDatabase_validLotQueriesCommentsCorrectly() { /* Tests if comments are
+                                                                       queried correctly
+                                                                       */
+        configureArtifactDeletion();
 
         writer.deleteFromDatabase("LOT100", callback);
 
         verify(commentsDir).orderByChild("artifactLot");
         verify(commentsOrderedByArtifactLot).equalTo("LOT100");
+    }
+
+    @Test
+    public void deleteFromDatabase_validLotDeletesLikesCorrectly() { /* Tests if the artifact's likes
+                                                                    are deleted correctly
+                                                                    */
+        configureArtifactDeletion();
+
+        writer.deleteFromDatabase("LOT100", callback);
 
         triggerCommentLookupSuccess();
 
-        verify(likesDir).orderByChild("artifactLot");
-        verify(likesOrderedByArtifactLot).equalTo("LOT100");
-
-        triggerLikeLookupSuccess();
+        verify(likesDir).child("LOT100");
+        verify(likeLot).removeValue();
     }
 
     @Test
@@ -241,7 +178,8 @@ public class ArtifactDatabaseWriterDeleteTest {
                                                                        and the artifact itself are
                                                                        correctly deleted
                                                                        */
-        configureRelatedCommentsAndLikes();
+        configureArtifactDeletion();
+        configureRelatedComments();
 
         writer.deleteFromDatabase("LOT100", callback);
 
@@ -250,33 +188,30 @@ public class ArtifactDatabaseWriterDeleteTest {
         verify(commentOneRef).removeValue();
         verify(commentTwoRef).removeValue();
 
-        triggerLikeLookupSuccess();
-
-        verify(likeOneRef).removeValue();
-        verify(likeTwoRef).removeValue();
+        verify(likesDir).child("LOT100");
+        verify(likeLot).removeValue();
 
         verify(artifactsDir).child("LOT100");
         verify(lot).removeValue();
 
         assertTrue(capturedDeleteTasks.contains(commentOneDeleteTask));
         assertTrue(capturedDeleteTasks.contains(commentTwoDeleteTask));
-        assertTrue(capturedDeleteTasks.contains(likeOneDeleteTask));
-        assertTrue(capturedDeleteTasks.contains(likeTwoDeleteTask));
+        assertTrue(capturedDeleteTasks.contains(likeDeleteTask));
         assertTrue(capturedDeleteTasks.contains(artifactDeleteTask));
     }
 
     @Test
     public void deleteFromDatabase_allDeletesSucceedCallsSuccess() { /* Tests if successfully deleting
-                                                                       all comments, likes, and the
-                                                                       artifact calls the success
-                                                                       callback
-                                                                       */
-        configureRelatedCommentsAndLikes();
+                                                                        all comments, likes, and the
+                                                                        artifact calls the success
+                                                                        callback
+                                                                        */
+        configureArtifactDeletion();
+        configureRelatedComments();
 
         writer.deleteFromDatabase("LOT100", callback);
 
         triggerCommentLookupSuccess();
-        triggerLikeLookupSuccess();
         triggerAllDeletesSuccess();
 
         verify(callback).onSuccess();
@@ -288,12 +223,12 @@ public class ArtifactDatabaseWriterDeleteTest {
                                                                   any related data calls the failure
                                                                   callback
                                                                   */
-        configureRelatedCommentsAndLikes();
+        configureArtifactDeletion();
+        configureRelatedComments();
 
         writer.deleteFromDatabase("LOT100", callback);
 
         triggerCommentLookupSuccess();
-        triggerLikeLookupSuccess();
 
         ArgumentCaptor<OnFailureListener> failureCaptor = ArgumentCaptor.forClass(OnFailureListener.class);
 
@@ -311,6 +246,8 @@ public class ArtifactDatabaseWriterDeleteTest {
                                                                         the failure callback and
                                                                         stops deletion
                                                                         */
+        configureCommentLookup();
+
         writer.deleteFromDatabase("LOT100", callback);
 
         ArgumentCaptor<OnFailureListener> failureCaptor = ArgumentCaptor.forClass(OnFailureListener.class);
@@ -321,50 +258,28 @@ public class ArtifactDatabaseWriterDeleteTest {
 
         verify(callback).onFailure("Failed comment query");
 
-        verify(likesDir, never()).orderByChild(anyString());
-        verify(artifactsDir, never()).child(anyString());
-    }
-
-    @Test
-    public void deleteFromDatabase_likeLookupFailsCallsFailure() { /* Tests if failing to retrieve
-                                                                     the artifact's likes calls the
-                                                                     failure callback and stops
-                                                                     deletion
-                                                                     */
-        configureRelatedCommentsAndLikes();
-
-        writer.deleteFromDatabase("LOT100", callback);
-
-        triggerCommentLookupSuccess();
-
-        ArgumentCaptor<OnFailureListener> failureCaptor = ArgumentCaptor.forClass(OnFailureListener.class);
-
-        verify(likeGetTask).addOnFailureListener(failureCaptor.capture());
-
-        failureCaptor.getValue().onFailure(new Exception("Could not retrieve likes"));
-
-        verify(callback).onFailure("Could not retrieve likes");
-
+        verify(likesDir, never()).child(anyString());
         verify(artifactsDir, never()).child(anyString());
         verify(callback, never()).onSuccess();
     }
 
     @Test
-    public void deleteFromDatabase_bareArtifactDeletesArtifact() { /* Tests if an artifact with no
-                                                                      comments or likes is still
-                                                                      deleted successfully
-                                                                      */
-        when(commentSnapshot.getChildren()).thenReturn(Collections.emptyList());
-
-        when(likeSnapshot.getChildren()).thenReturn(Collections.emptyList());
+    public void deleteFromDatabase_bareArtifactDeletesArtifactAndLikePath() { /* Tests if an
+                                                                                 artifact with no
+                                                                                 comments or likes is
+                                                                                 still deleted
+                                                                                 successfully
+                                                                                 */
+        configureArtifactDeletion();
 
         writer.deleteFromDatabase("LOT100", callback);
 
         triggerCommentLookupSuccess();
-        triggerLikeLookupSuccess();
 
+        verify(likeLot).removeValue();
         verify(lot).removeValue();
 
+        assertTrue(capturedDeleteTasks.contains(likeDeleteTask));
         assertTrue(capturedDeleteTasks.contains(artifactDeleteTask));
 
         triggerAllDeletesSuccess();
@@ -373,10 +288,10 @@ public class ArtifactDatabaseWriterDeleteTest {
     }
 
     @Test
-    public void deleteFromDatabase_artifactCallsLotDeletion() { /* Tests if deleting with an Artifact
-                                                                   passes to the LOT-based delete
-                                                                   method and deletes correctly
-                                                                   */
+    public void deleteFromDatabase_artifactWithoutImageCallsLotDeletion() { /* Tests if an artifact
+                                                                               with no image is still
+                                                                               deleted successfully
+                                                                               */
         ArtifactDatabaseWriter writerSpy = spy(writer);
 
         doNothing().when(writerSpy).deleteFromDatabase("LOT100", callback);
@@ -384,6 +299,51 @@ public class ArtifactDatabaseWriterDeleteTest {
         writerSpy.deleteFromDatabase(artifact, callback);
 
         verify(writerSpy).deleteFromDatabase("LOT100", callback);
+        verifyNoInteractions(imageUploader);
+    }
+
+    @Test
+    public void deleteFromDatabase_artifactWithImageDeletesImage() { /* Tests if an artifact with an
+                                                                        image is deleted correctly
+                                                                        */
+        artifact.setImageUrl(IMAGE_URL);
+
+        ArtifactDatabaseWriter writerSpy = spy(writer);
+        doNothing().when(writerSpy).deleteFromDatabase("LOT100", callback);
+
+        ArgumentCaptor<SupabaseImageUploader.DeleteCallback> deleteCallbackCaptor = ArgumentCaptor.forClass(SupabaseImageUploader.DeleteCallback.class);
+
+        writerSpy.deleteFromDatabase(artifact, callback);
+
+        verify(imageUploader).deleteImage(eq(IMAGE_URL), deleteCallbackCaptor.capture());
+        verify(writerSpy, never()).deleteFromDatabase("LOT100", callback);
+
+        deleteCallbackCaptor.getValue().onSuccess();
+
+        verify(writerSpy).deleteFromDatabase("LOT100", callback);
+    }
+
+    @Test
+    public void deleteFromDatabase_imageDeleteFailureCallsFailure() { /* Tests if failing to delete
+                                                                         the image calls the failure
+                                                                         callback and stops deletion
+                                                                         */
+        artifact.setImageUrl(IMAGE_URL);
+
+        ArgumentCaptor<SupabaseImageUploader.DeleteCallback> deleteCallbackCaptor = ArgumentCaptor.forClass(SupabaseImageUploader.DeleteCallback.class);
+
+        writer.deleteFromDatabase(artifact, callback);
+
+        verify(imageUploader).deleteImage(eq(IMAGE_URL), deleteCallbackCaptor.capture());
+
+        deleteCallbackCaptor.getValue().onError("Image deletion failed");
+
+        verify(callback).onFailure("Image deletion failed");
+        verify(callback, never()).onSuccess();
+
+        verify(commentsDir, never()).orderByChild(anyString());
+        verify(likesDir, never()).child(anyString());
+        verify(artifactsDir, never()).child(anyString());
     }
 
     @Test
@@ -394,11 +354,64 @@ public class ArtifactDatabaseWriterDeleteTest {
         writer.deleteFromDatabase(notAnArtifact, callback);
 
         verify(callback).onFailure("Item is not an artifact");
+        verifyNoInteractions(imageUploader);
         verify(commentsDir, never()).orderByChild(anyString());
-        verify(likesDir, never()).orderByChild(anyString());
+        verify(likesDir, never()).child(anyString());
+        verify(artifactsDir, never()).child(anyString());
     }
 
-    private void configureRelatedCommentsAndLikes() {
+    private void configureCommentLookup() {
+        when(commentsDir.orderByChild("artifactLot"))
+                .thenReturn(commentsOrderedByArtifactLot);
+
+        when(commentsOrderedByArtifactLot.equalTo("LOT100"))
+                .thenReturn(matchingComments);
+
+        when(matchingComments.get())
+                .thenReturn(commentGetTask);
+
+        when(commentGetTask.addOnSuccessListener(any(OnSuccessListener.class)))
+                .thenReturn(commentGetTask);
+
+        when(commentGetTask.addOnFailureListener(any(OnFailureListener.class)))
+                .thenReturn(commentGetTask);
+    }
+
+    private void configureArtifactDeletion() {
+        configureCommentLookup();
+
+        when(commentSnapshot.getChildren())
+                .thenReturn(Collections.emptyList());
+
+        when(likesDir.child("LOT100"))
+                .thenReturn(likeLot);
+
+        when(likeLot.removeValue())
+                .thenReturn(likeDeleteTask);
+
+        when(artifactsDir.child("LOT100"))
+                .thenReturn(lot);
+
+        when(lot.removeValue())
+                .thenReturn(artifactDeleteTask);
+
+        when(allDeleteTask.addOnSuccessListener(any(OnSuccessListener.class)))
+                .thenReturn(allDeleteTask);
+
+        when(allDeleteTask.addOnFailureListener(any(OnFailureListener.class)))
+                .thenReturn(allDeleteTask);
+
+        mockedTasks.when(() -> Tasks.whenAll(anyCollection()))
+                .thenAnswer(invocation -> {
+                    Collection<? extends Task<?>> tasks = invocation.getArgument(0);
+
+                    capturedDeleteTasks = new ArrayList<>(tasks);
+
+                    return allDeleteTask;
+                });
+    }
+
+    private void configureRelatedComments() {
         when(commentSnapshot.getChildren())
                 .thenReturn(Arrays.asList(commentOne, commentTwo));
 
@@ -413,23 +426,7 @@ public class ArtifactDatabaseWriterDeleteTest {
 
         when(commentTwoRef.removeValue())
                 .thenReturn(commentTwoDeleteTask);
-
-        when(likeSnapshot.getChildren())
-                .thenReturn(Arrays.asList(likeOne, likeTwo));
-
-        when(likeOne.getRef())
-                .thenReturn(likeOneRef);
-
-        when(likeTwo.getRef())
-                .thenReturn(likeTwoRef);
-
-        when(likeOneRef.removeValue())
-                .thenReturn(likeOneDeleteTask);
-
-        when(likeTwoRef.removeValue())
-                .thenReturn(likeTwoDeleteTask);
     }
-
 
     private void triggerCommentLookupSuccess() {
         ArgumentCaptor<OnSuccessListener<DataSnapshot>> captor = ArgumentCaptor.forClass(OnSuccessListener.class);
@@ -439,16 +436,6 @@ public class ArtifactDatabaseWriterDeleteTest {
         captor.getValue().onSuccess(commentSnapshot);
     }
 
-
-    private void triggerLikeLookupSuccess() {
-        ArgumentCaptor<OnSuccessListener<DataSnapshot>> captor = ArgumentCaptor.forClass(OnSuccessListener.class);
-
-        verify(likeGetTask).addOnSuccessListener(captor.capture());
-
-        captor.getValue().onSuccess(likeSnapshot);
-    }
-
-
     private void triggerAllDeletesSuccess() {
         ArgumentCaptor<OnSuccessListener<Void>> captor = ArgumentCaptor.forClass(OnSuccessListener.class);
 
@@ -456,5 +443,4 @@ public class ArtifactDatabaseWriterDeleteTest {
 
         captor.getValue().onSuccess(null);
     }
-
 }
