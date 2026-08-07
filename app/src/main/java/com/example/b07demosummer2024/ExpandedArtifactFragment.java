@@ -431,7 +431,7 @@ public class ExpandedArtifactFragment extends Fragment {
         isDeleteQueryRunning = true;
         disableButton();
 
-        ArtifactDatabaseWriter writer = new ArtifactDatabaseWriter();
+        ArtifactDatabaseWriter writer = new ArtifactDatabaseWriter(requireContext());
         writer.deleteFromDatabase(artifactLot, new WriteCallback() {
             @Override
             public void onSuccess() {

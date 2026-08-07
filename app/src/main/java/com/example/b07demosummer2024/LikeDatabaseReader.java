@@ -58,17 +58,9 @@ public class LikeDatabaseReader {
      */
     public void GetLikesOnArtifact(String LOT, GetLikesCallback callback) {
         dbReference.child(LOT).get().addOnSuccessListener(dataSnapshot -> {
-            int amount = 0;
-            // for each like
-            for (DataSnapshot child: dataSnapshot.getChildren()){
-                Like like = child.getValue(Like.class);
-                if ( like != null && like.getArtifactLot().equals(LOT)) {
-                    amount += 1;
-                }
-            }
-            callback.onSuccess(amount);
+            callback.onSuccess((int) dataSnapshot.getChildrenCount());
         }).addOnFailureListener(e -> {
-            callback.onFailure(null);
+            callback.onFailure(e.getMessage());
         });
     }
 
