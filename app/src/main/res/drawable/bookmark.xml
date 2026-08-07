@@ -15,11 +15,11 @@
   -->
 
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
-    android:height="40dp"
+    android:height="32dp"
     android:tint="#FFFFFF"
     android:viewportHeight="960"
     android:viewportWidth="960"
-    android:width="40dp">
+    android:width="32dp">
 
     <path
         android:fillColor="@android:color/white"

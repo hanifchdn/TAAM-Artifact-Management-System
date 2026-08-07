@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#212121">
+    android:background="@drawable/home_background">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -16,16 +16,18 @@
 
             <LinearLayout
                 android:id="@+id/buttonRow"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
                 android:orientation="horizontal"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintStart_toStartOf="parent">
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent">
 
                 <ImageButton
                     android:id="@+id/buttonReturn"
-                    android:layout_width="48dp"
+                    android:layout_width="0dp"
                     android:layout_height="48dp"
+                    android:layout_weight="1"
                     android:layout_marginEnd="10dp"
                     android:src="@drawable/back"
                     android:scaleType="centerInside"
@@ -36,10 +38,11 @@
 
                 <ImageButton
                     android:id="@+id/buttonSave"
-                    android:layout_width="48dp"
+                    android:layout_width="0dp"
                     android:layout_height="48dp"
+                    android:layout_weight="1"
                     android:layout_marginEnd="10dp"
-                    android:src="@drawable/bookmark"
+                    android:src="@drawable/bookmark_hollow"
                     android:scaleType="centerInside"
                     android:background="@drawable/rounded_corner"
                     app:tint="#F4F5F6"
@@ -48,8 +51,9 @@
 
                 <ImageButton
                     android:id="@+id/buttonComment"
-                    android:layout_width="48dp"
+                    android:layout_width="0dp"
                     android:layout_height="48dp"
+                    android:layout_weight="1"
                     android:layout_marginEnd="10dp"
                     android:src="@drawable/comment"
                     android:scaleType="centerInside"
@@ -58,22 +62,50 @@
                     android:contentDescription="@string/comment_section"
                     android:padding="10dp" />
 
-                <ImageButton
-                    android:id="@+id/buttonLike"
-                    android:layout_width="48dp"
+                <LinearLayout
+                    android:id="@+id/likeContainer"
+                    android:layout_width="0dp"
                     android:layout_height="48dp"
+                    android:layout_weight="1.3"
                     android:layout_marginEnd="10dp"
-                    android:src="@drawable/temporary_asset"
-                    android:scaleType="centerInside"
+                    android:orientation="horizontal"
+                    android:gravity="center"
                     android:background="@drawable/rounded_corner"
                     app:tint="#F4F5F6"
-                    android:contentDescription="@string/like_artifact"
-                    android:padding="10dp" />
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:paddingStart="2dp"
+                    android:paddingEnd="2dp">
+
+                    <ImageButton
+                        android:id="@+id/buttonLike"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:layout_marginStart="-4dp"
+                        android:layout_marginEnd="-4dp"
+                        android:src="@drawable/unlike"
+                        android:scaleType="centerInside"
+                        android:clickable="false"
+                        android:focusable="false"
+                        android:background="@android:color/transparent"
+                        android:contentDescription="@string/like_artifact" />
+
+                    <TextView
+                        android:id="@+id/likeCount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="0"
+                        android:textColor="#FFFFFF"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
 
                 <ImageButton
                     android:id="@+id/buttonEdit"
-                    android:layout_width="48dp"
+                    android:layout_width="0dp"
                     android:layout_height="48dp"
+                    android:layout_weight="1"
                     android:layout_marginEnd="10dp"
                     android:src="@drawable/edit"
                     android:scaleType="centerInside"
@@ -84,8 +116,9 @@
 
                 <ImageButton
                     android:id="@+id/buttonDelete"
-                    android:layout_width="48dp"
+                    android:layout_width="0dp"
                     android:layout_height="48dp"
+                    android:layout_weight="1"
                     android:src="@drawable/delete"
                     android:scaleType="centerInside"
                     android:background="@drawable/rounded_corner"
