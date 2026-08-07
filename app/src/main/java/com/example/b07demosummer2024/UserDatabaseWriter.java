@@ -1,8 +1,12 @@
 package com.example.b07demosummer2024;
 
+import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -61,15 +65,21 @@ public class UserDatabaseWriter {
      */
     public void deleteSavedArtifactFromUser(String artifactLOT, WriteCallback callback) {
         dbReference.get().addOnSuccessListener(dataSnapshot -> {
+            List<Task<Void>> writeTasks = new ArrayList<>();
+
             // for each user
             for (DataSnapshot child: dataSnapshot.getChildren()){
                 User user  = child.getValue(User.class);
                 if (user != null) {
                     user.removeSavedArtifact(artifactLOT);
-                    dbReference.child(user.getUid()).child("savedArtifactList").setValue(user.getSavedArtifactList());
+                    writeTasks.add(dbReference.child(user.getUid()).child("savedArtifactList").setValue(user.getSavedArtifactList()));
                 }
             }
-            callback.onSuccess();
+            Tasks.whenAll(writeTasks).addOnSuccessListener(v -> {
+                if (callback != null) callback.onSuccess();
+            }).addOnFailureListener(e -> {
+                if (callback != null) callback.onFailure(e.getMessage());
+            });
             return;
         }).addOnFailureListener(e -> {
             callback.onFailure(e.getMessage());
