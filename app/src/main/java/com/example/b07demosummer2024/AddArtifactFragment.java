@@ -128,6 +128,7 @@ public class AddArtifactFragment extends Fragment {
             @Override
             public void onSuccess(){
                 Toast.makeText(requireContext(), "Artifact added successfully.", Toast.LENGTH_SHORT).show();
+                getParentFragmentManager().popBackStack();
             }
             @Override
             public void onFailure(String e){
