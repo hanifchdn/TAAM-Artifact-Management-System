@@ -8,6 +8,7 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 import java.util.List;
+import android.content.Context;
 
 /**
  * Allows for easy Writing to the db using the Artifact class.
@@ -22,13 +23,18 @@ public class ArtifactDatabaseWriter implements DatabaseAdder, DatabaseDeleter, D
     DatabaseReference dbReference;
     DatabaseReference commentReference;
     DatabaseReference likeReference;
+    private final SupabaseImageUploader imageUploader;
 
-    public ArtifactDatabaseWriter() {
-        // set database cursor to artifacts section
+    public ArtifactDatabaseWriter(Context context) {
+        this(context, new SupabaseImageUploader(context));
+    }
+
+    public ArtifactDatabaseWriter(Context context, SupabaseImageUploader imageUploader) {
         db = FirebaseDatabase.getInstance("https://taam-artifact-storage-system-default-rtdb.firebaseio.com/");
         dbReference = db.getReference("/artifacts");
         commentReference = db.getReference("/comments");
         likeReference = db.getReference("/likes");
+        this.imageUploader = imageUploader;
     }
 
     /**
@@ -96,7 +102,23 @@ public class ArtifactDatabaseWriter implements DatabaseAdder, DatabaseDeleter, D
             }
             return;
         }
-        deleteFromDatabase(item.getLOT(), callback);
+        Artifact artifact = (Artifact) item;
+        if(artifact.getImageUrl() == null || artifact.getImageUrl().trim().isEmpty()){
+            deleteFromDatabase(artifact.getLOT(), callback);
+            return;
+        }
+        imageUploader.deleteImage(artifact.getImageUrl(), new SupabaseImageUploader.DeleteCallback(){
+            @Override
+            public void onSuccess(){
+                deleteFromDatabase(artifact.getLOT(), callback);
+            }
+            @Override
+            public void onError(String message){
+                if(callback != null){
+                    callback.onFailure(message);
+                }
+            }
+        });
 
     }
 

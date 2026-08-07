@@ -42,6 +42,13 @@ public class SupabaseImageUploader {
          */
         void onError(String message);
     }
+    /**
+     * Callback used on delete
+     */
+    public interface DeleteCallback {
+        void onSuccess();
+        void onError(String message);
+    }
 
     private static final int MAX_IMAGE_BYTES = 10 * 1024 * 1024; // 10MB
 
@@ -148,6 +155,58 @@ public class SupabaseImageUploader {
             }
         });
     }
+    public void deleteImage(String publicUrl, DeleteCallback callback) {
+        String filePath = extractFilePath(publicUrl);
+        if (isBlank(filePath)) {
+            callback.onError("Invalid image URL.");
+            return;
+        }
+        HttpUrl deleteUrl = buildStorageUrl("storage/v1/object", filePath);
+        if (deleteUrl == null) {
+            callback.onError("Supabase URL is invalid.");
+            return;
+        }
+        Request request = new Request.Builder()
+                .url(deleteUrl)
+                .addHeader("apikey", supabaseAnonKey)
+                .addHeader(
+                        "Authorization",
+                        "Bearer " + supabaseAnonKey
+                )
+                .delete()
+                .build();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                postDeleteError(callback, "Image deletion failed: " + e.getMessage());
+            }
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response response) {
+                try {
+                    if (response.isSuccessful()) {
+                        postDeleteSuccess(callback);
+                    }
+                    else {
+                        postDeleteError(callback, "Image deletion failed with status " + response.code() + ".");
+                    }
+                } finally {
+                    response.close();
+                }
+            }
+        });
+    }
+    private String extractFilePath(String publicUrl) {
+        HttpUrl url = HttpUrl.parse(publicUrl);
+        if (url == null) {
+            return null;
+        }
+        String prefix = "/storage/v1/object/public/" + bucketName + "/";
+        String path = url.encodedPath();
+        if (!path.startsWith(prefix)) {
+            return null;
+        }
+        return path.substring(prefix.length());
+    }
 
     /**
      * Reads the bytes of the image and puts it into an array of bytes
@@ -218,6 +277,13 @@ public class SupabaseImageUploader {
      * @param message the error message to use as callback argument
      */
     private void postError(UploadCallback callback, String message) {
+        mainHandler.post(() -> callback.onError(message));
+    }
+    private void postDeleteSuccess(DeleteCallback callback) {
+        mainHandler.post(() -> callback.onSuccess());
+    }
+
+    private void postDeleteError(DeleteCallback callback, String message) {
         mainHandler.post(() -> callback.onError(message));
     }
 
