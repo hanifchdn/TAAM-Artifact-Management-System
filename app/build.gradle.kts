@@ -52,3 +52,22 @@ dependencies {
     debugImplementation(libs.fragment.testing.manifest)
     androidTestImplementation(libs.fragment.testing)
 }
+
+android.applicationVariants.all {
+    if (name == "debug") {
+        val variant = this
+
+        tasks.register<Javadoc>("generateJavadoc") {
+            dependsOn(variant.javaCompileProvider)
+
+            setSource(variant.javaCompileProvider.get().source)
+
+            classpath = files(android.bootClasspath) + variant.javaCompileProvider.get().classpath
+
+            destinationDir = layout.buildDirectory.dir("docs/javadoc").get().asFile
+
+            exclude("**/R.java")
+            exclude("**/BuildConfig.java")
+        }
+    }
+}
