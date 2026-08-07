@@ -95,6 +95,7 @@
                 android:inputType="text"
                 android:minHeight="48dp"
                 android:textColor="#212121"
+                android:textColorHint="#757575"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textViewLot" />
@@ -119,6 +120,7 @@
                 android:inputType="textCapWords"
                 android:minHeight="48dp"
                 android:textColor="#212121"
+                android:textColorHint="#757575"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textViewArtifactName" />
@@ -145,6 +147,7 @@
                 android:minHeight="48dp"
                 android:minLines="4"
                 android:textColor="#212121"
+                android:textColorHint="#757575"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textViewDescription" />
@@ -166,6 +169,7 @@
                 android:layout_width="0dp"
                 android:layout_height="48dp"
                 android:spinnerMode="dropdown"
+                android:textColorHint="#757575"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textViewCategory" />
@@ -187,6 +191,7 @@
                 android:layout_width="0dp"
                 android:layout_height="48dp"
                 android:spinnerMode="dropdown"
+                android:textColorHint="#757575"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textViewMaterial" />
@@ -208,6 +213,7 @@
                 android:layout_width="0dp"
                 android:layout_height="48dp"
                 android:spinnerMode="dropdown"
+                android:textColorHint="#757575"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textViewDynasty" />
@@ -232,6 +238,7 @@
                 android:inputType="textCapWords"
                 android:minHeight="48dp"
                 android:textColor="#212121"
+                android:textColorHint="#757575"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textViewCulturalOrigin" />
@@ -243,6 +250,7 @@
                 android:layout_marginTop="20dp"
                 android:text="@string/dimensions_label"
                 android:textStyle="bold"
+                android:textColor="#212121"
                 android:layout_marginLeft="5dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/editTextCulturalOrigin" />
@@ -256,6 +264,7 @@
                 android:inputType="numberDecimal"
                 android:minHeight="48dp"
                 android:textColor="#212121"
+                android:textColorHint="#757575"
                 app:layout_constraintEnd_toStartOf="@id/editTextWidth"
                 app:layout_constraintHorizontal_weight="1"
                 app:layout_constraintStart_toStartOf="parent"
@@ -270,6 +279,7 @@
                 android:inputType="numberDecimal"
                 android:minHeight="48dp"
                 android:textColor="#212121"
+                android:textColorHint="#757575"
                 app:layout_constraintEnd_toStartOf="@id/editTextDepth"
                 app:layout_constraintHorizontal_weight="1"
                 app:layout_constraintStart_toEndOf="@id/editTextHeight"
@@ -284,6 +294,7 @@
                 android:inputType="numberDecimal"
                 android:minHeight="48dp"
                 android:textColor="#212121"
+                android:textColorHint="#757575"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_weight="1"
                 app:layout_constraintStart_toEndOf="@id/editTextWidth"
@@ -297,6 +308,7 @@
                 android:text="@string/condition_report_label"
                 android:textStyle="bold"
                 android:textColor="#212121"
+                android:textColorHint="#757575"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/editTextHeight" />
 
@@ -310,6 +322,7 @@
                 android:minHeight="48dp"
                 android:minLines="4"
                 android:textColor="#212121"
+                android:textColorHint="#757575"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textViewConditionReport" />
@@ -334,6 +347,7 @@
                 android:inputType="textCapWords"
                 android:minHeight="48dp"
                 android:textColor="#212121"
+                android:textColorHint="#757575"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textViewCurrentLocation" />
@@ -358,6 +372,7 @@
                 android:inputType="textCapWords"
                 android:minHeight="48dp"
                 android:textColor="#212121"
+                android:textColorHint="#757575"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textViewAcquisitionMethod" />
@@ -384,6 +399,7 @@
                 android:minHeight="48dp"
                 android:minLines="3"
                 android:textColor="#212121"
+                android:textColorHint="#757575"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textViewProvenance" />
@@ -408,6 +424,7 @@
                 android:inputType="numberDecimal"
                 android:minHeight="48dp"
                 android:textColor="#212121"
+                android:textColorHint="#757575"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textViewAccessionNumber" />
@@ -434,6 +451,7 @@
                 android:minHeight="100dp"
                 android:minLines="4"
                 android:textColor="#212121"
+                android:textColorHint="#757575"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textViewNotes" />
