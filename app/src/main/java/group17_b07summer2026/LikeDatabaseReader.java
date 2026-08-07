@@ -1,0 +1,79 @@
+package group17_b07summer2026;
+
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
+/**
+ * Reads like data from the Firebase Database.
+ *
+ * Provides methods for retrieving an artifact's like count and checking
+ * whether a user has liked an artifact
+ */
+public class LikeDatabaseReader {
+
+    /**
+     * Interface for GetLikesOnArtifact callback
+     */
+    public interface GetLikesCallback {
+        /**
+         * On Firebase read success, returns the likes amount as a param
+         * @param amountOfLikes , amount of likes
+         */
+        void onSuccess(int amountOfLikes);
+        /**
+         * On Firebase read failure, return error message
+         * @param errorMessage Firebase error message
+         */
+        void onFailure(String errorMessage);
+    }
+
+    /**
+     * Interface for hasUserLiked callback
+     */
+    public interface HasUserLikedCallback {
+        /**
+         * On Firebase read success, returns if the user has liked or not
+         * @param isLiked , boolean if liked or not
+         */
+        void onSuccess(boolean isLiked);
+        /**
+         * On Firebase read failure, return error message
+         * @param errorMessage Firebase error message
+         */
+        void onFailure(String errorMessage);
+    }
+    private FirebaseDatabase db; //firebase db object
+    private DatabaseReference dbReference; //db reference that can read/write artifacts
+
+    public LikeDatabaseReader() {
+        db = FirebaseDatabase.getInstance("https://taam-artifact-storage-system-default-rtdb.firebaseio.com/");
+        dbReference = db.getReference("likes");
+    }
+
+    /**
+     *Gets all likes on an Artifact from the database
+     *
+     * @param LOT The LOT of Artifact
+     * @param callback callback function
+     */
+    public void GetLikesOnArtifact(String LOT, GetLikesCallback callback) {
+        dbReference.child(LOT).get().addOnSuccessListener(dataSnapshot -> {
+            callback.onSuccess((int) dataSnapshot.getChildrenCount());
+        }).addOnFailureListener(e -> {
+            callback.onFailure(e.getMessage());
+        });
+    }
+
+    /**
+     * Determines if a user has liked an artifact or not
+     * @param LOT The LOT of Artifact
+     * @param callback callback function
+     */
+    public void hasUserLiked(String userId, String LOT, HasUserLikedCallback callback) {
+        dbReference.child(LOT).child(userId).get().addOnSuccessListener(dataSnapshot -> {
+            callback.onSuccess(dataSnapshot.exists());
+        }).addOnFailureListener(e -> {
+            callback.onFailure(e.getMessage());
+        });
+    }
+}

@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
     android:background="@drawable/home_background"
-    tools:context=".HomeFragment">
+    tools:context="group17_b07summer2026.HomeFragment">
 
     <LinearLayout
         android:id="@+id/commentsToolbar"

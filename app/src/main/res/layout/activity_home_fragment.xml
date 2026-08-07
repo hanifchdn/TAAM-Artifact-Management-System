@@ -5,7 +5,7 @@
     android:background="@drawable/home_background"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".HomeFragment">
+    tools:context="group17_b07summer2026.HomeFragment">
 
     <!--    <Button-->
     <!--        android:id="@+id/buttonRecyclerView"-->

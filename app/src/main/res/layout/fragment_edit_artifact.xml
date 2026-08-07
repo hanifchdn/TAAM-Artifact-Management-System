@@ -7,7 +7,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true"
-    tools:context=".EditArtifactFragment">
+    tools:context="group17_b07summer2026.EditArtifactFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/toolBar"
@@ -67,7 +67,7 @@
             android:paddingStart="16dp"
             android:paddingEnd="16dp"
             android:paddingTop="20dp"
-            tools:context=".EditArtifactFragment">
+            tools:context="group17_b07summer2026.EditArtifactFragment">
 
             <TextView
                 android:id="@+id/textViewLot"
