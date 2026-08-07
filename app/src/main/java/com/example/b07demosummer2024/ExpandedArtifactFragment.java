@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -52,6 +53,22 @@ public class ExpandedArtifactFragment extends Fragment {
     private ImageButton buttonDelete;
     private Artifact artifact;
     private User currentUser;
+    private ImageView expandedImage;
+    private TextView expandedName;
+    private TextView expandedDescription;
+    private TextView expandedLot;
+    private TextView expandedCategory;
+    private TextView expandedMaterial;
+    private TextView expandedDynasty;
+    private TextView expandedCulturalOrigin;
+    private TextView expandedDimensions;
+    private TextView expandedCondition;
+    private TextView expandedCurrentLocation;
+    private TextView expandedAcquisitionMethod;
+    private TextView expandedProvenance;
+    private TextView expandedAccessionNumber;
+    private TextView expandedNotes;
+    private TextView likeCountText;
     private boolean isLikeQueryRunning = false;
     private boolean isSaveQueryRunning = false;
     private boolean isDeleteQueryRunning = false;
@@ -99,22 +116,22 @@ public class ExpandedArtifactFragment extends Fragment {
         User curUser = SessionManager.getInstance().getCurrentUser();
         boolean isAdmin = curUser.isAdmin();
 
-        ImageView expandedImage = view.findViewById(R.id.expandedImage);
-        TextView expandedName = view.findViewById(R.id.expandedName);
-        TextView expandedDescription = view.findViewById(R.id.expandedDescription);
-        TextView expandedLot = view.findViewById(R.id.expandedLot);
-        TextView expandedCategory = view.findViewById(R.id.expandedCategory);
-        TextView expandedMaterial = view.findViewById(R.id.expandedMaterial);
-        TextView expandedDynasty = view.findViewById(R.id.expandedDynasty);
-        TextView expandedCulturalOrigin = view.findViewById(R.id.expandedCulturalOrigin);
-        TextView expandedDimensions = view.findViewById(R.id.expandedDimensions);
-        TextView expandedCondition = view.findViewById(R.id.expandedCondition);
-        TextView expandedCurrentLocation = view.findViewById(R.id.expandedCurrentLocation);
-        TextView expandedAcquisitionMethod = view.findViewById(R.id.expandedAcquisitionMethod);
-        TextView expandedProvenance = view.findViewById(R.id.expandedProvenance);
-        TextView expandedAccessionNumber = view.findViewById(R.id.expandedAccessionNumber);
-        TextView expandedNotes = view.findViewById(R.id.expandedNotes);
-        TextView likeCountText = view.findViewById(R.id.likeCount);
+        expandedImage = view.findViewById(R.id.expandedImage);
+        expandedName = view.findViewById(R.id.expandedName);
+        expandedDescription = view.findViewById(R.id.expandedDescription);
+        expandedLot = view.findViewById(R.id.expandedLot);
+        expandedCategory = view.findViewById(R.id.expandedCategory);
+        expandedMaterial = view.findViewById(R.id.expandedMaterial);
+        expandedDynasty = view.findViewById(R.id.expandedDynasty);
+        expandedCulturalOrigin = view.findViewById(R.id.expandedCulturalOrigin);
+        expandedDimensions = view.findViewById(R.id.expandedDimensions);
+        expandedCondition = view.findViewById(R.id.expandedCondition);
+        expandedCurrentLocation = view.findViewById(R.id.expandedCurrentLocation);
+        expandedAcquisitionMethod = view.findViewById(R.id.expandedAcquisitionMethod);
+        expandedProvenance = view.findViewById(R.id.expandedProvenance);
+        expandedAccessionNumber = view.findViewById(R.id.expandedAccessionNumber);
+        expandedNotes = view.findViewById(R.id.expandedNotes);
+        likeCountText = view.findViewById(R.id.likeCount);
 
         buttonReturn = view.findViewById(R.id.buttonReturn);
         buttonSave = view.findViewById(R.id.buttonSave);
@@ -323,6 +340,51 @@ public class ExpandedArtifactFragment extends Fragment {
     }
 
     /**
+     * On Resume, update the artifact information if there is any updates.
+     */
+    @Override
+    public void onResume() {
+        super.onResume();
+        //update
+        ArtifactDatabaseReader artifactDatabaseReader = new ArtifactDatabaseReader();
+        artifactDatabaseReader.getItem(artifact.getLOT(), new ArtifactDatabaseReader.GetArtifactItemCallback() {
+            @Override
+            public void onSuccess(Artifact newArtifact) {
+                artifact = newArtifact;
+                updateFields();
+            }
+
+            @Override
+            public void onFailure(String errorMessage) {
+
+            }
+        });
+    }
+
+    /**
+     * Updates the text fields of the expanded artifact view based on artifact
+     */
+    private void updateFields() {
+        expandedName.setText(Availability(artifact.getName()));
+        expandedDescription.setText(Availability(artifact.getDescription()));
+        expandedLot.setText("LOT: " + Availability(artifact.getLOT()));
+        expandedCategory.setText("Category: " + Availability(artifact.getCategory()));
+        expandedMaterial.setText("Material: " + Availability(artifact.getMaterial()));
+        expandedDynasty.setText("Dynasty/Period: " + Availability(artifact.getDynasty()));
+        expandedCulturalOrigin.setText("Cultural Origin: " + Availability(artifact.getCulturalOrigin()));
+        expandedDimensions.setText("Dimensions: " + Availability(artifact.getHeight())
+                + " x " + Availability(artifact.getWidth())
+                + " x " + Availability(artifact.getDepth()));
+        expandedCondition.setText("Condition: " + Availability(artifact.getCondition()));
+        expandedCurrentLocation.setText("Current Location: " + Availability(artifact.getCurrentLocation()));
+        expandedAcquisitionMethod.setText("Acquisition Method: " + Availability(artifact.getAcquisitionMethod()));
+        expandedProvenance.setText("Provenance: " + Availability(artifact.getProvenance()));
+        expandedAccessionNumber.setText("Accession Number: " + Availability(artifact.getAccessionNumber()));
+        expandedNotes.setText("Notes: " + Availability(artifact.getNotes()));
+
+    }
+
+    /**
      * Returns the given value, or "N/A" if the value is null or empty.
      */
     private String Availability(String value) {
@@ -465,6 +527,7 @@ public class ExpandedArtifactFragment extends Fragment {
         buttonSave.setEnabled(false);
         buttonComment.setEnabled(false);
         buttonLike.setEnabled(false);
+        likeContainer.setEnabled(false);
         buttonEdit.setEnabled(false);
         buttonDelete.setEnabled(false);
     }
@@ -474,6 +537,7 @@ public class ExpandedArtifactFragment extends Fragment {
         buttonSave.setEnabled(true);
         buttonComment.setEnabled(true);
         buttonLike.setEnabled(true);
+        likeContainer.setEnabled(true);
         buttonEdit.setEnabled(true);
         buttonDelete.setEnabled(true);
     }

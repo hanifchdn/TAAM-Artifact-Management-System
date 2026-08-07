@@ -20,7 +20,7 @@ public class LikeDatabaseWriter {
 
     /**
      * Adds a Like to the database.
-     * Uses the LikeId as the unique ID to save the like.
+     * Uses LOT number and userID as path.
      *
      * @param like the like to add to database.
      * @param callback a Write callback on error

@@ -180,6 +180,7 @@ public class EditArtifactFragment extends Fragment {
             public void onSuccess(){
                 Toast.makeText(requireContext(), "Artifact updated successfully.", Toast.LENGTH_SHORT).show();
                 isDatabaseQueryRunning = false;
+                getParentFragmentManager().popBackStack();
             }
             @Override
             public void onFailure(String e){
